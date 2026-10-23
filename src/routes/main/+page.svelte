@@ -5,6 +5,7 @@
   import About from "../../components/viewblock/About.svelte";
   import LaunchButton from "../../components/LaunchButton.svelte";
   import Mods from "../../components/viewblock/Mods.svelte";
+  import AwesomeMods from "../../components/viewblock/AwesomeMods.svelte";
   import SubmitMod from "../../components/viewblock/SubmitMod.svelte";
   import Settings from "../../components/viewblock/Settings.svelte";
   import RequiresPopup from "../../components/RequiresPopup.svelte";
@@ -46,6 +47,7 @@
   import { backupsStore } from "../../stores/backups";
 
   let currentSection = $state("mods");
+  let awesomeOpened = $state(false);
   let isLinux = $state(false);
   let hasMounted = $state(false);
   let appVersion = $state("");
@@ -351,6 +353,15 @@
         Submit Mod
       </button>
       <button
+        class:active={currentSection === "awesome"}
+        onclick={() => {
+          awesomeOpened = true;
+          currentSection = "awesome";
+        }}
+      >
+        Awesome Balatro
+      </button>
+      <button
         class:active={currentSection === "settings"}
         onclick={() => (currentSection = "settings")}
       >
@@ -382,6 +393,15 @@
 
     <div class="section-wrapper" class:active={currentSection === "submit"}>
       <SubmitMod />
+    </div>
+
+    <div class="section-wrapper" class:active={currentSection === "awesome"}>
+      {#if awesomeOpened}
+        <AwesomeMods onViewCatalog={(mod) => {
+          currentModView.set(mod);
+          currentSection = "mods";
+        }} />
+      {/if}
     </div>
 
     <div class="section-wrapper" class:active={currentSection === "settings"}>
@@ -443,7 +463,7 @@
     {onError}
   />
 
-  {#if appVersion}<div class="version-text">v0.4.1</div>{/if}
+  {#if appVersion}<div class="version-text">v{appVersion}</div>{/if}
 </div>
 
 <LovelyMissingPopup />

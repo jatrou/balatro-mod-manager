@@ -1,4 +1,5 @@
 pub mod analytics;
+pub mod awesome;
 pub mod backup;
 pub mod cache;
 pub mod detection;

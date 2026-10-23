@@ -6,6 +6,7 @@
 //! # Modules
 //!
 //! - [`backup`]: Backup and restore functionality for mod snapshots
+//! - [`awesome_installer`]: Staged installation of Awesome Balatro mods
 //! - [`balamod`]: Balamod (alternative mod loader) support and Balatro game detection
 //! - [`cache`]: Binary cache for remote mod index data
 //! - [`database`]: SQLite database for storing app settings and installed mod metadata
@@ -20,6 +21,8 @@
 //! - [`rate_limiter`]: Rate limiter for GitHub API requests
 //! - [`smods_installer`]: Steamodded/Talisman installer
 
+/// Staged installation of Awesome Balatro mods.
+pub mod awesome_installer;
 /// Backup and restore functionality for mod snapshots.
 pub mod backup;
 /// Balamod support and Balatro game detection.

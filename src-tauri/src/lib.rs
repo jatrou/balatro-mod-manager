@@ -1,5 +1,6 @@
 mod analytics;
 mod assets;
+mod awesome_source;
 mod bmi;
 pub mod commands;
 mod compat_helper;
@@ -462,6 +463,9 @@ pub fn run() {
             commands::system::get_app_version,
             commands::install::get_installed_mods_from_db,
             commands::install::install_mod,
+            commands::awesome::prepare_awesome_install,
+            commands::awesome::finish_awesome_install,
+            commands::awesome::cancel_awesome_install,
             commands::install::add_installed_mod,
             commands::install::remove_installed_mod,
             commands::install::get_steamodded_versions,

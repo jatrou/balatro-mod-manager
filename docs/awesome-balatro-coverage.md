@@ -15,12 +15,12 @@ line for every entry.
 
 | Group                                               | Entries |
 | --------------------------------------------------- | ------: |
-| Mods listed under the four upstream Mods sections   |     320 |
+| Mods listed under the four upstream Mods sections   |     309 |
 | Mod-like Tools entry (Balatro Ultimate Speedup Mod) |       1 |
 | Mod loader references, shown on a separate tab      |       4 |
-| Total directory entries                             |     325 |
+| Total directory entries                             |     314 |
 
-The 321 mod entries cover 322 source bullets. One identical Steamodded entry,
+The unfiltered 321 mod entries cover 322 source bullets. One identical Steamodded entry,
 Sylvie's Silliness, appears under both Collections and Decks; it is represented
 once with both categories. Nine named children of grouped entries such as
 Gimmicky decks pack are retained as individual entries with their parent and
@@ -31,7 +31,7 @@ Mod entries by listed loader:
 
 | Loader in Awesome Balatro | Entries |
 | ------------------------- | ------: |
-| Steamodded                |     259 |
+| Steamodded                |     248 |
 | Balamod                   |      30 |
 | Lovely                    |      25 |
 | No loader listed          |       7 |
@@ -41,6 +41,74 @@ Ultimate Speedup Mod. Calculators, seed searchers, managers, trackers, companion
 apps, website templates, and resource links from the Tools and Resources
 sections are not presented as game mods. Balamod, Lovely, NANEINF, and
 Steamodded remain discoverable on the separate Loaders tab.
+
+## Source health and GitHub stars
+
+The public-source check at `2026-10-23T22:08:54.857Z` checked all 305 unique
+Awesome primary/secondary URLs and all 588 unique GitHub repositories found in
+Awesome and the primary index. Repository API responses supplied actual GitHub
+`stargazers_count` values for 577 available public repositories. Eleven public
+repository endpoints returned 404 twice. Those unknown counts are displayed as
+unavailable rather than zero; a real checked zero remains zero. Moved
+repositories retain aliases and link to their canonical GitHub location.
+Counts are a dated bundled snapshot, not a continuously live popularity feed.
+
+Of the 305 Awesome URLs, 217 were available, 11 returned confirmed 404s, and
+77 Discord links were retained as access-restricted. A Discord HTML shell does
+not prove a thread exists; none of those threads was deleted based on an
+unauthenticated check. Timeouts, 429s, 5xx responses, authentication failures,
+and other uncertain results do not trigger deletion. No uncertain network
+failures occurred in this check.
+
+The eleven unavailable Awesome entries were removed from the local snapshot:
+
+| Entry                | Unavailable public source                                  |
+| -------------------- | ---------------------------------------------------------- |
+| OddityAPI            | `AutumnMood924/AutumnMoodMechanics`                        |
+| The Autumn Circus    | `AutumnMood924/TheAutumnCircus`                            |
+| Absolute Deck        | `Steamodded/examples/blob/master/Mods/AbsoluteDeck.lua`    |
+| Deck of 4            | `Steamodded/examples/blob/master/Mods/DeckOf4s.lua`        |
+| Ultimate Random Deck | `Steamodded/examples/blob/master/Mods/UltimateRandom.lua`  |
+| JimboStats           | `JimboStats/jimbo-stats-mod`                               |
+| Incantation          | `jenwalter666/JensBalatroCollection/tree/main/Incantation` |
+| More Speed           | `Steamodded/examples/blob/master/Mods/MoreSpeeds.lua`      |
+| MoreFluff            | `https://notmario.github.io/MoreFluff/`                    |
+| Seven Sins           | `AlexDavies8/balatro-mods`                                 |
+| Silver Seal          | `mwithington/SilverSeal`                                   |
+
+The repository and exact source-path checks are separate: the examples
+repository still exists, while those four files do not. A missing file does
+not hide other working mods in that repository. The app filters known missing
+sources from bundled data, old local caches, and successful README refreshes,
+so an upstream stale link cannot reappear through Refresh. Dead secondary
+links are also removed. Safety restrictions on withdrawn mods remain separate
+from source availability.
+
+To refresh the evidence and bundled index, run:
+
+```sh
+gh auth login # once, if needed
+bun scripts/refresh-catalog.ts
+```
+
+The refresh uses at most twelve concurrent requests. It reads the current
+README and a pinned primary-index tree, fetches each public repository's star
+count, and checks each source URL. Credentials are read from the existing
+GitHub CLI login, kept in memory, and sent only to `api.github.com`; they are
+never written into the data files. Missing checks are repeated before pruning.
+The script starts from the original README every time, allowing a restored
+public source to return after a successful check. Previously confirmed missing
+sources stay excluded during an uncertain follow-up check until accessibility
+is established. Review the changed JSON and this coverage report before
+committing an updated snapshot.
+
+`src/lib/data/repository-metadata.json` records the check timestamp, response
+status, GitHub canonical names and star counts, removed entry/source line
+evidence, and the primary tree revision
+`ee9c1d2dcc48530894ae61e007aa646289941f58`. Its 448 metadata files contained
+two invalid JSON records (`Khasm@Friends-of-Phoenix-Wright` and
+`Rageinater@Quality`), which were reported and skipped during repository
+extraction. The upstream primary index was not edited.
 
 ## Installation
 

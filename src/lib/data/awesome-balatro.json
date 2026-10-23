@@ -6,8 +6,8 @@
     "license": "CC0-1.0",
     "licenseUrl": "https://github.com/jie65535/awesome-balatro/blob/main/LICENSE",
     "revision": "1a0335a5834f3148cd24076983d65e6e2bd195c0",
-    "fetchedAt": "2026-10-23T00:00:00-04:00",
-    "entryCount": 325
+    "fetchedAt": "2026-10-23T22:08:54.857Z",
+    "entryCount": 314
   },
   "entries": [
     {
@@ -22,11 +22,15 @@
           "url": "https://github.com/sse2/balatro-ultimate-speedup-mod"
         }
       ],
-      "categories": ["Tools"],
+      "categories": [
+        "Tools"
+      ],
       "loader": "None",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [85]
+      "sourceLines": [
+        85
+      ]
     },
     {
       "id": "none-balamod-github-com-balamod-balamod",
@@ -40,11 +44,15 @@
           "url": "https://github.com/balamod/balamod"
         }
       ],
-      "categories": ["Mod Loaders"],
+      "categories": [
+        "Mod Loaders"
+      ],
       "loader": "None",
       "kind": "loader",
       "badges": [],
-      "sourceLines": [106]
+      "sourceLines": [
+        106
+      ]
     },
     {
       "id": "none-lovely-github-com-ethangreen-dev-lovely-injector",
@@ -58,11 +66,15 @@
           "url": "https://github.com/ethangreen-dev/lovely-injector"
         }
       ],
-      "categories": ["Mod Loaders"],
+      "categories": [
+        "Mod Loaders"
+      ],
       "loader": "None",
       "kind": "loader",
       "badges": [],
-      "sourceLines": [107]
+      "sourceLines": [
+        107
+      ]
     },
     {
       "id": "none-naneinf-github-com-3xplwastaken-naneinf-balatro-modloader",
@@ -76,11 +88,15 @@
           "url": "https://github.com/3XPLwastaken/naneINF-Balatro-Modloader"
         }
       ],
-      "categories": ["Mod Loaders"],
+      "categories": [
+        "Mod Loaders"
+      ],
       "loader": "None",
       "kind": "loader",
       "badges": [],
-      "sourceLines": [108]
+      "sourceLines": [
+        108
+      ]
     },
     {
       "id": "none-steamodded-github-com-steamopollys-steamodded",
@@ -94,11 +110,15 @@
           "url": "https://github.com/Steamopollys/Steamodded"
         }
       ],
-      "categories": ["Mod Loaders"],
+      "categories": [
+        "Mod Loaders"
+      ],
       "loader": "None",
       "kind": "loader",
       "badges": [],
-      "sourceLines": [109]
+      "sourceLines": [
+        109
+      ]
     },
     {
       "id": "steamodded-afterfiveapi-github-com-rakibryan-after-five-api",
@@ -112,16 +132,20 @@
           "url": "https://github.com/RakibRyan/After-Five-Api"
         }
       ],
-      "categories": ["API"],
+      "categories": [
+        "API"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "experimental smods v1.0.0",
           "url": "https://img.shields.io/badge/experimental-smods%20v1.0.0-blue"
         }
       ],
-      "sourceLines": [118]
+      "sourceLines": [
+        118
+      ]
     },
     {
       "id": "steamodded-balatrobot-github-com-besteon-balatrobot",
@@ -135,11 +159,15 @@
           "url": "https://github.com/besteon/balatrobot"
         }
       ],
-      "categories": ["API"],
+      "categories": [
+        "API"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [119]
+      "sourceLines": [
+        119
+      ]
     },
     {
       "id": "steamodded-enhanceapi-github-com-numbuh214-enhanceapi",
@@ -153,11 +181,15 @@
           "url": "https://github.com/Numbuh214/EnhanceAPI"
         }
       ],
-      "categories": ["API"],
+      "categories": [
+        "API"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [120]
+      "sourceLines": [
+        120
+      ]
     },
     {
       "id": "steamodded-federapi-github-com-itayfeder-federapi-balatro",
@@ -171,29 +203,15 @@
           "url": "https://github.com/itayfeder/FederAPI-Balatro"
         }
       ],
-      "categories": ["API"],
-      "loader": "Steamodded",
-      "kind": "mod",
-      "badges": [],
-      "sourceLines": [121]
-    },
-    {
-      "id": "steamodded-oddityapi-github-com-autumnmood924-autumnmoodmechanics",
-      "title": "OddityAPI",
-      "description": "Adds Oddities to the game as a concept. Doesn't add any content on its own.",
-      "author": "@AutumnMood",
-      "sourceUrl": "https://github.com/AutumnMood924/AutumnMoodMechanics",
-      "links": [
-        {
-          "label": "OddityAPI",
-          "url": "https://github.com/AutumnMood924/AutumnMoodMechanics"
-        }
+      "categories": [
+        "API"
       ],
-      "categories": ["API"],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [122]
+      "sourceLines": [
+        121
+      ]
     },
     {
       "id": "steamodded-soundutil-github-com-infarcactus-balatro-custom-sound-player",
@@ -207,11 +225,15 @@
           "url": "https://github.com/Infarcactus/Balatro-Custom-Sound-Player"
         }
       ],
-      "categories": ["API"],
+      "categories": [
+        "API"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [123]
+      "sourceLines": [
+        123
+      ]
     },
     {
       "id": "steamodded-mathblinds-github-com-bazinga9000-mathblinds",
@@ -229,20 +251,24 @@
           "url": "https://discord.com/channels/1116389027176787968/1245962046235873301"
         }
       ],
-      "categories": ["Blinds"],
+      "categories": [
+        "Blinds"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "needs api rewrite smods v0.9.2",
           "url": "https://img.shields.io/badge/needs%20api%20rewrite-smods%20v0.9.2-orange"
         },
         {
-          "label": "Status",
+          "label": "patch in works",
           "url": "https://img.shields.io/badge/patch%20in%20works-blueviolet"
         }
       ],
-      "sourceLines": [127]
+      "sourceLines": [
+        127
+      ]
     },
     {
       "id": "steamodded-finalboss-github-com-sirmaiquis-balatro-finalboss",
@@ -256,11 +282,15 @@
           "url": "https://github.com/SirMaiquis/Balatro-FinalBoss"
         }
       ],
-      "categories": ["Blinds"],
+      "categories": [
+        "Blinds"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [128]
+      "sourceLines": [
+        128
+      ]
     },
     {
       "id": "steamodded-1handyourejoking-discord-com-channels-1116389027176787968-1214857669932744714",
@@ -274,11 +304,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1214857669932744714"
         }
       ],
-      "categories": ["Challenges"],
+      "categories": [
+        "Challenges"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [133]
+      "sourceLines": [
+        133
+      ]
     },
     {
       "id": "steamodded-5legendarychallenges-github-com-betmma-my-balatro-mods",
@@ -292,11 +326,15 @@
           "url": "https://github.com/betmma/my_balatro_mods"
         }
       ],
-      "categories": ["Challenges"],
+      "categories": [
+        "Challenges"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [134]
+      "sourceLines": [
+        134
+      ]
     },
     {
       "id": "steamodded-feedthevampire-github-com-morpline-feedthevampire",
@@ -310,11 +348,15 @@
           "url": "https://github.com/morpline/FeedTheVampire"
         }
       ],
-      "categories": ["Challenges"],
+      "categories": [
+        "Challenges"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [135]
+      "sourceLines": [
+        135
+      ]
     },
     {
       "id": "steamodded-goldenchallenge-github-com-mysthaps-balatromods",
@@ -328,11 +370,15 @@
           "url": "https://github.com/Mysthaps/BalatroMods"
         }
       ],
-      "categories": ["Challenges"],
+      "categories": [
+        "Challenges"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [136]
+      "sourceLines": [
+        136
+      ]
     },
     {
       "id": "steamodded-riffraffling-github-com-uppedhealer8521-riff-raffling",
@@ -346,11 +392,15 @@
           "url": "https://github.com/UppedHealer8521/Riff-Raffling"
         }
       ],
-      "categories": ["Challenges"],
+      "categories": [
+        "Challenges"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [137]
+      "sourceLines": [
+        137
+      ]
     },
     {
       "id": "steamodded-stylishsleeveschallenge-github-com-aurelius7309-stylishsleeves",
@@ -364,11 +414,15 @@
           "url": "https://github.com/Aurelius7309/StylishSleeves"
         }
       ],
-      "categories": ["Challenges"],
+      "categories": [
+        "Challenges"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [138]
+      "sourceLines": [
+        138
+      ]
     },
     {
       "id": "steamodded-laststand-github-com-tucaonormal-laststand",
@@ -382,11 +436,15 @@
           "url": "https://github.com/Tucaonormal/LastStand"
         }
       ],
-      "categories": ["Challenges"],
+      "categories": [
+        "Challenges"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [139]
+      "sourceLines": [
+        139
+      ]
     },
     {
       "id": "steamodded-nihility-github-com-ascriptmaster-balatro-nihility",
@@ -400,11 +458,15 @@
           "url": "https://github.com/ascriptmaster/Balatro-Nihility"
         }
       ],
-      "categories": ["Challenges"],
+      "categories": [
+        "Challenges"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [140]
+      "sourceLines": [
+        140
+      ]
     },
     {
       "id": "steamodded-arachneisbalatromods-github-com-nicholassam6425-balatro-mods",
@@ -418,11 +480,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods"
         }
       ],
-      "categories": ["Collections"],
+      "categories": [
+        "Collections"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [144]
+      "sourceLines": [
+        144
+      ]
     },
     {
       "id": "steamodded-bunco-github-com-firch-bunco",
@@ -436,11 +502,15 @@
           "url": "https://github.com/Firch/Bunco"
         }
       ],
-      "categories": ["Collections"],
+      "categories": [
+        "Collections"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [145]
+      "sourceLines": [
+        145
+      ]
     },
     {
       "id": "steamodded-fortlatro-github-com-ericthetoon-fortlatro",
@@ -454,11 +524,15 @@
           "url": "https://github.com/EricTheToon/Fortlatro"
         }
       ],
-      "categories": ["Collections"],
+      "categories": [
+        "Collections"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [146]
+      "sourceLines": [
+        146
+      ]
     },
     {
       "id": "steamodded-mikasmodcollection-github-com-mikaschoenmakers-mikasbalatro",
@@ -472,11 +546,15 @@
           "url": "https://github.com/MikaSchoenmakers/MikasBalatro"
         }
       ],
-      "categories": ["Collections"],
+      "categories": [
+        "Collections"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [147]
+      "sourceLines": [
+        147
+      ]
     },
     {
       "id": "steamodded-mystsbalatromods-github-com-mysthaps-balatromods",
@@ -490,11 +568,15 @@
           "url": "https://github.com/Mysthaps/BalatroMods"
         }
       ],
-      "categories": ["Collections"],
+      "categories": [
+        "Collections"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [148]
+      "sourceLines": [
+        148
+      ]
     },
     {
       "id": "steamodded-sdm0sstuff-github-com-sdm0-sdm-0-s-stuff",
@@ -508,11 +590,15 @@
           "url": "https://github.com/SDM0/SDM_0-s-Stuff"
         }
       ],
-      "categories": ["Collections"],
+      "categories": [
+        "Collections"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [149]
+      "sourceLines": [
+        149
+      ]
     },
     {
       "id": "steamodded-sylviessilliness-github-com-newtthefish-sylviesilly",
@@ -526,11 +612,17 @@
           "url": "https://github.com/NewtTheFish/SylvieSilly"
         }
       ],
-      "categories": ["Collections", "Decks"],
+      "categories": [
+        "Collections",
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [150, 199]
+      "sourceLines": [
+        150,
+        199
+      ]
     },
     {
       "id": "steamodded-tetrapak-tetraminus-github-io-tetrapakwebsite",
@@ -544,11 +636,15 @@
           "url": "https://tetraminus.github.io/TetrapakWebsite/"
         }
       ],
-      "categories": ["Collections"],
+      "categories": [
+        "Collections"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [151]
+      "sourceLines": [
+        151
+      ]
     },
     {
       "id": "steamodded-wiwiwebsbalatromods-github-com-wiwiweb-balatromods",
@@ -562,11 +658,15 @@
           "url": "https://github.com/Wiwiweb/BalatroMods"
         }
       ],
-      "categories": ["Collections"],
+      "categories": [
+        "Collections"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [152]
+      "sourceLines": [
+        152
+      ]
     },
     {
       "id": "steamodded-codexarcanum-github-com-itayfeder-codex-arcanum",
@@ -580,16 +680,20 @@
           "url": "https://github.com/itayfeder/Codex-Arcanum"
         }
       ],
-      "categories": ["Consumable cards"],
+      "categories": [
+        "Consumable cards"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "occasional crashes smods v0.9.8",
           "url": "https://img.shields.io/badge/occasional%20crashes-smods%20v0.9.8-orange"
         }
       ],
-      "sourceLines": [156]
+      "sourceLines": [
+        156
+      ]
     },
     {
       "id": "steamodded-deluxeconsumablescards-github-com-jeffvi-dx-tarots",
@@ -603,11 +707,15 @@
           "url": "https://github.com/JeffVi/DX-Tarots"
         }
       ],
-      "categories": ["Consumable cards"],
+      "categories": [
+        "Consumable cards"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [157]
+      "sourceLines": [
+        157
+      ]
     },
     {
       "id": "steamodded-reduxarcanum-github-com-jumbocarrot0-redux-arcanum",
@@ -621,52 +729,20 @@
           "url": "https://github.com/jumbocarrot0/Redux-Arcanum"
         }
       ],
-      "categories": ["Consumable cards"],
+      "categories": [
+        "Consumable cards"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "occasional crashes smods v0.9.8",
           "url": "https://img.shields.io/badge/occasional%20crashes-smods%20v0.9.8-orange"
         }
       ],
-      "sourceLines": [158]
-    },
-    {
-      "id": "steamodded-theautumncircus-github-com-autumnmood924-theautumncircus",
-      "title": "The Autumn Circus",
-      "description": "A modularized Balatro mod adding a variety of content!",
-      "author": "AutumnMood",
-      "sourceUrl": "https://github.com/AutumnMood924/TheAutumnCircus",
-      "links": [
-        {
-          "label": "The Autumn Circus",
-          "url": "https://github.com/AutumnMood924/TheAutumnCircus"
-        }
-      ],
-      "categories": ["Consumable cards"],
-      "loader": "Steamodded",
-      "kind": "mod",
-      "badges": [],
-      "sourceLines": [159]
-    },
-    {
-      "id": "steamodded-absolutedeck-github-com-steamodded-examples-blob-master-mods-absolutedeck-lua",
-      "title": "Absolute Deck",
-      "description": "Absolute Deck of PolyGlass!",
-      "author": "@Steamo",
-      "sourceUrl": "https://github.com/Steamodded/examples/blob/master/Mods/AbsoluteDeck.lua",
-      "links": [
-        {
-          "label": "Absolute Deck",
-          "url": "https://github.com/Steamodded/examples/blob/master/Mods/AbsoluteDeck.lua"
-        }
-      ],
-      "categories": ["Decks"],
-      "loader": "Steamodded",
-      "kind": "mod",
-      "badges": [],
-      "sourceLines": [163]
+      "sourceLines": [
+        158
+      ]
     },
     {
       "id": "steamodded-aceinthehole-discord-com-channels-1116389027176787968-1215144701586575360",
@@ -680,11 +756,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1215144701586575360"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [164]
+      "sourceLines": [
+        164
+      ]
     },
     {
       "id": "steamodded-astronomerdeck-discord-com-channels-1116389027176787968-1215091624829517876",
@@ -698,11 +778,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1215091624829517876"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [165]
+      "sourceLines": [
+        165
+      ]
     },
     {
       "id": "steamodded-borroweddeck-discord-com-channels-1116389027176787968-1213054535334109184",
@@ -716,11 +800,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1213054535334109184"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [166]
+      "sourceLines": [
+        166
+      ]
     },
     {
       "id": "steamodded-dealersdiscountdeck-discord-com-channels-1116389027176787968-1214695661094572092",
@@ -734,11 +822,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1214695661094572092"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [167]
+      "sourceLines": [
+        167
+      ]
     },
     {
       "id": "steamodded-deckinversionchallengekonfiguration-github-com-tgreenmonkey-deck-inversion-challenge-konfiguration",
@@ -752,29 +844,15 @@
           "url": "https://github.com/tgreenmonkey/Deck-Inversion-Challenge-Konfiguration"
         }
       ],
-      "categories": ["Decks"],
-      "loader": "Steamodded",
-      "kind": "mod",
-      "badges": [],
-      "sourceLines": [168]
-    },
-    {
-      "id": "steamodded-deckof4-github-com-steamodded-examples-blob-master-mods-deckof4s-lua",
-      "title": "Deck of 4",
-      "description": "Create a special deck that only contains 4s!",
-      "author": "@Steamo",
-      "sourceUrl": "https://github.com/Steamodded/examples/blob/master/Mods/DeckOf4s.lua",
-      "links": [
-        {
-          "label": "Deck of 4",
-          "url": "https://github.com/Steamodded/examples/blob/master/Mods/DeckOf4s.lua"
-        }
+      "categories": [
+        "Decks"
       ],
-      "categories": ["Decks"],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [169]
+      "sourceLines": [
+        168
+      ]
     },
     {
       "id": "steamodded-deckof8-discord-com-channels-1116389027176787968-1220733310360359033",
@@ -788,11 +866,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1220733310360359033"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [170]
+      "sourceLines": [
+        170
+      ]
     },
     {
       "id": "steamodded-dicedeck-discord-com-channels-1116389027176787968-1213040102138323024",
@@ -806,11 +888,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1213040102138323024"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [171]
+      "sourceLines": [
+        171
+      ]
     },
     {
       "id": "steamodded-dnasplicedeck-github-com-jlwoolf-dnasplice",
@@ -824,11 +910,15 @@
           "url": "https://github.com/jlwoolf/DNASplice"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [172]
+      "sourceLines": [
+        172
+      ]
     },
     {
       "id": "steamodded-doubledecker-discord-com-channels-1116389027176787968-1246280922412744774",
@@ -842,11 +932,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1246280922412744774"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [173]
+      "sourceLines": [
+        173
+      ]
     },
     {
       "id": "steamodded-dynamicdeck-discord-com-channels-1116389027176787968-1211776677584175125",
@@ -860,11 +954,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1211776677584175125"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [174]
+      "sourceLines": [
+        174
+      ]
     },
     {
       "id": "steamodded-easystartdeck-discord-com-channels-1116389027176787968-1215120640563089470",
@@ -878,11 +976,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1215120640563089470"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [175]
+      "sourceLines": [
+        175
+      ]
     },
     {
       "id": "steamodded-eccentricdeck-github-com-mojimoon-mojibalatro-blob-main-eccentricdeck-eccentricdeck-lua",
@@ -896,11 +998,15 @@
           "url": "https://github.com/mojimoon/MojiBalatro/blob/main/EccentricDeck/EccentricDeck.lua"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [176]
+      "sourceLines": [
+        176
+      ]
     },
     {
       "id": "steamodded-enchanteddeck-github-com-encarvlucas-encarvlucasbalatromods",
@@ -914,11 +1020,15 @@
           "url": "https://github.com/encarvlucas/EncarvlucasBalatroMods"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [177]
+      "sourceLines": [
+        177
+      ]
     },
     {
       "id": "steamodded-expansiondeck-discord-com-channels-1116389027176787968-1213521072591208548",
@@ -932,11 +1042,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1213521072591208548"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [178]
+      "sourceLines": [
+        178
+      ]
     },
     {
       "id": "steamodded-foileddeck-discord-com-channels-1116389027176787968-1220733310360359033-1221074837343305789",
@@ -950,11 +1064,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1220733310360359033/1221074837343305789"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [179]
+      "sourceLines": [
+        179
+      ]
     },
     {
       "id": "steamodded-foiledwilddeck-discord-com-channels-1116389027176787968-1220733310360359033-1221782780157886484",
@@ -968,11 +1086,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1220733310360359033/1221782780157886484"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [180]
+      "sourceLines": [
+        180
+      ]
     },
     {
       "id": "steamodded-frenchtarotcavaliercard-github-com-desmero-frenchtarotcavaliercard",
@@ -986,11 +1108,15 @@
           "url": "https://github.com/Desmero/FrenchTarotCavalierCard"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [181]
+      "sourceLines": [
+        181
+      ]
     },
     {
       "id": "steamodded-gimmickydeckspack-discord-com-channels-1116389027176787968-1215786968433164328",
@@ -1004,11 +1130,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1215786968433164328"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [182]
+      "sourceLines": [
+        182
+      ]
     },
     {
       "id": "steamodded-jokerdeck-discord-com-channels-1116389027176787968-1215786968433164328",
@@ -1022,11 +1152,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1215786968433164328"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [183],
+      "sourceLines": [
+        183
+      ],
       "parentTitle": "Gimmicky decks pack"
     },
     {
@@ -1041,11 +1175,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1215786968433164328"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [184],
+      "sourceLines": [
+        184
+      ],
       "parentTitle": "Gimmicky decks pack"
     },
     {
@@ -1060,11 +1198,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1215786968433164328"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [185],
+      "sourceLines": [
+        185
+      ],
       "parentTitle": "Gimmicky decks pack"
     },
     {
@@ -1079,11 +1221,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1215786968433164328"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [186],
+      "sourceLines": [
+        186
+      ],
       "parentTitle": "Gimmicky decks pack"
     },
     {
@@ -1098,11 +1244,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1215786968433164328"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [187],
+      "sourceLines": [
+        187
+      ],
       "parentTitle": "Gimmicky decks pack"
     },
     {
@@ -1117,11 +1267,15 @@
           "url": "https://github.com/Ken-Shi/Balatro_HighCardMod"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [188]
+      "sourceLines": [
+        188
+      ]
     },
     {
       "id": "steamodded-jokeronlydeck-github-com-mojimoon-mojibalatro-blob-main-jokeronlydeck-jokeronlydeck-lua",
@@ -1135,11 +1289,15 @@
           "url": "https://github.com/mojimoon/MojiBalatro/blob/main/JokerOnlyDeck/JokerOnlyDeck.lua"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [189]
+      "sourceLines": [
+        189
+      ]
     },
     {
       "id": "steamodded-legendarydeck-discord-com-channels-1116389027176787968-1215385607686066287",
@@ -1153,11 +1311,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1215385607686066287"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [190]
+      "sourceLines": [
+        190
+      ]
     },
     {
       "id": "steamodded-meshdeck-discord-com-channels-1116389027176787968-1230941930288844891",
@@ -1171,11 +1333,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1230941930288844891"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [191]
+      "sourceLines": [
+        191
+      ]
     },
     {
       "id": "steamodded-numberdeck-discord-com-channels-1116389027176787968-1229482445074857996",
@@ -1189,11 +1355,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1229482445074857996"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [192]
+      "sourceLines": [
+        192
+      ]
     },
     {
       "id": "steamodded-pactdeck-discord-com-channels-1116389027176787968-1212584088968368208",
@@ -1207,11 +1377,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1212584088968368208"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [193]
+      "sourceLines": [
+        193
+      ]
     },
     {
       "id": "steamodded-pauperdeck-github-com-aiksilotl-pauper-deck",
@@ -1225,11 +1399,15 @@
           "url": "https://github.com/AiksiLotl/Pauper-Deck"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [194]
+      "sourceLines": [
+        194
+      ]
     },
     {
       "id": "steamodded-randomizerdeck-github-com-hellyom-hellyombalatromods",
@@ -1243,11 +1421,15 @@
           "url": "https://github.com/Hellyom/HellyomBalatroMods"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [195]
+      "sourceLines": [
+        195
+      ]
     },
     {
       "id": "steamodded-royaldeck-discord-com-channels-1116389027176787968-1215417507440107540",
@@ -1261,11 +1443,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1215417507440107540"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [196]
+      "sourceLines": [
+        196
+      ]
     },
     {
       "id": "steamodded-scrapdeck-discord-com-channels-1116389027176787968-1212307751980498975",
@@ -1279,11 +1465,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1212307751980498975"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [197]
+      "sourceLines": [
+        197
+      ]
     },
     {
       "id": "steamodded-smallworlddeck-github-com-jacksoncmu-smallworld-deck-balatro",
@@ -1297,11 +1487,15 @@
           "url": "https://github.com/jacksoncmu/smallworld-deck-balatro"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [198]
+      "sourceLines": [
+        198
+      ]
     },
     {
       "id": "steamodded-lemonlimedeck-github-com-newtthefish-sylviesilly",
@@ -1315,11 +1509,15 @@
           "url": "https://github.com/NewtTheFish/SylvieSilly"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [200],
+      "sourceLines": [
+        200
+      ],
       "parentTitle": "Sylvie's Silliness"
     },
     {
@@ -1334,11 +1532,15 @@
           "url": "https://github.com/NewtTheFish/SylvieSilly"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [201],
+      "sourceLines": [
+        201
+      ],
       "parentTitle": "Sylvie's Silliness"
     },
     {
@@ -1353,11 +1555,15 @@
           "url": "https://github.com/NewtTheFish/SylvieSilly"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [202],
+      "sourceLines": [
+        202
+      ],
       "parentTitle": "Sylvie's Silliness"
     },
     {
@@ -1372,11 +1578,15 @@
           "url": "https://github.com/NewtTheFish/SylvieSilly"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [203],
+      "sourceLines": [
+        203
+      ],
       "parentTitle": "Sylvie's Silliness"
     },
     {
@@ -1391,29 +1601,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1221088657251897344"
         }
       ],
-      "categories": ["Decks"],
-      "loader": "Steamodded",
-      "kind": "mod",
-      "badges": [],
-      "sourceLines": [204]
-    },
-    {
-      "id": "steamodded-ultimaterandomdeck-github-com-steamodded-examples-blob-master-mods-ultimaterandom-lua",
-      "title": "Ultimate Random Deck",
-      "description": "Ultimate Random Deck!",
-      "author": "@Steamo",
-      "sourceUrl": "https://github.com/Steamodded/examples/blob/master/Mods/UltimateRandom.lua",
-      "links": [
-        {
-          "label": "Ultimate Random Deck",
-          "url": "https://github.com/Steamodded/examples/blob/master/Mods/UltimateRandom.lua"
-        }
+      "categories": [
+        "Decks"
       ],
-      "categories": ["Decks"],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [205]
+      "sourceLines": [
+        204
+      ]
     },
     {
       "id": "steamodded-voucherdeck-discord-com-channels-1116389027176787968-1212498071649521694",
@@ -1427,11 +1623,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1212498071649521694"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [206]
+      "sourceLines": [
+        206
+      ]
     },
     {
       "id": "steamodded-wilddeck-discord-com-channels-1116389027176787968-1220733310360359033-1220733397899542630",
@@ -1445,11 +1645,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1220733310360359033/1220733397899542630"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [207]
+      "sourceLines": [
+        207
+      ]
     },
     {
       "id": "steamodded-xcard-github-com-numbuh214-x-card",
@@ -1467,11 +1671,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1231769435749220362"
         }
       ],
-      "categories": ["Enhancements"],
+      "categories": [
+        "Enhancements"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [211]
+      "sourceLines": [
+        211
+      ]
     },
     {
       "id": "steamodded-goldscards-github-com-goldfighter5-golds-cards",
@@ -1485,16 +1693,20 @@
           "url": "https://github.com/Goldfighter5/Golds-Cards"
         }
       ],
-      "categories": ["Enhancements"],
+      "categories": [
+        "Enhancements"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [212]
+      "sourceLines": [
+        212
+      ]
     },
     {
       "id": "steamodded-1shopslotforhighstakes-github-com-encarvlucas-encarvlucasbalatromods",
@@ -1508,11 +1720,15 @@
           "url": "https://github.com/encarvlucas/EncarvlucasBalatroMods"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [216]
+      "sourceLines": [
+        216
+      ]
     },
     {
       "id": "steamodded-add1shoptoeveryrun-github-com-encarvlucas-encarvlucasbalatromods",
@@ -1526,11 +1742,15 @@
           "url": "https://github.com/encarvlucas/EncarvlucasBalatroMods"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [217]
+      "sourceLines": [
+        217
+      ]
     },
     {
       "id": "steamodded-alwaysshowseedrekindled-github-com-rakibryan-always-show-seed-rekindled-balatro",
@@ -1544,16 +1764,20 @@
           "url": "https://github.com/RakibRyan/always-show-seed-rekindled-balatro"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [218]
+      "sourceLines": [
+        218
+      ]
     },
     {
       "id": "steamodded-aurinko-github-com-mathisfun0-jensbalatrocollection-tree-main-aurinko",
@@ -1567,16 +1791,20 @@
           "url": "https://github.com/MathIsFun0/JensBalatroCollection/tree/main/Aurinko"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [219]
+      "sourceLines": [
+        219
+      ]
     },
     {
       "id": "steamodded-balatroquickload-github-com-tsunamiinfantasy-balatroquickload",
@@ -1590,11 +1818,15 @@
           "url": "https://github.com/TsunamiinFantasy/BalatroQuickLoad"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [220]
+      "sourceLines": [
+        220
+      ]
     },
     {
       "id": "steamodded-betterbalatro-discord-com-channels-1116389027176787968-1223603584285937774",
@@ -1608,11 +1840,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1223603584285937774"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [221]
+      "sourceLines": [
+        221
+      ]
     },
     {
       "id": "steamodded-bettermouseandgamepad-github-com-kooluve-better-mouse-and-gamepad",
@@ -1626,11 +1862,15 @@
           "url": "https://github.com/Kooluve/Better-Mouse-And-Gamepad"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [222]
+      "sourceLines": [
+        222
+      ]
     },
     {
       "id": "steamodded-betterstakes-github-com-kjossul-betterstakes",
@@ -1644,11 +1884,15 @@
           "url": "https://github.com/kjossul/BetterStakes"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [223]
+      "sourceLines": [
+        223
+      ]
     },
     {
       "id": "steamodded-cardsleeves-github-com-larswijn-cardsleeves",
@@ -1662,11 +1906,15 @@
           "url": "https://github.com/larswijn/CardSleeves"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [224]
+      "sourceLines": [
+        224
+      ]
     },
     {
       "id": "steamodded-choosefirstshopjoker-www-nexusmods-com-balatro-mods-11",
@@ -1680,11 +1928,15 @@
           "url": "https://www.nexusmods.com/balatro/mods/11/"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [225]
+      "sourceLines": [
+        225
+      ]
     },
     {
       "id": "steamodded-collectionfix-github-com-goldenepsilon-balatro-collectionfix",
@@ -1698,11 +1950,15 @@
           "url": "https://github.com/GoldenEpsilon/Balatro_CollectionFix"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [226]
+      "sourceLines": [
+        226
+      ]
     },
     {
       "id": "steamodded-debugmenu-discord-com-channels-1116389027176787968-1209857245316255744",
@@ -1716,11 +1972,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1209857245316255744"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [227]
+      "sourceLines": [
+        227
+      ]
     },
     {
       "id": "steamodded-disableverdantleaf-github-com-v-rtualized-disableverdantleaf",
@@ -1734,11 +1994,15 @@
           "url": "https://github.com/V-rtualized/DisableVerdantLeaf"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [228]
+      "sourceLines": [
+        228
+      ]
     },
     {
       "id": "steamodded-fasterstakesunlock-github-com-wiwiweb-balatromods-blob-main-fasterstakesunlock-lua",
@@ -1752,11 +2016,15 @@
           "url": "https://github.com/Wiwiweb/BalatroMods/blob/main/FasterStakesUnlock.lua"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [229]
+      "sourceLines": [
+        229
+      ]
     },
     {
       "id": "steamodded-flushhotkeys-github-com-agoraaa-flushhotkeys",
@@ -1770,11 +2038,15 @@
           "url": "https://github.com/Agoraaa/FlushHotkeys"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [230]
+      "sourceLines": [
+        230
+      ]
     },
     {
       "id": "steamodded-freereroll-discord-com-channels-1116389027176787968-1215870212847698020",
@@ -1788,11 +2060,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1215870212847698020"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [231]
+      "sourceLines": [
+        231
+      ]
     },
     {
       "id": "steamodded-gamespeeddisplayandspacereroll-github-com-snowylight-gamespeed-display-and-spacereroll",
@@ -1806,11 +2082,15 @@
           "url": "https://github.com/snowylight/GameSpeed-Display-and-Spacereroll"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [232]
+      "sourceLines": [
+        232
+      ]
     },
     {
       "id": "steamodded-handofsixsmods-github-com-rakibryan-hand-of-six-smods",
@@ -1824,16 +2104,20 @@
           "url": "https://github.com/RakibRyan/Hand-of-six-smods"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "experimental smods v1.0.0",
           "url": "https://img.shields.io/badge/experimental-smods%20v1.0.0-blue"
         }
       ],
-      "sourceLines": [233]
+      "sourceLines": [
+        233
+      ]
     },
     {
       "id": "steamodded-hermitlevelup-www-nexusmods-com-balatro-mods-331",
@@ -1851,16 +2135,20 @@
           "url": "https://github.com/LnxFCA/balatro-mods/tree/main/hermit-level-up"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "partial mod conflict smods v1.0.0",
           "url": "https://img.shields.io/badge/partial%20mod%20conflict-smods%20v1.0.0-yellow"
         }
       ],
-      "sourceLines": [235]
+      "sourceLines": [
+        235
+      ]
     },
     {
       "id": "steamodded-hotkeyscollection-github-com-dorkdad141-keyboard-shortcuts",
@@ -1874,11 +2162,15 @@
           "url": "https://github.com/DorkDad141/keyboard-shortcuts"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [237]
+      "sourceLines": [
+        237
+      ]
     },
     {
       "id": "steamodded-houserules-github-com-mysthaps-balatromods",
@@ -1892,11 +2184,15 @@
           "url": "https://github.com/Mysthaps/BalatroMods"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [238]
+      "sourceLines": [
+        238
+      ]
     },
     {
       "id": "steamodded-increaseshopsize-discord-com-channels-1116389027176787968-1217062797167427624",
@@ -1910,11 +2206,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1217062797167427624"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [239]
+      "sourceLines": [
+        239
+      ]
     },
     {
       "id": "steamodded-increasejokercap-github-com-akitaattribute-increasejokercap",
@@ -1928,16 +2228,20 @@
           "url": "https://github.com/AkitaAttribute/IncreaseJokerCap"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [240]
+      "sourceLines": [
+        240
+      ]
     },
     {
       "id": "steamodded-increasesoulprobability-github-com-akitaattribute-increasesoulprobability",
@@ -1951,11 +2255,15 @@
           "url": "https://github.com/AkitaAttribute/IncreaseSoulProbability"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [242]
+      "sourceLines": [
+        242
+      ]
     },
     {
       "id": "steamodded-infintescore-github-com-jamesthejellyfish-infinitescoremod",
@@ -1969,34 +2277,20 @@
           "url": "https://github.com/jamesthejellyfish/InfiniteScoreMod"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "needs api rewrite smods v0.7.2",
           "url": "https://img.shields.io/badge/needs%20api%20rewrite-smods%20v0.7.2-orange"
         }
       ],
-      "sourceLines": [243]
-    },
-    {
-      "id": "steamodded-jimbostats-github-com-jimbostats-jimbo-stats-mod",
-      "title": "JimboStats",
-      "description": "Automatic Run History Tracking Platform.",
-      "author": "@demarcot, @AxBolduc, @mwithington",
-      "sourceUrl": "https://github.com/JimboStats/jimbo-stats-mod",
-      "links": [
-        {
-          "label": "JimboStats",
-          "url": "https://github.com/JimboStats/jimbo-stats-mod"
-        }
-      ],
-      "categories": ["Functionality"],
-      "loader": "Steamodded",
-      "kind": "mod",
-      "badges": [],
-      "sourceLines": [244]
+      "sourceLines": [
+        243
+      ]
     },
     {
       "id": "steamodded-jojostarots-www-nexusmods-com-balatro-mods-13",
@@ -2010,11 +2304,15 @@
           "url": "https://www.nexusmods.com/balatro/mods/13"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [245]
+      "sourceLines": [
+        245
+      ]
     },
     {
       "id": "steamodded-lockthedeal-github-com-lnxfca-balatro-mods-tree-main-lock-the-deal",
@@ -2028,16 +2326,20 @@
           "url": "https://github.com/LnxFCA/balatro-mods/tree/main/lock-the-deal"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [246]
+      "sourceLines": [
+        246
+      ]
     },
     {
       "id": "steamodded-masquerade-github-com-amvoled-masquerade",
@@ -2051,11 +2353,15 @@
           "url": "https://github.com/Amvoled/Masquerade"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [247]
+      "sourceLines": [
+        247
+      ]
     },
     {
       "id": "steamodded-metalcardfallingsoundeffect-github-com-muddieee-metal-card-falling",
@@ -2069,11 +2375,15 @@
           "url": "https://github.com/Muddieee/metal_card_falling"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [248]
+      "sourceLines": [
+        248
+      ]
     },
     {
       "id": "steamodded-milckqol-github-com-mi1ck-milcks-qol",
@@ -2087,11 +2397,15 @@
           "url": "https://github.com/Mi1cK/Milcks-QOL"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [249]
+      "sourceLines": [
+        249
+      ]
     },
     {
       "id": "steamodded-neowblessings-github-com-kjossul-neowblessings",
@@ -2105,11 +2419,15 @@
           "url": "https://github.com/kjossul/NeowBlessings"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [250]
+      "sourceLines": [
+        250
+      ]
     },
     {
       "id": "steamodded-quickrestart-github-com-nicholassam6425-balatro-mods-blob-main-steamodded-mods-quickrestart-steamodded-lua",
@@ -2123,11 +2441,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods/blob/main/steamodded/mods/quickrestart_steamodded.lua"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [251]
+      "sourceLines": [
+        251
+      ]
     },
     {
       "id": "steamodded-randomsprite-github-com-mysthaps-balatromods",
@@ -2141,11 +2463,15 @@
           "url": "https://github.com/Mysthaps/BalatroMods"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [252]
+      "sourceLines": [
+        252
+      ]
     },
     {
       "id": "steamodded-replacejokers-github-com-akitaattribute-replacejokers",
@@ -2159,11 +2485,15 @@
           "url": "https://github.com/AkitaAttribute/ReplaceJokers"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [253]
+      "sourceLines": [
+        253
+      ]
     },
     {
       "id": "steamodded-rerollpacks-github-com-dorkdad141-balatro-blob-main-rerollpacks-lua",
@@ -2177,11 +2507,15 @@
           "url": "https://github.com/DorkDad141/balatro/blob/main/RerollPacks.lua"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [254]
+      "sourceLines": [
+        254
+      ]
     },
     {
       "id": "steamodded-robosorting-discord-com-channels-1116389027176787968-1248493580537040917",
@@ -2195,11 +2529,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1248493580537040917"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [255]
+      "sourceLines": [
+        255
+      ]
     },
     {
       "id": "steamodded-rumble-github-com-wilsonthewolf-balatro-mods-tree-master-steamodded-rumble",
@@ -2213,11 +2551,15 @@
           "url": "https://github.com/WilsontheWolf/balatro-mods/tree/master/steamodded/Rumble"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [256]
+      "sourceLines": [
+        256
+      ]
     },
     {
       "id": "steamodded-saturn-github-com-oceanramen-saturn",
@@ -2231,11 +2573,15 @@
           "url": "https://github.com/OceanRamen/Saturn"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [257]
+      "sourceLines": [
+        257
+      ]
     },
     {
       "id": "steamodded-seedchallenges-gist-github-com-n4ru-885293b844f27e7c90705e4cca9c0f3f",
@@ -2249,11 +2595,15 @@
           "url": "https://gist.github.com/n4ru/885293b844f27e7c90705e4cca9c0f3f"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [258]
+      "sourceLines": [
+        258
+      ]
     },
     {
       "id": "steamodded-seedpersistence-gist-github-com-n4ru-4ab14a6c9fd13e79e2f3bc8715e1a079",
@@ -2267,11 +2617,15 @@
           "url": "https://gist.github.com/n4ru/4ab14a6c9fd13e79e2f3bc8715e1a079"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [259]
+      "sourceLines": [
+        259
+      ]
     },
     {
       "id": "steamodded-setseedachievementsbypass-www-nexusmods-com-balatro-mods-5",
@@ -2285,16 +2639,20 @@
           "url": "https://www.nexusmods.com/balatro/mods/5"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "use Smods smods v1.0.0",
           "url": "https://img.shields.io/badge/use%20Smods-smods%20v1.0.0-lightgrey"
         }
       ],
-      "sourceLines": [260]
+      "sourceLines": [
+        260
+      ]
     },
     {
       "id": "steamodded-slowerscalingante-www-nexusmods-com-balatro-mods-7",
@@ -2308,16 +2666,20 @@
           "url": "https://www.nexusmods.com/balatro/mods/7/"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [261]
+      "sourceLines": [
+        261
+      ]
     },
     {
       "id": "steamodded-stickersalwaysshown-github-com-sirmaiquis-balatro-stickers-always-shown",
@@ -2331,11 +2693,15 @@
           "url": "https://github.com/SirMaiquis/Balatro-Stickers-Always-Shown"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [263]
+      "sourceLines": [
+        263
+      ]
     },
     {
       "id": "steamodded-survivalmode-github-com-aurelius7309-survival",
@@ -2349,11 +2715,15 @@
           "url": "https://github.com/Aurelius7309/Survival"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [264]
+      "sourceLines": [
+        264
+      ]
     },
     {
       "id": "steamodded-ultrahand-github-com-xioxin-balatromods",
@@ -2367,11 +2737,15 @@
           "url": "https://github.com/xioxin/BalatroMods"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [265]
+      "sourceLines": [
+        265
+      ]
     },
     {
       "id": "steamodded-balatrohandpreview-github-com-toeler-balatro-handpreview",
@@ -2385,16 +2759,20 @@
           "url": "https://github.com/Toeler/Balatro-HandPreview"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "not mobile compatible smods v1.0.0",
           "url": "https://img.shields.io/badge/not%20mobile%20compatible-smods%20v1.0.0-lightgrey"
         }
       ],
-      "sourceLines": [269]
+      "sourceLines": [
+        269
+      ]
     },
     {
       "id": "steamodded-balatrohandpreviewru-github-com-zarenoff-balatro-handpreview-ru",
@@ -2408,11 +2786,15 @@
           "url": "https://github.com/ZarenOFF/Balatro-HandPreview-RU"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [270]
+      "sourceLines": [
+        270
+      ]
     },
     {
       "id": "steamodded-balatrosafety-github-com-zei33-balatro-safety-steamodded",
@@ -2426,11 +2808,15 @@
           "url": "https://github.com/Zei33/balatro-safety-steamodded"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [271]
+      "sourceLines": [
+        271
+      ]
     },
     {
       "id": "steamodded-balatrostats-github-com-jagodben-balatro-record-stats-mod",
@@ -2444,11 +2830,15 @@
           "url": "https://github.com/jagodben/Balatro-Record-Stats-Mod"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [272]
+      "sourceLines": [
+        272
+      ]
     },
     {
       "id": "steamodded-balatroverlay-github-com-cantlookback-balatroverlay",
@@ -2462,11 +2852,15 @@
           "url": "https://github.com/cantlookback/BalatrOverlay"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [273]
+      "sourceLines": [
+        273
+      ]
     },
     {
       "id": "steamodded-brainstormrerollbutton-github-com-jdbye-balatromods-blob-main-brainstormrerollbutton-lua",
@@ -2480,11 +2874,15 @@
           "url": "https://github.com/Jdbye/BalatroMods/blob/main/BrainstormRerollButton.lua"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [274]
+      "sourceLines": [
+        274
+      ]
     },
     {
       "id": "steamodded-colourselector-github-com-emperorgesar-balatro-colour-selector",
@@ -2498,11 +2896,15 @@
           "url": "https://github.com/EmperorGesar/Balatro-Colour-Selector"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [275]
+      "sourceLines": [
+        275
+      ]
     },
     {
       "id": "steamodded-customfonts-discord-com-channels-1116389027176787968-1210101577550008390",
@@ -2516,11 +2918,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1210101577550008390"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [276]
+      "sourceLines": [
+        276
+      ]
     },
     {
       "id": "steamodded-deckcreator-github-com-adambennett-balatro-deckcreator",
@@ -2534,11 +2940,15 @@
           "url": "https://github.com/adambennett/Balatro-DeckCreator"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [277]
+      "sourceLines": [
+        277
+      ]
     },
     {
       "id": "steamodded-deckseer-gist-github-com-thevdude-c8d33960f869207da4a69cc7c035e68d",
@@ -2552,11 +2962,15 @@
           "url": "https://gist.github.com/theVDude/c8d33960f869207da4a69cc7c035e68d"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [278]
+      "sourceLines": [
+        278
+      ]
     },
     {
       "id": "steamodded-deselectall-github-com-zei33-deselect-all-steamodded",
@@ -2570,16 +2984,20 @@
           "url": "https://github.com/Zei33/deselect-all-steamodded"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [279]
+      "sourceLines": [
+        279
+      ]
     },
     {
       "id": "steamodded-divvyshistory-github-com-divvycr-balatro-history",
@@ -2593,16 +3011,20 @@
           "url": "https://github.com/DivvyCr/Balatro-History"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "partial mod conflict smods v1.0.0",
           "url": "https://img.shields.io/badge/partial%20mod%20conflict-smods%20v1.0.0-yellow"
         }
       ],
-      "sourceLines": [280]
+      "sourceLines": [
+        280
+      ]
     },
     {
       "id": "steamodded-divvyspreview-github-com-divvycr-balatro-preview",
@@ -2616,16 +3038,20 @@
           "url": "https://github.com/DivvyCr/Balatro-Preview"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "partial mod conflict smods v1.0.0",
           "url": "https://img.shields.io/badge/partial%20mod%20conflict-smods%20v1.0.0-yellow"
         }
       ],
-      "sourceLines": [281]
+      "sourceLines": [
+        281
+      ]
     },
     {
       "id": "steamodded-exitbutton-github-com-rakibryan-exit-button-rekindled-balatro",
@@ -2639,16 +3065,20 @@
           "url": "https://github.com/RakibRyan/exit-button-rekindled-balatro/"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [282]
+      "sourceLines": [
+        282
+      ]
     },
     {
       "id": "steamodded-foldbutton-github-com-happinyz-balatrofoldbutton",
@@ -2662,16 +3092,20 @@
           "url": "https://github.com/happinyz/BalatroFoldButton"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [283]
+      "sourceLines": [
+        283
+      ]
     },
     {
       "id": "steamodded-gaymod-github-com-fosterbarnes-balatrogaypenis",
@@ -2685,11 +3119,15 @@
           "url": "https://github.com/fosterbarnes/balatroGayPenis"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [284]
+      "sourceLines": [
+        284
+      ]
     },
     {
       "id": "steamodded-hitboxes-discord-com-channels-1116389027176787968-1209857245316255744",
@@ -2703,11 +3141,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1209857245316255744"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [285]
+      "sourceLines": [
+        285
+      ]
     },
     {
       "id": "steamodded-holdforfinalhandscore-github-com-wiwiweb-balatromods-blob-main-holdforfinalhandscore-lua",
@@ -2721,43 +3163,20 @@
           "url": "https://github.com/Wiwiweb/BalatroMods/blob/main/HoldForFinalHandScore.lua"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "buggy smods v0.9.8",
           "url": "https://img.shields.io/badge/buggy-smods%20v0.9.8-yellow"
         }
       ],
-      "sourceLines": [286]
-    },
-    {
-      "id": "steamodded-incantation-github-com-jenwalter666-jensbalatrocollection-tree-main-incantation",
-      "title": "Incantation",
-      "description": "Enables the ability to stack identical consumables.",
-      "author": "@jenwalter666, @MathIsFun",
-      "sourceUrl": "https://github.com/jenwalter666/JensBalatroCollection/tree/main/Incantation",
-      "links": [
-        {
-          "label": "Incantation",
-          "url": "https://github.com/jenwalter666/JensBalatroCollection/tree/main/Incantation"
-        },
-        {
-          "label": "discord",
-          "url": "https://discord.com/channels/1116389027176787968/1248924034716930100"
-        }
-      ],
-      "categories": ["GUI"],
-      "loader": "Steamodded",
-      "kind": "mod",
-      "badges": [
-        {
-          "label": "Status",
-          "url": "https://img.shields.io/badge/use%20Saturn-smods%20v1.0.0-lightgrey"
-        }
-      ],
-      "sourceLines": [287]
+      "sourceLines": [
+        286
+      ]
     },
     {
       "id": "steamodded-jcursor-github-com-jie65535-jmods-blob-main-jcursor",
@@ -2771,11 +3190,15 @@
           "url": "https://github.com/jie65535/JMods/blob/main/JCursor"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [288]
+      "sourceLines": [
+        288
+      ]
     },
     {
       "id": "steamodded-jimboshistoriesrunreviewer-github-com-mi1ck-jimbos-histories",
@@ -2789,11 +3212,15 @@
           "url": "https://github.com/Mi1cK/Jimbos-Histories"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [289]
+      "sourceLines": [
+        289
+      ]
     },
     {
       "id": "steamodded-jimbosmetrics-gitlab-com-craftedcart-jimbos-metrics",
@@ -2807,11 +3234,15 @@
           "url": "https://gitlab.com/CraftedCart/jimbos_metrics"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [290]
+      "sourceLines": [
+        290
+      ]
     },
     {
       "id": "steamodded-jokersellvalue-github-com-oppositewolf770-jokersellvalue",
@@ -2825,16 +3256,20 @@
           "url": "https://github.com/OppositeWolf770/JokerSellValue"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [291]
+      "sourceLines": [
+        291
+      ]
     },
     {
       "id": "steamodded-mainmenutweaks-discord-com-channels-1116389027176787968-1212843840814325780",
@@ -2848,11 +3283,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1212843840814325780"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [292]
+      "sourceLines": [
+        292
+      ]
     },
     {
       "id": "steamodded-manualflip-github-com-ssyangchn-manualflip",
@@ -2866,34 +3305,15 @@
           "url": "https://github.com/ssyangchn/ManualFlip"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [293]
-    },
-    {
-      "id": "steamodded-morespeed-github-com-steamodded-examples-blob-master-mods-morespeeds-lua",
-      "title": "More Speed",
-      "description": "More Speed options!",
-      "author": "@Steamo",
-      "sourceUrl": "https://github.com/Steamodded/examples/blob/master/Mods/MoreSpeeds.lua",
-      "links": [
-        {
-          "label": "More Speed",
-          "url": "https://github.com/Steamodded/examples/blob/master/Mods/MoreSpeeds.lua"
-        }
-      ],
-      "categories": ["GUI"],
-      "loader": "Steamodded",
-      "kind": "mod",
-      "badges": [
-        {
-          "label": "Status",
-          "url": "https://img.shields.io/badge/use%20Saturn-smods%20v1.0.0-lightgrey"
-        }
-      ],
-      "sourceLines": [294]
+      "sourceLines": [
+        293
+      ]
     },
     {
       "id": "steamodded-nobackground-github-com-wilsonthewolf-balatro-mods-tree-master-steamodded-nobackground",
@@ -2911,11 +3331,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1231746124994449458"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [295]
+      "sourceLines": [
+        295
+      ]
     },
     {
       "id": "steamodded-roulette-github-com-hellyom-hellyombalatromods",
@@ -2929,11 +3353,15 @@
           "url": "https://github.com/Hellyom/HellyomBalatroMods"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [296]
+      "sourceLines": [
+        296
+      ]
     },
     {
       "id": "steamodded-seedunlocker-discord-com-channels-1116389027176787968-1229891707793969265",
@@ -2947,11 +3375,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1229891707793969265"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [297]
+      "sourceLines": [
+        297
+      ]
     },
     {
       "id": "steamodded-silktouch-github-com-huythekiller-silktouch",
@@ -2965,16 +3397,20 @@
           "url": "https://github.com/HuyTheKiller/SilkTouch"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [298]
+      "sourceLines": [
+        298
+      ]
     },
     {
       "id": "steamodded-simplefpsdisplay-github-com-rakibryan-simple-fps-display-balatro",
@@ -2988,16 +3424,20 @@
           "url": "https://github.com/RakibRyan/simple-fps-display-balatro"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [299]
+      "sourceLines": [
+        299
+      ]
     },
     {
       "id": "steamodded-spectralrecolouring-github-com-eremel-spectralrecolours",
@@ -3015,11 +3455,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1248780371974295592"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [300]
+      "sourceLines": [
+        300
+      ]
     },
     {
       "id": "steamodded-speedruntimer-discord-com-channels-1116389027176787968-1209916317604511814",
@@ -3033,11 +3477,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1209916317604511814"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [301]
+      "sourceLines": [
+        301
+      ]
     },
     {
       "id": "steamodded-systemclock-github-com-breezebuilder-systemclock",
@@ -3051,11 +3499,15 @@
           "url": "https://github.com/Breezebuilder/SystemClock"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [302]
+      "sourceLines": [
+        302
+      ]
     },
     {
       "id": "steamodded-taikomochi-github-com-amvoled-taikomochi",
@@ -3069,11 +3521,15 @@
           "url": "https://github.com/Amvoled/Taikomochi"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [303]
+      "sourceLines": [
+        303
+      ]
     },
     {
       "id": "steamodded-trance-github-com-mathisfun0-trance",
@@ -3091,11 +3547,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1248865517112918016"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [304]
+      "sourceLines": [
+        304
+      ]
     },
     {
       "id": "steamodded-wheeloffortunetrackerguarantee-github-com-sabslikesobs-pitywheel",
@@ -3109,11 +3569,15 @@
           "url": "https://github.com/sabslikesobs/pitywheel"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [305]
+      "sourceLines": [
+        305
+      ]
     },
     {
       "id": "steamodded-yippeegameover-github-com-mysthaps-balatromods",
@@ -3127,11 +3591,15 @@
           "url": "https://github.com/Mysthaps/BalatroMods"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [306]
+      "sourceLines": [
+        306
+      ]
     },
     {
       "id": "steamodded-5cebalatro-github-com-dps2004-5cebalatro",
@@ -3145,11 +3613,15 @@
           "url": "https://github.com/DPS2004/5CEBalatro"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [310]
+      "sourceLines": [
+        310
+      ]
     },
     {
       "id": "steamodded-ancientjokerfix-github-com-gabepesco-balatroancientjokerfix",
@@ -3163,11 +3635,15 @@
           "url": "https://github.com/gabepesco/BalatroAncientJokerFix"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [311]
+      "sourceLines": [
+        311
+      ]
     },
     {
       "id": "steamodded-badapplejoker-github-com-jamesthejellyfish-badapplebalatro",
@@ -3181,16 +3657,20 @@
           "url": "https://github.com/jamesthejellyfish/BadAppleBalatro"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "playable but laggy smods v1.0.0",
           "url": "https://img.shields.io/badge/playable%20but%20laggy-smods%20v1.0.0-yellowgreen"
         }
       ],
-      "sourceLines": [312]
+      "sourceLines": [
+        312
+      ]
     },
     {
       "id": "steamodded-bbbalatro-github-com-bbbalatromod-bbbalatro-tree-main",
@@ -3204,11 +3684,15 @@
           "url": "https://github.com/BBBalatroMod/BBBalatro/tree/main"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [313]
+      "sourceLines": [
+        313
+      ]
     },
     {
       "id": "steamodded-betmmajokers-github-com-betmma-my-balatro-mods",
@@ -3222,16 +3706,20 @@
           "url": "https://github.com/betmma/my_balatro_mods"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "not mobile compatible smods v1.0.0",
           "url": "https://img.shields.io/badge/not%20mobile%20compatible-smods%20v1.0.0-lightgrey"
         }
       ],
-      "sourceLines": [314]
+      "sourceLines": [
+        314
+      ]
     },
     {
       "id": "steamodded-betmmajokersmobilefriendly-github-com-rakibryan-betmma-jokers-mobile-friendly",
@@ -3245,16 +3733,20 @@
           "url": "https://github.com/RakibRyan/Betmma-Jokers-Mobile-friendly"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [315]
+      "sourceLines": [
+        315
+      ]
     },
     {
       "id": "steamodded-bigbang-github-com-zjwcy-balatro-big-bang-by-zjwcy",
@@ -3272,11 +3764,15 @@
           "url": "https://www.bilibili.com/video/BV1zBFKe3EuZ"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [316]
+      "sourceLines": [
+        316
+      ]
     },
     {
       "id": "steamodded-cheesyjokers-github-com-ilikecheese0-cheesyjokers",
@@ -3290,11 +3786,15 @@
           "url": "https://github.com/ilikecheese0/CheesyJokers"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [317]
+      "sourceLines": [
+        317
+      ]
     },
     {
       "id": "steamodded-coloredcardpack-git-benstokman-me-benjistokman-colored-card-pack",
@@ -3308,11 +3808,15 @@
           "url": "https://git.benstokman.me/benjistokman/colored-card-pack"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [318]
+      "sourceLines": [
+        318
+      ]
     },
     {
       "id": "steamodded-d6jokers-github-com-gauntletgames-2086-d6-jokers",
@@ -3330,11 +3834,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1249518446669074474"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [319]
+      "sourceLines": [
+        319
+      ]
     },
     {
       "id": "steamodded-datealive-github-com-snowylight-datealivebalatro",
@@ -3348,11 +3856,15 @@
           "url": "https://github.com/snowylight/DatealiveBalatro"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [320]
+      "sourceLines": [
+        320
+      ]
     },
     {
       "id": "steamodded-emergence-github-com-snoresville-balatro-emergence-joker",
@@ -3366,16 +3878,20 @@
           "url": "https://github.com/Snoresville/balatro-emergence-joker"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [321]
+      "sourceLines": [
+        321
+      ]
     },
     {
       "id": "steamodded-floundersjokers-github-com-flounderlul-floundersjokers",
@@ -3389,11 +3905,15 @@
           "url": "https://github.com/Flounderlul/FloundersJokers"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [323]
+      "sourceLines": [
+        323
+      ]
     },
     {
       "id": "steamodded-flounderful-github-com-flounderlul",
@@ -3407,11 +3927,15 @@
           "url": "https://github.com/Flounderlul"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [324]
+      "sourceLines": [
+        324
+      ]
     },
     {
       "id": "steamodded-fusionjokers-itayfeder-github-io-fusion-jokers",
@@ -3425,11 +3949,15 @@
           "url": "https://itayfeder.github.io/Fusion-Jokers/"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [325]
+      "sourceLines": [
+        325
+      ]
     },
     {
       "id": "steamodded-harambeschosen-github-com-juliandeclercq-harambes-chosen",
@@ -3443,11 +3971,15 @@
           "url": "https://github.com/JulianDeclercq/harambes-chosen"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [326]
+      "sourceLines": [
+        326
+      ]
     },
     {
       "id": "steamodded-houseofhearts-github-com-plagger7-house-of-hearts",
@@ -3461,11 +3993,15 @@
           "url": "https://github.com/PLagger7/House-of-Hearts"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [327]
+      "sourceLines": [
+        327
+      ]
     },
     {
       "id": "steamodded-inscrybedjokers-discord-com-channels-1116389027176787968-1224707324061552640",
@@ -3479,11 +4015,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1224707324061552640"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [328]
+      "sourceLines": [
+        328
+      ]
     },
     {
       "id": "steamodded-jankjonklers-github-com-spikeof2010-jankjonklers",
@@ -3497,11 +4037,15 @@
           "url": "https://github.com/spikeof2010/JankJonklers"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [329]
+      "sourceLines": [
+        329
+      ]
     },
     {
       "id": "steamodded-jellymod-github-com-jamesthejellyfish-jellymod",
@@ -3515,11 +4059,15 @@
           "url": "https://github.com/jamesthejellyfish/JellyMod"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [330]
+      "sourceLines": [
+        330
+      ]
     },
     {
       "id": "steamodded-jokerevolution-github-com-sdm0-joker-evolution",
@@ -3537,11 +4085,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1249450412143153266"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [331]
+      "sourceLines": [
+        331
+      ]
     },
     {
       "id": "steamodded-jokerfusions-discord-com-channels-1116389027176787968-1223117435356577824",
@@ -3555,11 +4107,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1223117435356577824"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [332]
+      "sourceLines": [
+        332
+      ]
     },
     {
       "id": "steamodded-lobotomycorp-github-com-mysthaps-lobotomycorp",
@@ -3573,11 +4129,15 @@
           "url": "https://github.com/Mysthaps/LobotomyCorp"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [333]
+      "sourceLines": [
+        333
+      ]
     },
     {
       "id": "steamodded-lushmod-github-com-lusciousdev-lushmod",
@@ -3591,11 +4151,15 @@
           "url": "https://github.com/lusciousdev/LushMod"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [334]
+      "sourceLines": [
+        334
+      ]
     },
     {
       "id": "steamodded-lynversejokers-alexyothefirst-com-mods-lynverse",
@@ -3609,11 +4173,15 @@
           "url": "https://alexyothefirst.com/mods/lynverse/"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [335]
+      "sourceLines": [
+        335
+      ]
     },
     {
       "id": "steamodded-milatro-github-com-milankapitein-milatro-mod",
@@ -3627,11 +4195,15 @@
           "url": "https://github.com/milankapitein/milatro-mod"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [336]
+      "sourceLines": [
+        336
+      ]
     },
     {
       "id": "steamodded-mittmods-discord-com-channels-1116389027176787968-1227500439055110175",
@@ -3645,11 +4217,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1227500439055110175"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [337]
+      "sourceLines": [
+        337
+      ]
     },
     {
       "id": "steamodded-morjokers-github-com-morpline-morjokers",
@@ -3667,29 +4243,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1230178381342179350"
         }
       ],
-      "categories": ["Jokers"],
-      "loader": "Steamodded",
-      "kind": "mod",
-      "badges": [],
-      "sourceLines": [338]
-    },
-    {
-      "id": "steamodded-morefluff-notmario-github-io-morefluff",
-      "title": "MoreFluff",
-      "description": "Adds more jokers to the game,",
-      "author": "@notmario",
-      "sourceUrl": "https://notmario.github.io/MoreFluff/",
-      "links": [
-        {
-          "label": "MoreFluff",
-          "url": "https://notmario.github.io/MoreFluff/"
-        }
+      "categories": [
+        "Jokers"
       ],
-      "categories": ["Jokers"],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [339]
+      "sourceLines": [
+        338
+      ]
     },
     {
       "id": "steamodded-multipack-github-com-snowylight-multipack",
@@ -3703,11 +4265,15 @@
           "url": "https://github.com/snowylight/Multipack"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [340]
+      "sourceLines": [
+        340
+      ]
     },
     {
       "id": "steamodded-multijokers-github-com-ijohnmaged-multi-jokers",
@@ -3721,11 +4287,15 @@
           "url": "https://github.com/iJohnMaged/multi-jokers"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [341]
+      "sourceLines": [
+        341
+      ]
     },
     {
       "id": "steamodded-mystjokers-github-com-mysthaps-balatromods",
@@ -3739,11 +4309,15 @@
           "url": "https://github.com/Mysthaps/BalatroMods"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [342]
+      "sourceLines": [
+        342
+      ]
     },
     {
       "id": "steamodded-olympus-github-com-abhinavr314-balatroolympus",
@@ -3757,11 +4331,15 @@
           "url": "https://github.com/AbhinavR314/BalatroOlympus"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [343]
+      "sourceLines": [
+        343
+      ]
     },
     {
       "id": "steamodded-pampajokerpack-batabata3-github-io-balatro-pampa-joker-pack",
@@ -3775,11 +4353,15 @@
           "url": "https://batabata3.github.io/balatro-pampa-joker-pack/"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [344]
+      "sourceLines": [
+        344
+      ]
     },
     {
       "id": "steamodded-panleyjoker-github-com-redrcknrbn-panley-joker",
@@ -3793,11 +4375,15 @@
           "url": "https://github.com/RedrcknRbn/Panley-Joker"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [345]
+      "sourceLines": [
+        345
+      ]
     },
     {
       "id": "steamodded-pijoker-github-com-erachlin-pijoker",
@@ -3811,16 +4397,20 @@
           "url": "https://github.com/erachlin/PiJoker"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [346]
+      "sourceLines": [
+        346
+      ]
     },
     {
       "id": "steamodded-quilombo-github-com-acetna-quilombo",
@@ -3834,11 +4424,15 @@
           "url": "https://github.com/acetna/Quilombo"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [347]
+      "sourceLines": [
+        347
+      ]
     },
     {
       "id": "steamodded-restartrunbutton-github-com-jdbye-balatromods-blob-main-restartrunbutton-lua",
@@ -3852,11 +4446,15 @@
           "url": "https://github.com/Jdbye/BalatroMods/blob/main/RestartRunButton.lua"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [348]
+      "sourceLines": [
+        348
+      ]
     },
     {
       "id": "steamodded-reverie-dvrp-balatro-mods-pages-dev-reverie",
@@ -3870,11 +4468,15 @@
           "url": "https://dvrp-balatro-mods.pages.dev/reverie"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [349]
+      "sourceLines": [
+        349
+      ]
     },
     {
       "id": "steamodded-riskofjesters-dvrp-balatro-mods-pages-dev-risk-of-jesters",
@@ -3888,11 +4490,15 @@
           "url": "https://dvrp-balatro-mods.pages.dev/risk-of-jesters"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [350]
+      "sourceLines": [
+        350
+      ]
     },
     {
       "id": "steamodded-rngbutter-discord-com-channels-1116389027176787968-1229090507720757390",
@@ -3906,11 +4512,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1229090507720757390"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [351]
+      "sourceLines": [
+        351
+      ]
     },
     {
       "id": "steamodded-robalatro-github-com-alexzgreat-ro-balatro",
@@ -3928,11 +4538,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1247049217621360640"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [352]
+      "sourceLines": [
+        352
+      ]
     },
     {
       "id": "steamodded-ror2funnyitems-github-com-ao-u-ror2funnyitems",
@@ -3946,11 +4560,15 @@
           "url": "https://github.com/ao-u/ror2funnyitems"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [353]
+      "sourceLines": [
+        353
+      ]
     },
     {
       "id": "steamodded-rulebreakerjoker-github-com-rakibryan-rule-breaker-joker",
@@ -3964,16 +4582,20 @@
           "url": "https://github.com/RakibRyan/Rule-Breaker-Joker"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "experimental smods v1.0.0",
           "url": "https://img.shields.io/badge/experimental-smods%20v1.0.0-blue"
         }
       ],
-      "sourceLines": [354]
+      "sourceLines": [
+        354
+      ]
     },
     {
       "id": "steamodded-sculio-github-com-crmykybord-sculio",
@@ -3987,29 +4609,15 @@
           "url": "https://github.com/crmykybord/Sculio"
         }
       ],
-      "categories": ["Jokers"],
-      "loader": "Steamodded",
-      "kind": "mod",
-      "badges": [],
-      "sourceLines": [355]
-    },
-    {
-      "id": "steamodded-sevensins-github-com-alexdavies8-balatro-mods",
-      "title": "Seven Sins",
-      "description": "A pack of Jokers based on the Seven Deadly Sins including 3 new challenges.",
-      "author": "@AlexDavies8",
-      "sourceUrl": "https://github.com/AlexDavies8/balatro-mods",
-      "links": [
-        {
-          "label": "Seven Sins",
-          "url": "https://github.com/AlexDavies8/balatro-mods"
-        }
+      "categories": [
+        "Jokers"
       ],
-      "categories": ["Jokers"],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [356]
+      "sourceLines": [
+        355
+      ]
     },
     {
       "id": "steamodded-slaytheprincess-github-com-kastamera-slaytheprincess",
@@ -4023,11 +4631,15 @@
           "url": "https://github.com/Kastamera/SlayThePrincess"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [357]
+      "sourceLines": [
+        357
+      ]
     },
     {
       "id": "steamodded-snoresvillesturbulentjokers-snoresville-github-io-snoresville-turbulent-jokers",
@@ -4041,11 +4653,15 @@
           "url": "https://snoresville.github.io/snoresville_turbulent_jokers/"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [358]
+      "sourceLines": [
+        358
+      ]
     },
     {
       "id": "steamodded-snowsmods-rattlingsnow353-github-io-snow-s-mods",
@@ -4059,11 +4675,15 @@
           "url": "https://rattlingsnow353.github.io/Snow-s-Mods/"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [359]
+      "sourceLines": [
+        359
+      ]
     },
     {
       "id": "steamodded-starrailevents-github-com-snowylight-starrailevents",
@@ -4077,11 +4697,15 @@
           "url": "https://github.com/snowylight/Starrailevents"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [360]
+      "sourceLines": [
+        360
+      ]
     },
     {
       "id": "steamodded-superbalatriobros-github-com-dps2004-super-balatrio-bros",
@@ -4099,11 +4723,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1230341696957448222"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [361]
+      "sourceLines": [
+        361
+      ]
     },
     {
       "id": "steamodded-tagteam-github-com-snoresville-balatro-double-tag-joker",
@@ -4117,11 +4745,15 @@
           "url": "https://github.com/Snoresville/balatro-double-tag-joker"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [362]
+      "sourceLines": [
+        362
+      ]
     },
     {
       "id": "steamodded-theblunt-github-com-snoresville-balatro-blunt-joker",
@@ -4135,11 +4767,15 @@
           "url": "https://github.com/Snoresville/balatro-blunt-joker"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [363]
+      "sourceLines": [
+        363
+      ]
     },
     {
       "id": "steamodded-themedjokers-github-com-blizzowx-balatro-themed-jokers",
@@ -4153,11 +4789,15 @@
           "url": "https://github.com/BlizzowX/Balatro---Themed-Jokers"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [364]
+      "sourceLines": [
+        364
+      ]
     },
     {
       "id": "steamodded-zilliax-github-com-snowylight-zilliax",
@@ -4171,11 +4811,15 @@
           "url": "https://github.com/snowylight/Zilliax"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [365]
+      "sourceLines": [
+        365
+      ]
     },
     {
       "id": "steamodded-blackseal-www-nexusmods-com-balatro-mods-9",
@@ -4189,11 +4833,15 @@
           "url": "https://www.nexusmods.com/balatro/mods/9/"
         }
       ],
-      "categories": ["Seals"],
+      "categories": [
+        "Seals"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [369]
+      "sourceLines": [
+        369
+      ]
     },
     {
       "id": "steamodded-diceseals-github-com-flounderlul-dice-seals",
@@ -4207,16 +4855,20 @@
           "url": "https://github.com/Flounderlul/Dice-seals"
         }
       ],
-      "categories": ["Seals"],
+      "categories": [
+        "Seals"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "patch in works smods v1.0.0",
           "url": "https://img.shields.io/badge/patch%20in%20works-smods%20v1.0.0-blueviolet"
         }
       ],
-      "sourceLines": [370]
+      "sourceLines": [
+        370
+      ]
     },
     {
       "id": "steamodded-greenseal-github-com-axbolduc-greenseal",
@@ -4230,39 +4882,20 @@
           "url": "https://github.com/AxBolduc/GreenSeal"
         }
       ],
-      "categories": ["Seals"],
+      "categories": [
+        "Seals"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "patch in works smods v1.0.0",
           "url": "https://img.shields.io/badge/patch%20in%20works-smods%20v1.0.0-blueviolet"
         }
       ],
-      "sourceLines": [371]
-    },
-    {
-      "id": "steamodded-silverseal-github-com-mwithington-silverseal",
-      "title": "Silver Seal",
-      "description": "A mod for Baltro that adds in a silver seal which will apply a random edition to the card. Once the card is played a second time a new edition will be applied. The edition will only count after you have played the card atleast once. @mwithington, @AxBolduc",
-      "author": "",
-      "sourceUrl": "https://github.com/mwithington/SilverSeal",
-      "links": [
-        {
-          "label": "Silver Seal",
-          "url": "https://github.com/mwithington/SilverSeal"
-        }
-      ],
-      "categories": ["Seals"],
-      "loader": "Steamodded",
-      "kind": "mod",
-      "badges": [
-        {
-          "label": "Status",
-          "url": "https://img.shields.io/badge/partial%20mod%20conflict-smods%20v1.0.0-yellow"
-        }
-      ],
-      "sourceLines": [372]
+      "sourceLines": [
+        371
+      ]
     },
     {
       "id": "steamodded-hanafudahybrid-github-com-tvroonhove-hanafudahybridmod",
@@ -4276,11 +4909,15 @@
           "url": "https://github.com/tvroonhove/HanafudaHybridMod"
         }
       ],
-      "categories": ["Suits"],
+      "categories": [
+        "Suits"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [376]
+      "sourceLines": [
+        376
+      ]
     },
     {
       "id": "steamodded-inkandcolor-github-com-rattlingsnow353-inkandcolor",
@@ -4294,11 +4931,15 @@
           "url": "https://github.com/RattlingSnow353/InkAndColor"
         }
       ],
-      "categories": ["Suits"],
+      "categories": [
+        "Suits"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [377]
+      "sourceLines": [
+        377
+      ]
     },
     {
       "id": "steamodded-musicalsuit-github-com-itayfeder-musicalsuit",
@@ -4312,11 +4953,15 @@
           "url": "https://github.com/itayfeder/MusicalSuit"
         }
       ],
-      "categories": ["Suits"],
+      "categories": [
+        "Suits"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [378]
+      "sourceLines": [
+        378
+      ]
     },
     {
       "id": "steamodded-sixsuits-github-com-aurelius7309-sixsuits",
@@ -4330,16 +4975,20 @@
           "url": "https://github.com/Aurelius7309/SixSuits"
         }
       ],
-      "categories": ["Suits"],
+      "categories": [
+        "Suits"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [379]
+      "sourceLines": [
+        379
+      ]
     },
     {
       "id": "steamodded-dnasplicetag-github-com-jlwoolf-dnasplice",
@@ -4353,11 +5002,15 @@
           "url": "https://github.com/jlwoolf/DNASplice"
         }
       ],
-      "categories": ["Tags"],
+      "categories": [
+        "Tags"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [385]
+      "sourceLines": [
+        385
+      ]
     },
     {
       "id": "steamodded-tagmanager-github-com-sirmaiquis-balatro-tagmanager",
@@ -4371,11 +5024,15 @@
           "url": "https://github.com/SirMaiquis/Balatro-TagManager"
         }
       ],
-      "categories": ["Tags"],
+      "categories": [
+        "Tags"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [386]
+      "sourceLines": [
+        386
+      ]
     },
     {
       "id": "steamodded-tagspreview-github-com-jkd3vld-balatrotagpreview",
@@ -4389,20 +5046,24 @@
           "url": "https://github.com/JKd3vLD/BalatroTagPreview"
         }
       ],
-      "categories": ["Tags"],
+      "categories": [
+        "Tags"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "occasional crashes smods v1.0.0",
           "url": "https://img.shields.io/badge/occasional%20crashes-smods%20v1.0.0-orange"
         },
         {
-          "label": "Status",
+          "label": "patch in works",
           "url": "https://img.shields.io/badge/patch%20in%20works-blueviolet"
         }
       ],
-      "sourceLines": [387]
+      "sourceLines": [
+        387
+      ]
     },
     {
       "id": "steamodded-babadecks-discord-com-channels-1116389027176787968-1217466648135733328",
@@ -4416,11 +5077,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1217466648135733328"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [391]
+      "sourceLines": [
+        391
+      ]
     },
     {
       "id": "steamodded-balaquints-github-com-luuumine-balaquints",
@@ -4434,11 +5099,15 @@
           "url": "https://github.com/Luuumine/BalaQuints"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [392]
+      "sourceLines": [
+        392
+      ]
     },
     {
       "id": "steamodded-balatro95-github-com-sparktimus-balatro95",
@@ -4456,11 +5125,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1246389947556958240"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [393]
+      "sourceLines": [
+        393
+      ]
     },
     {
       "id": "steamodded-balatroreshuffled-github-com-xenocheart-crimsons-ultimate-card-collection-releases-tag-rs-release",
@@ -4474,11 +5147,15 @@
           "url": "https://github.com/XenoCHeart/Crimsons-Ultimate-Card-Collection/releases/tag/RS-Release"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [394]
+      "sourceLines": [
+        394
+      ]
     },
     {
       "id": "steamodded-balatrotexturepacks-github-com-alexse13dev-balatro-texture-packs",
@@ -4492,11 +5169,15 @@
           "url": "https://github.com/alexse13dev/Balatro-Texture-Packs"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [395]
+      "sourceLines": [
+        395
+      ]
     },
     {
       "id": "steamodded-baldatro-github-com-sirmaiquis-balatro-baldatro",
@@ -4510,11 +5191,15 @@
           "url": "https://github.com/SirMaiquis/Balatro-Baldatro"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [396]
+      "sourceLines": [
+        396
+      ]
     },
     {
       "id": "steamodded-colorblindfriendlycardcolorspack-discord-com-channels-1116389027176787968-1213904100065021962",
@@ -4528,11 +5213,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1213904100065021962"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [397]
+      "sourceLines": [
+        397
+      ]
     },
     {
       "id": "steamodded-darkmode-github-com-carrotonman-balatrodarkmode",
@@ -4550,11 +5239,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1236675603495653416"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [398]
+      "sourceLines": [
+        398
+      ]
     },
     {
       "id": "steamodded-eclipsetextures-github-com-aleksxar-eclipsetextures",
@@ -4568,11 +5261,15 @@
           "url": "https://github.com/aleksxar/EclipseTextures"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [399]
+      "sourceLines": [
+        399
+      ]
     },
     {
       "id": "steamodded-gameofthronestarot-discord-com-channels-1116389027176787968-1219343995822407750",
@@ -4586,11 +5283,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1219343995822407750"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [400]
+      "sourceLines": [
+        400
+      ]
     },
     {
       "id": "steamodded-gradientsuitcolors-discord-com-channels-1116389027176787968-1221853064475050064",
@@ -4604,11 +5305,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1221853064475050064"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [401]
+      "sourceLines": [
+        401
+      ]
     },
     {
       "id": "steamodded-grossbalatro-github-com-chrishanel-grossbalatro",
@@ -4622,11 +5327,15 @@
           "url": "https://github.com/chrishanel/grossbalatro"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [402]
+      "sourceLines": [
+        402
+      ]
     },
     {
       "id": "steamodded-highcontrastclubs-discord-com-channels-1116389027176787968-1221328616164691978",
@@ -4640,11 +5349,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1221328616164691978"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [403]
+      "sourceLines": [
+        403
+      ]
     },
     {
       "id": "steamodded-improvedboostertarots-github-com-ard1tion-improved-booster-tarots",
@@ -4658,11 +5371,15 @@
           "url": "https://github.com/Ard1tion/Improved-Booster-Tarots"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [404]
+      "sourceLines": [
+        404
+      ]
     },
     {
       "id": "steamodded-improvedfourcolorsofsuits-discord-com-channels-1116389027176787968-1213893814343696414",
@@ -4676,11 +5393,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1213893814343696414"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [405]
+      "sourceLines": [
+        405
+      ]
     },
     {
       "id": "steamodded-lotus-drive-google-com-drive-folders-1qrvoxrdkrcmmghzylndtpaxwoj3ua4bp",
@@ -4694,11 +5415,15 @@
           "url": "https://drive.google.com/drive/folders/1QrVoxrdkrcmmGhZYlnDTpaXwOj3UA4bP"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [406]
+      "sourceLines": [
+        406
+      ]
     },
     {
       "id": "steamodded-lunasenhancedenhancements-discord-com-channels-1116389027176787968-1216064295633289286",
@@ -4712,11 +5437,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1216064295633289286"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [407]
+      "sourceLines": [
+        407
+      ]
     },
     {
       "id": "steamodded-necrodancerspectrals-discord-com-channels-1116389027176787968-1229566404278358128",
@@ -4730,11 +5459,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1229566404278358128"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [408]
+      "sourceLines": [
+        408
+      ]
     },
     {
       "id": "steamodded-ogtextures-github-com-uppedhealer8521-ogtextures",
@@ -4748,11 +5481,15 @@
           "url": "https://github.com/UppedHealer8521/Ogtextures"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [409]
+      "sourceLines": [
+        409
+      ]
     },
     {
       "id": "steamodded-personatarot-discord-com-channels-1116389027176787968-1219528214486192138",
@@ -4766,11 +5503,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1219528214486192138"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [410]
+      "sourceLines": [
+        410
+      ]
     },
     {
       "id": "steamodded-randomdiceblinds-discord-com-channels-1116389027176787968-1224728153310887956",
@@ -4784,11 +5525,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1224728153310887956"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [411]
+      "sourceLines": [
+        411
+      ]
     },
     {
       "id": "steamodded-recastcontrast-github-com-lunaastracassiopeia-lunasbalatromods",
@@ -4802,11 +5547,15 @@
           "url": "https://github.com/LunaAstraCassiopeia/LunasBalatroMods"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [412]
+      "sourceLines": [
+        412
+      ]
     },
     {
       "id": "steamodded-spectralsbian-discord-com-channels-1116389027176787968-1248729661815521381",
@@ -4820,11 +5569,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1248729661815521381"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [413]
+      "sourceLines": [
+        413
+      ]
     },
     {
       "id": "steamodded-texturepack-discord-com-channels-1116389027176787968-1212504558853689434",
@@ -4838,11 +5591,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1212504558853689434"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [414]
+      "sourceLines": [
+        414
+      ]
     },
     {
       "id": "steamodded-texturepack-discord-com-channels-1116389027176787968-1212507813792714762",
@@ -4856,11 +5613,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1212507813792714762"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [415]
+      "sourceLines": [
+        415
+      ]
     },
     {
       "id": "steamodded-transspectrals-discord-com-channels-1116389027176787968-1247528518842191971",
@@ -4874,11 +5635,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1247528518842191971"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [416]
+      "sourceLines": [
+        416
+      ]
     },
     {
       "id": "steamodded-wildstexturepack-github-com-natakilar-balatro-wilds",
@@ -4892,11 +5657,15 @@
           "url": "https://github.com/NataKilar/Balatro-Wilds"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [417]
+      "sourceLines": [
+        417
+      ]
     },
     {
       "id": "steamodded-betterfrench-github-com-frbmt-bigetnouf-balatro-french-translations",
@@ -4910,11 +5679,15 @@
           "url": "https://github.com/FrBmt-BIGetNouf/balatro-french-translations"
         }
       ],
-      "categories": ["Translates"],
+      "categories": [
+        "Translates"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [421]
+      "sourceLines": [
+        421
+      ]
     },
     {
       "id": "steamodded-properkorean-discord-com-channels-1116389027176787968-1211094025159966790",
@@ -4928,11 +5701,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1211094025159966790"
         }
       ],
-      "categories": ["Translates"],
+      "categories": [
+        "Translates"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [422]
+      "sourceLines": [
+        422
+      ]
     },
     {
       "id": "steamodded-betmmavouchers-github-com-betmma-my-balatro-mods",
@@ -4946,16 +5723,20 @@
           "url": "https://github.com/betmma/my_balatro_mods"
         }
       ],
-      "categories": ["Vouchers"],
+      "categories": [
+        "Vouchers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "not mobile compatible smods v1.0.0",
           "url": "https://img.shields.io/badge/not%20mobile%20compatible-smods%20v1.0.0-lightgrey"
         }
       ],
-      "sourceLines": [426]
+      "sourceLines": [
+        426
+      ]
     },
     {
       "id": "steamodded-betmmavouchersmobilefriendly-github-com-rakibryan-betmma-jokers-mobile-friendly",
@@ -4969,16 +5750,20 @@
           "url": "https://github.com/RakibRyan/Betmma-Jokers-Mobile-friendly"
         }
       ],
-      "categories": ["Vouchers"],
+      "categories": [
+        "Vouchers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "fully functional smods v1.0.0",
           "url": "https://img.shields.io/badge/fully%20functional-smods%20v1.0.0-brightgreen"
         }
       ],
-      "sourceLines": [427]
+      "sourceLines": [
+        427
+      ]
     },
     {
       "id": "steamodded-loop-discord-com-channels-1116389027176787968-1248431147784863840",
@@ -4992,20 +5777,24 @@
           "url": "https://discord.com/channels/1116389027176787968/1248431147784863840"
         }
       ],
-      "categories": ["Vouchers"],
+      "categories": [
+        "Vouchers"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "not mobile compatible smods v1.0.0",
           "url": "https://img.shields.io/badge/not%20mobile%20compatible-smods%20v1.0.0-lightgrey"
         },
         {
-          "label": "Status",
+          "label": "patch in works",
           "url": "https://img.shields.io/badge/patch%20in%20works-blueviolet"
         }
       ],
-      "sourceLines": [428]
+      "sourceLines": [
+        428
+      ]
     },
     {
       "id": "steamodded-cardbackinjection-github-com-ken-shi-balatro-cardbackinjection",
@@ -5019,11 +5808,15 @@
           "url": "https://github.com/Ken-Shi/Balatro_CardBackInjection"
         }
       ],
-      "categories": ["Utils"],
+      "categories": [
+        "Utils"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [432]
+      "sourceLines": [
+        432
+      ]
     },
     {
       "id": "steamodded-distro-github-com-dvrp0-distro",
@@ -5037,11 +5830,15 @@
           "url": "https://github.com/dvrp0/distro"
         }
       ],
-      "categories": ["Utils"],
+      "categories": [
+        "Utils"
+      ],
       "loader": "Steamodded",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [433]
+      "sourceLines": [
+        433
+      ]
     },
     {
       "id": "balamod-centerhook-github-com-nicholassam6425-balatro-mods",
@@ -5055,11 +5852,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods"
         }
       ],
-      "categories": ["API"],
+      "categories": [
+        "API"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [441]
+      "sourceLines": [
+        441
+      ]
     },
     {
       "id": "balamod-sealapi-github-com-jacobr1227-double-seals",
@@ -5073,11 +5874,15 @@
           "url": "https://github.com/jacobr1227/double_seals"
         }
       ],
-      "categories": ["API"],
+      "categories": [
+        "API"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [442]
+      "sourceLines": [
+        442
+      ]
     },
     {
       "id": "balamod-mystsbossblinds-github-com-mysthaps-balatromods",
@@ -5091,11 +5896,15 @@
           "url": "https://github.com/Mysthaps/BalatroMods"
         }
       ],
-      "categories": ["Blinds"],
+      "categories": [
+        "Blinds"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [446]
+      "sourceLines": [
+        446
+      ]
     },
     {
       "id": "balamod-couponbook-github-com-nicholassam6425-balatro-mods-tab-readme-ov-file-coupon-book-modsp-coupon-booklua",
@@ -5109,11 +5918,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods?tab=readme-ov-file#coupon-book-modsp_coupon_booklua"
         }
       ],
-      "categories": ["Boosters"],
+      "categories": [
+        "Boosters"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [450]
+      "sourceLines": [
+        450
+      ]
     },
     {
       "id": "balamod-goldenchallenge-github-com-mysthaps-balatromods",
@@ -5127,11 +5940,15 @@
           "url": "https://github.com/Mysthaps/BalatroMods"
         }
       ],
-      "categories": ["Challenges"],
+      "categories": [
+        "Challenges"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [454]
+      "sourceLines": [
+        454
+      ]
     },
     {
       "id": "balamod-arachneisbalatromods-github-com-nicholassam6425-balatro-mods",
@@ -5145,11 +5962,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods"
         }
       ],
-      "categories": ["Collections"],
+      "categories": [
+        "Collections"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [458]
+      "sourceLines": [
+        458
+      ]
     },
     {
       "id": "balamod-balatrocommunitypack-github-com-goldenepsilon-balatro-communitypack",
@@ -5163,11 +5984,15 @@
           "url": "https://github.com/GoldenEpsilon/Balatro-CommunityPack"
         }
       ],
-      "categories": ["Collections"],
+      "categories": [
+        "Collections"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [459]
+      "sourceLines": [
+        459
+      ]
     },
     {
       "id": "balamod-buffondeck-github-com-jopstro-balatromods",
@@ -5181,11 +6006,15 @@
           "url": "https://github.com/JopStro/BalatroMods"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [463]
+      "sourceLines": [
+        463
+      ]
     },
     {
       "id": "balamod-betterblackstake-github-com-system-of-root-roots-balatro-mods",
@@ -5199,11 +6028,15 @@
           "url": "https://github.com/System-of-Root/Roots_Balatro_Mods"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [467]
+      "sourceLines": [
+        467
+      ]
     },
     {
       "id": "balamod-flushhotkeys-github-com-agoraaa-flushhotkeys",
@@ -5217,11 +6050,15 @@
           "url": "https://github.com/Agoraaa/FlushHotkeys"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [468]
+      "sourceLines": [
+        468
+      ]
     },
     {
       "id": "balamod-handofsix-discord-com-channels-1116389027176787968-1218775422066622585",
@@ -5235,11 +6072,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1218775422066622585"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [469]
+      "sourceLines": [
+        469
+      ]
     },
     {
       "id": "balamod-quickrestart-github-com-nicholassam6425-balatro-mods",
@@ -5253,11 +6094,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods"
         }
       ],
-      "categories": ["Functionality"],
+      "categories": [
+        "Functionality"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [470]
+      "sourceLines": [
+        470
+      ]
     },
     {
       "id": "balamod-balatrosafety-github-com-zei33-balatro-safety-balamod",
@@ -5271,11 +6116,15 @@
           "url": "https://github.com/Zei33/balatro-safety-balamod"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [474]
+      "sourceLines": [
+        474
+      ]
     },
     {
       "id": "balamod-deselectall-github-com-zei33-deselect-all-balamod",
@@ -5289,11 +6138,15 @@
           "url": "https://github.com/Zei33/deselect-all-balamod"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [475]
+      "sourceLines": [
+        475
+      ]
     },
     {
       "id": "balamod-gaymod-github-com-heyimkyu-balatro-gay",
@@ -5307,11 +6160,15 @@
           "url": "https://github.com/HeyImKyu/balatro-gay"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [476]
+      "sourceLines": [
+        476
+      ]
     },
     {
       "id": "balamod-fortunetree-nicholassam6425-github-io-balatro-arachnei-fortune",
@@ -5325,11 +6182,15 @@
           "url": "https://nicholassam6425.github.io/balatro/arachnei_fortune/"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [480]
+      "sourceLines": [
+        480
+      ]
     },
     {
       "id": "balamod-jokers-github-com-nicholassam6425-balatro-mods-tab-readme-ov-file-jokers-modsj-jokerslua",
@@ -5343,11 +6204,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods?tab=readme-ov-file#jokers-modsj_jokerslua"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [481]
+      "sourceLines": [
+        481
+      ]
     },
     {
       "id": "balamod-parrotjoker-github-com-jopstro-balatromods",
@@ -5361,11 +6226,15 @@
           "url": "https://github.com/JopStro/BalatroMods"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [482]
+      "sourceLines": [
+        482
+      ]
     },
     {
       "id": "balamod-shampack-github-com-goldenepsilon-shampack",
@@ -5379,11 +6248,15 @@
           "url": "https://github.com/GoldenEpsilon/ShamPack"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [483]
+      "sourceLines": [
+        483
+      ]
     },
     {
       "id": "balamod-sluttyjoker-github-com-heyimkyu-balatro-slutty-joker",
@@ -5397,11 +6270,15 @@
           "url": "https://github.com/HeyImKyu/balatro-slutty-joker"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [484]
+      "sourceLines": [
+        484
+      ]
     },
     {
       "id": "balamod-sols-github-com-nicholassam6425-balatro-mods-tab-readme-ov-file-sols-modsj-solslua",
@@ -5415,11 +6292,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods?tab=readme-ov-file#sols-modsj_solslua"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [485]
+      "sourceLines": [
+        485
+      ]
     },
     {
       "id": "balamod-thejonkler-github-com-nicholassam6425-balatro-mods-tab-readme-ov-file-the-jonkler-modsj-jonklerlua",
@@ -5433,11 +6314,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods?tab=readme-ov-file#the-jonkler-modsj_jonklerlua"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [486]
+      "sourceLines": [
+        486
+      ]
     },
     {
       "id": "balamod-ganymede-github-com-nicholassam6425-balatro-mods-tab-readme-ov-file-ganymede-modsc-ganymedelua",
@@ -5451,11 +6336,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods?tab=readme-ov-file#ganymede-modsc_ganymedelua"
         }
       ],
-      "categories": ["Planets"],
+      "categories": [
+        "Planets"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [490]
+      "sourceLines": [
+        490
+      ]
     },
     {
       "id": "balamod-doubleseals-github-com-jacobr1227-double-seals",
@@ -5469,11 +6358,15 @@
           "url": "https://github.com/jacobr1227/double_seals"
         }
       ],
-      "categories": ["Seals"],
+      "categories": [
+        "Seals"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [494]
+      "sourceLines": [
+        494
+      ]
     },
     {
       "id": "balamod-orangeseals-github-com-jacobr1227-double-seals",
@@ -5487,11 +6380,15 @@
           "url": "https://github.com/jacobr1227/double_seals"
         }
       ],
-      "categories": ["Seals"],
+      "categories": [
+        "Seals"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [495]
+      "sourceLines": [
+        495
+      ]
     },
     {
       "id": "balamod-silverseals-github-com-jacobr1227-double-seals",
@@ -5505,11 +6402,15 @@
           "url": "https://github.com/jacobr1227/double_seals"
         }
       ],
-      "categories": ["Seals"],
+      "categories": [
+        "Seals"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [496]
+      "sourceLines": [
+        496
+      ]
     },
     {
       "id": "balamod-humanity-github-com-nicholassam6425-balatro-mods-tab-readme-ov-file-humanity-modsc-humanitylua",
@@ -5523,11 +6424,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods?tab=readme-ov-file#humanity-modsc_humanitylua"
         }
       ],
-      "categories": ["Spectrals"],
+      "categories": [
+        "Spectrals"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [500]
+      "sourceLines": [
+        500
+      ]
     },
     {
       "id": "balamod-bezos-github-com-nicholassam6425-balatro-mods-tab-readme-ov-file-bezos-modsc-bezoslua",
@@ -5541,11 +6446,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods?tab=readme-ov-file#bezos-modsc_bezoslua"
         }
       ],
-      "categories": ["Tarots"],
+      "categories": [
+        "Tarots"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [504]
+      "sourceLines": [
+        504
+      ]
     },
     {
       "id": "balamod-betterfrench-github-com-frbmt-bigetnouf-balatro-french-translations",
@@ -5559,11 +6468,15 @@
           "url": "https://github.com/FrBmt-BIGetNouf/balatro-french-translations"
         }
       ],
-      "categories": ["Translates"],
+      "categories": [
+        "Translates"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [508]
+      "sourceLines": [
+        508
+      ]
     },
     {
       "id": "balamod-hobbyshop-github-com-nicholassam6425-balatro-mods-tab-readme-ov-file-hobby-shop-modsv-hobby-shoplua",
@@ -5577,11 +6490,15 @@
           "url": "https://github.com/nicholassam6425/balatro-mods?tab=readme-ov-file#hobby-shop-modsv_hobby_shoplua"
         }
       ],
-      "categories": ["Vouchers"],
+      "categories": [
+        "Vouchers"
+      ],
       "loader": "Balamod",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [512]
+      "sourceLines": [
+        512
+      ]
     },
     {
       "id": "lovely-buffoondeck-thunderstore-io-c-balatro-p-jostro-buffoon-deck",
@@ -5595,11 +6512,15 @@
           "url": "https://thunderstore.io/c/balatro/p/JoStro/Buffoon_Deck/"
         }
       ],
-      "categories": ["Decks"],
+      "categories": [
+        "Decks"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [520]
+      "sourceLines": [
+        520
+      ]
     },
     {
       "id": "lovely-advancedscreenshake-github-com-developerrowan-amplifiedscreenshake",
@@ -5613,11 +6534,15 @@
           "url": "https://github.com/developerrowan/AmplifiedScreenShake"
         }
       ],
-      "categories": ["Functional"],
+      "categories": [
+        "Functional"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [524]
+      "sourceLines": [
+        524
+      ]
     },
     {
       "id": "lovely-alternativespeedtoggle-github-com-pixeledlobster-balatro-alternative-speed-toggle",
@@ -5631,11 +6556,15 @@
           "url": "https://github.com/PixeledLobster/balatro-alternative-speed-toggle"
         }
       ],
-      "categories": ["Functional"],
+      "categories": [
+        "Functional"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [525]
+      "sourceLines": [
+        525
+      ]
     },
     {
       "id": "lovely-balatroseedsuite-github-com-r-metal-balatro-seed-suite",
@@ -5649,11 +6578,15 @@
           "url": "https://github.com/r-metal/balatro-seed-suite"
         }
       ],
-      "categories": ["Functional"],
+      "categories": [
+        "Functional"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [526]
+      "sourceLines": [
+        526
+      ]
     },
     {
       "id": "lovely-brainstorm-github-com-oceanramen-brainstorm",
@@ -5671,11 +6604,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1242974974701080617"
         }
       ],
-      "categories": ["Functional"],
+      "categories": [
+        "Functional"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [527]
+      "sourceLines": [
+        527
+      ]
     },
     {
       "id": "lovely-greenneedle-github-com-lafiosca-greenneedle",
@@ -5689,11 +6626,15 @@
           "url": "https://github.com/lafiosca/GreenNeedle"
         }
       ],
-      "categories": ["Functional"],
+      "categories": [
+        "Functional"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [528]
+      "sourceLines": [
+        528
+      ]
     },
     {
       "id": "lovely-quickhandselector-github-com-pixeledlobster-quick-hand-selector",
@@ -5707,11 +6648,15 @@
           "url": "https://github.com/PixeledLobster/Quick-Hand-Selector"
         }
       ],
-      "categories": ["Functional"],
+      "categories": [
+        "Functional"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [529]
+      "sourceLines": [
+        529
+      ]
     },
     {
       "id": "lovely-talisman-github-com-mathisfun0-talisman",
@@ -5729,16 +6674,20 @@
           "url": "https://discord.com/channels/1116389027176787968/1241172556849876993"
         }
       ],
-      "categories": ["Functional"],
+      "categories": [
+        "Functional"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "occasional crashes smods v1.0.0",
           "url": "https://img.shields.io/badge/occasional%20crashes-smods%20v1.0.0-orange"
         }
       ],
-      "sourceLines": [530]
+      "sourceLines": [
+        530
+      ]
     },
     {
       "id": "lovely-typist-github-com-kasimeka-balatro-typist-mod",
@@ -5752,11 +6701,15 @@
           "url": "https://github.com/kasimeka/balatro-typist-mod"
         }
       ],
-      "categories": ["Functional"],
+      "categories": [
+        "Functional"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [531]
+      "sourceLines": [
+        531
+      ]
     },
     {
       "id": "lovely-jokerdisplay-github-com-nh6574-jokerdisplay",
@@ -5770,11 +6723,15 @@
           "url": "https://github.com/nh6574/JokerDisplay"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [535],
+      "sourceLines": [
+        535
+      ],
       "safetyWarning": "This author withdrew the mod from BMM. The source is shown for reference only and cannot be installed through BMM."
     },
     {
@@ -5789,11 +6746,15 @@
           "url": "https://github.com/Eremel/Malverk"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [536]
+      "sourceLines": [
+        536
+      ]
     },
     {
       "id": "lovely-planetcardcashoutmod-github-com-antler5-balatro-planet-card-cash-out-mod",
@@ -5811,11 +6772,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1331076935362547833"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [537]
+      "sourceLines": [
+        537
+      ]
     },
     {
       "id": "lovely-readabletro-github-com-bladesk-readabletro",
@@ -5829,11 +6794,15 @@
           "url": "https://github.com/bladeSk/readabletro"
         }
       ],
-      "categories": ["GUI"],
+      "categories": [
+        "GUI"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [538]
+      "sourceLines": [
+        538
+      ]
     },
     {
       "id": "lovely-parrotjoker-thunderstore-io-c-balatro-p-jostro-parrot-joker",
@@ -5847,11 +6816,15 @@
           "url": "https://thunderstore.io/c/balatro/p/JoStro/Parrot_Joker/"
         }
       ],
-      "categories": ["Jokers"],
+      "categories": [
+        "Jokers"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [542]
+      "sourceLines": [
+        542
+      ]
     },
     {
       "id": "lovely-1victoryroyale-github-com-muddieee-balatro-victory-royale",
@@ -5865,11 +6838,15 @@
           "url": "https://github.com/Muddieee/balatro_victory_royale"
         }
       ],
-      "categories": ["Miscellaneous"],
+      "categories": [
+        "Miscellaneous"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [546]
+      "sourceLines": [
+        546
+      ]
     },
     {
       "id": "lovely-cartomancer-github-com-stupxd-cartomancer",
@@ -5883,11 +6860,15 @@
           "url": "https://github.com/stupxd/Cartomancer"
         }
       ],
-      "categories": ["Miscellaneous"],
+      "categories": [
+        "Miscellaneous"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [547]
+      "sourceLines": [
+        547
+      ]
     },
     {
       "id": "lovely-blueprint-github-com-stupxd-blueprint",
@@ -5901,20 +6882,24 @@
           "url": "https://github.com/stupxd/Blueprint"
         }
       ],
-      "categories": ["Miscellaneous"],
+      "categories": [
+        "Miscellaneous"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [
         {
-          "label": "Status",
+          "label": "not mobile compatible smods v1.0.0",
           "url": "https://img.shields.io/badge/not%20mobile%20compatible-smods%20v1.0.0-lightgrey"
         },
         {
-          "label": "Status",
+          "label": "patch in works",
           "url": "https://img.shields.io/badge/patch%20in%20works-blueviolet"
         }
       ],
-      "sourceLines": [548]
+      "sourceLines": [
+        548
+      ]
     },
     {
       "id": "lovely-solatro-github-com-bryanthaboi-solatro",
@@ -5928,11 +6913,15 @@
           "url": "https://github.com/bryanthaboi/solatro"
         }
       ],
-      "categories": ["Miscellaneous"],
+      "categories": [
+        "Miscellaneous"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [549]
+      "sourceLines": [
+        549
+      ]
     },
     {
       "id": "lovely-whentheimpostorissun-github-com-muddieee-sun-is-sus",
@@ -5946,11 +6935,15 @@
           "url": "https://github.com/Muddieee/sun_is_sus"
         }
       ],
-      "categories": ["Miscellaneous"],
+      "categories": [
+        "Miscellaneous"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [550]
+      "sourceLines": [
+        550
+      ]
     },
     {
       "id": "lovely-properrussian-github-com-nitablade-balatro-properrussian",
@@ -5964,11 +6957,15 @@
           "url": "https://github.com/Nitablade/Balatro_ProperRussian"
         }
       ],
-      "categories": ["Translates"],
+      "categories": [
+        "Translates"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [555]
+      "sourceLines": [
+        555
+      ]
     },
     {
       "id": "lovely-altrand-discord-com-channels-1116389027176787968-1230007377806229595",
@@ -5982,11 +6979,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1230007377806229595"
         }
       ],
-      "categories": ["Utils"],
+      "categories": [
+        "Utils"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [559]
+      "sourceLines": [
+        559
+      ]
     },
     {
       "id": "lovely-debugplus-github-com-wilsonthewolf-debugplus",
@@ -6004,11 +7005,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1228149931257237664"
         }
       ],
-      "categories": ["Utils"],
+      "categories": [
+        "Utils"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [560]
+      "sourceLines": [
+        560
+      ]
     },
     {
       "id": "lovely-json-thunderstore-io-c-balatro-p-jostro-json",
@@ -6022,11 +7027,15 @@
           "url": "https://thunderstore.io/c/balatro/p/JoStro/json/"
         }
       ],
-      "categories": ["Utils"],
+      "categories": [
+        "Utils"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [561]
+      "sourceLines": [
+        561
+      ]
     },
     {
       "id": "lovely-jsutils-thunderstore-io-c-balatro-p-jostro-jsutils",
@@ -6040,11 +7049,15 @@
           "url": "https://thunderstore.io/c/balatro/p/JoStro/JSUtils/"
         }
       ],
-      "categories": ["Utils"],
+      "categories": [
+        "Utils"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [562]
+      "sourceLines": [
+        562
+      ]
     },
     {
       "id": "lovely-scoreimprovements-github-com-wilsonthewolf-balatro-mods-tree-master-lovely-scoreimprovements",
@@ -6062,11 +7075,15 @@
           "url": "https://canary.discord.com/channels/1116389027176787968/1235719119093891184"
         }
       ],
-      "categories": ["Utils"],
+      "categories": [
+        "Utils"
+      ],
       "loader": "Lovely",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [563]
+      "sourceLines": [
+        563
+      ]
     },
     {
       "id": "none-fourcolordeck-discord-com-channels-1116389027176787968-1219422385451700304",
@@ -6080,11 +7097,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1219422385451700304"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "None",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [571]
+      "sourceLines": [
+        571
+      ]
     },
     {
       "id": "none-mekaiscardbackcollection-discord-com-channels-1116389027176787968-1223241971154292808",
@@ -6098,11 +7119,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1223241971154292808"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "None",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [572]
+      "sourceLines": [
+        572
+      ]
     },
     {
       "id": "none-removegradientfromhighcontrastcards-discord-com-channels-1116389027176787968-1217950156318707813",
@@ -6116,11 +7141,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1217950156318707813"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "None",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [573]
+      "sourceLines": [
+        573
+      ]
     },
     {
       "id": "none-simplehdpixelated-discord-com-channels-1116389027176787968-1227566624375312455",
@@ -6134,11 +7163,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1227566624375312455"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "None",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [574]
+      "sourceLines": [
+        574
+      ]
     },
     {
       "id": "none-spanishsuiteddeck-discord-com-channels-1116389027176787968-1230900655426637864",
@@ -6152,11 +7185,15 @@
           "url": "https://discord.com/channels/1116389027176787968/1230900655426637864"
         }
       ],
-      "categories": ["Textures"],
+      "categories": [
+        "Textures"
+      ],
       "loader": "None",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [575]
+      "sourceLines": [
+        575
+      ]
     },
     {
       "id": "none-balatro-github-com-olenicandrei-balatro-romanian-translations",
@@ -6170,11 +7207,15 @@
           "url": "https://github.com/olenicandrei/balatro-romanian-translations"
         }
       ],
-      "categories": ["Translates"],
+      "categories": [
+        "Translates"
+      ],
       "loader": "None",
       "kind": "mod",
       "badges": [],
-      "sourceLines": [579]
+      "sourceLines": [
+        579
+      ]
     }
   ]
 }

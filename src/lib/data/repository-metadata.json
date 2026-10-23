@@ -1,0 +1,4838 @@
+{
+  "checkedAt": "2026-10-23T22:08:54.857Z",
+  "repositories": {
+    "0fficialhalo/gemstones": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "0fficialhalo/gemstones"
+    },
+    "1988koi/silly-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "1988koi/silly-jokers"
+    },
+    "1redone/ficklefox": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "1redone/ficklefox"
+    },
+    "1zoker/zokersmodmenu": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "1zoker/zokersmodmenu"
+    },
+    "3xplwastaken/naneinf-balatro-modloader": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 28,
+      "canonicalRepository": "3xplwastaken/naneinf-balatro-modloader"
+    },
+    "6543ozne/acepack_new": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "6543ozne/acepack_new"
+    },
+    "abgamma/brainstorm-rerolled": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 10,
+      "canonicalRepository": "abgamma/brainstorm-rerolled"
+    },
+    "abhinavr314/balatroolympus": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "abhinavr314/balatroolympus"
+    },
+    "absentabigail/absentdealer": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "absentabigail/absentdealer"
+    },
+    "abuffzucchini/greener-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "abuffzucchini/greener-jokers"
+    },
+    "acetna/quilombo": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "acetna/quilombo"
+    },
+    "acidflow-balatro/magicsort": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "acidflow-balatro/magicsort"
+    },
+    "adambennett/balatro-deckcreator": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 65,
+      "canonicalRepository": "adambennett/balatro-deckcreator"
+    },
+    "agentwill/mikujimbo": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "agentwill/mikujimbo"
+    },
+    "agentwill/waifujokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "agentwill/waifujokers"
+    },
+    "agoraaa/flushhotkeys": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 27,
+      "canonicalRepository": "agoraaa/flushhotkeys"
+    },
+    "aikoyori/balatro-aikoyoris-shenanigans": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 54,
+      "canonicalRepository": "aikoyori/balatro-aikoyoris-shenanigans"
+    },
+    "aikoyori/balatro_aikopaintjob": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "aikoyori/balatro_aikopaintjob"
+    },
+    "aikoyori/vocalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "aikoyori/vocalatro"
+    },
+    "aiksilotl/pauper-deck": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "aiksilotl/pauper-deck"
+    },
+    "akashrtd/balatromuteunfocus": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "akashrtd/balatromuteunfocus"
+    },
+    "akitaattribute/increasejokercap": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 6,
+      "canonicalRepository": "akitaattribute/increasejokercap"
+    },
+    "akitaattribute/increasesoulprobability": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "akitaattribute/increasesoulprobability"
+    },
+    "akitaattribute/replacejokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "akitaattribute/replacejokers"
+    },
+    "aleksxar/eclipsetextures": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "preciziei/eclipsetextures"
+    },
+    "alexanderandersonamenamen/handsome-devils-vanilla-mod-": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 10,
+      "canonicalRepository": "alexanderandersonamenamen/handsome-devils"
+    },
+    "alexdavies8/balatro-mods": {
+      "status": "missing",
+      "httpStatus": 404,
+      "stars": null
+    },
+    "alexgot1151/brainstorm-enhanced": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "alexgot1151/brainstorm-enhanced"
+    },
+    "alexse13dev/balatro-texture-packs": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "alexse13dev/balatro-texture-packs"
+    },
+    "alexzgreat/ro-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "alexzgreat/ro-balatro"
+    },
+    "amazindood/scrollabledescriptions": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "amazindood/scrollabledescriptions"
+    },
+    "amphiapple/bloonlatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "amphiapple/bloonlatro"
+    },
+    "amvoled/masquerade": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "amvoled/masquerade"
+    },
+    "amvoled/taikomochi": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 12,
+      "canonicalRepository": "amvoled/taikomochi"
+    },
+    "amyamethyst404/foolspack-balatro-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "amyamethyst404/foolspack-balatro-mod"
+    },
+    "antler5/balatro-planet-card-cash-out-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "antler5/balatro-planet-card-cash-out-mod"
+    },
+    "ao-u/ror2funnyitems": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "lemonfsh/ror2funnyitems"
+    },
+    "applemania30/maniatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "applemania30/maniatro"
+    },
+    "arandomtank7/balajeweled": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "arandomtank7/balajeweled"
+    },
+    "arashifox/arashicoolstuff": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "arashifox/arashicoolstuff"
+    },
+    "ard1tion/improved-booster-tarots": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "ard1tion/improved-booster-tarots"
+    },
+    "ascriptmaster/balatro-nihility": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "ascriptmaster/balatro-nihility"
+    },
+    "astrapboy/mistigris": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "astrapboy/mistigris"
+    },
+    "astrumnativus/azzysjokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "astrumnativus/azzysjokers"
+    },
+    "aurelius7309/sixsuits": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 16,
+      "canonicalRepository": "aurelius7309/sixsuits"
+    },
+    "aurelius7309/stylishsleeves": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "aurelius7309/stylishsleeves"
+    },
+    "aurelius7309/survival": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "aurelius7309/survival"
+    },
+    "autowatto/collabsreimagined": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "autowatto/collabsreimagined"
+    },
+    "autumnmood924/autumnmoodmechanics": {
+      "status": "missing",
+      "httpStatus": 404,
+      "stars": null
+    },
+    "autumnmood924/theautumncircus": {
+      "status": "missing",
+      "httpStatus": 404,
+      "stars": null
+    },
+    "axbolduc/greenseal": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "axbolduc/greenseal"
+    },
+    "ba11e-mos/balatro-joker-info": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "ba11e-mos/balatro-joker-info"
+    },
+    "ba11e-mos/balatro-stacked-editions": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "ba11e-mos/balatro-stacked-editions"
+    },
+    "badalchemyst/decks-aplenty": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "badalchemyst/decks-aplenty"
+    },
+    "bakersdozenbagels/balatrobakery": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "bakersdozenbagels/balatrobakery"
+    },
+    "bakersdozenbagels/balatrovalleyofthekings": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "bakersdozenbagels/balatrovalleyofthekings"
+    },
+    "balamod/balamod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 160,
+      "canonicalRepository": "balamod/balamod"
+    },
+    "balatrotcg/balatrotcg": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "balatrotcg/balatrotcg"
+    },
+    "balatrotwitchintegrationmod/balatro-twitch-integration-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "balatrotwitchintegrationmod/balatro-twitch-integration-mod"
+    },
+    "balin-p/wilder": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "balin-p/wilder"
+    },
+    "balt-dev/baltswarehouse": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "balt-dev/baltswarehouse"
+    },
+    "balt-dev/hqshaders": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "balt-dev/hqshaders"
+    },
+    "balt-dev/inkbleed": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "balt-dev/inkbleed"
+    },
+    "balt-dev/jimbotomy": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "balt-dev/jimbotomy"
+    },
+    "balt-dev/lightspeed": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "balt-dev/lightspeed"
+    },
+    "balt-dev/madness": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "balt-dev/madness"
+    },
+    "balt-dev/musi-talato": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "balt-dev/musi-talato"
+    },
+    "balt-dev/overstock": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "balt-dev/overstock"
+    },
+    "balt-dev/wokelatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "balt-dev/wokelatro"
+    },
+    "barriertrio/cardsauce": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 75,
+      "canonicalRepository": "barriertrio/cardsauce"
+    },
+    "batabata3/balatro-pampa-joker-pack": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 11,
+      "canonicalRepository": "batabata3/balatro-pampa-joker-pack"
+    },
+    "bazinga9000/mathblinds": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 9,
+      "canonicalRepository": "bazinga9000/mathblinds"
+    },
+    "bbbalatromod/bbbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "bbbalatromod/bbbalatro"
+    },
+    "beansofwarr-maker2/-unofficial-balatro-": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "beansofwarr-maker2/-unofficial-balatro-"
+    },
+    "beckcarver/balatro-cc-pack": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "beckcarver/balatro-cc-pack"
+    },
+    "besteon/balatrobot": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 62,
+      "canonicalRepository": "besteon/balatrobot"
+    },
+    "bestspark687090/sparklatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "bestspark687090/sparklatro"
+    },
+    "betmma/my_balatro_mods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 51,
+      "canonicalRepository": "betmma/my_balatro_mods"
+    },
+    "beverageart/fanta-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "beverageart/fanta-jokers"
+    },
+    "bignastyy/needforseedmod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "norriskel17/needforseedmod"
+    },
+    "bill-cipher46/willatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "bill-cipher46/willatro"
+    },
+    "bladesk/readabletro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 33,
+      "canonicalRepository": "bladesk/readabletro"
+    },
+    "blazingulag/prism": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 22,
+      "canonicalRepository": "blazingulag/prism"
+    },
+    "blindyy/amber-acorn-restore": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "blindyy/amber-acorn-restore"
+    },
+    "blizzowx/balatro---themed-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "blizzowx/balatro---themed-jokers---outdated"
+    },
+    "blizzowx/themed-joker-retriggered": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "blizzowx/themed-joker-retriggered"
+    },
+    "bosass/readable-tarots-balatro-mod-": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "bosass/readable-tarots-balatro-mod-"
+    },
+    "breezebuilder/dismissalert": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "breezebuilder/dismissalert"
+    },
+    "breezebuilder/systemclock": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 27,
+      "canonicalRepository": "breezebuilder/systemclock"
+    },
+    "bryanthaboi/solatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "bryanthaboi/solatro"
+    },
+    "burndil/balatroap": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 46,
+      "canonicalRepository": "burndil/balatroap"
+    },
+    "bus693/notilt": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "bus693/notilt"
+    },
+    "bus693/sweet-shop": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "bus693/sweet-shop"
+    },
+    "butterspaceship/glowypumpkin-community-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "butterspaceship/glowypumpkin-community-mod"
+    },
+    "cambi-gh/hiker-indiactor": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "cambi-gh/hiker-indiactor"
+    },
+    "cantlookback/balatroverlay": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 21,
+      "canonicalRepository": "cantlookback/balatroverlay"
+    },
+    "captainmanticore/toontastic-pack": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "captainmanticore/toontastic-pack"
+    },
+    "carpetrocketfuel/balatro-1ahitm-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "motitschka/balatro-1ahitm-mod"
+    },
+    "carrotonman/balatrodarkmode": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 25,
+      "canonicalRepository": "carrotonman/balatrodarkmode"
+    },
+    "catzzadilla/blank-balatro-mod-": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "catzzadilla/blank-balatro-mod-"
+    },
+    "catzzadilla/lgbt-mult-cards": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "catzzadilla/lgbt-mult-cards"
+    },
+    "catzzadilla/main-menu-tweaks": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "catzzadilla/main-menu-tweaks"
+    },
+    "catzzadilla/soup": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "catzzadilla/soup"
+    },
+    "cdrvo/cold-beans": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "cdrvo/cold-beans"
+    },
+    "cdrvo/revos-vault---balatro-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 12,
+      "canonicalRepository": "cdrvo/revos-vault"
+    },
+    "celestingaming/balatringamingdeck": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "celestingaming/balatringamingdeck"
+    },
+    "ceruleankay/sharpcards": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "ceruleankay/sharpcards"
+    },
+    "cg-223/joker-loadouts": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "cg-223/joker-loadouts"
+    },
+    "cg-223/toomanyjokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 15,
+      "canonicalRepository": "cg-223/toomanyjokers"
+    },
+    "cg-nik/cgniksbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "cg-nik/cgniksbalatro"
+    },
+    "chasebowling2010-svg/cmorb": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "chasebowling2010-svg/cmorb"
+    },
+    "chloe6111/joker-enchant-baccarat": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "chloe6111/joker-enchant-baccarat"
+    },
+    "chrishanel/grossbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "chrishanel/grossbalatro"
+    },
+    "christar2020/combo-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "christar2020/combo-mod"
+    },
+    "chubbymeel/balatromon": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 6,
+      "canonicalRepository": "chubbymeel/balatromon"
+    },
+    "clickseee/baddirector": {
+      "status": "missing",
+      "httpStatus": 404,
+      "stars": null
+    },
+    "clickseee/tangents": {
+      "status": "missing",
+      "httpStatus": 404,
+      "stars": null
+    },
+    "cloudzxiii/finalmix": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "cloudzxiii/finalmix"
+    },
+    "cloverpepsi/balatro-tdqdeck": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "cloverpepsi/balatro-tdqdeck"
+    },
+    "cloverpepsi/sillydecks": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "cloverpepsi/sillydecks"
+    },
+    "cloverpepsi/thelibrary": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "cloverpepsi/thelibrary"
+    },
+    "cokeblock/cokelatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "cokeblock/cokelatro"
+    },
+    "cokeblock/jimbosplus": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "cokeblock/jimbosplus"
+    },
+    "colonthreeing/creditlib": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "colonthreeing/creditlib"
+    },
+    "colonthreeing/glumbus": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "colonthreeing/glumbus"
+    },
+    "colonthreeing/sealsealbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "colonthreeing/sealsealbalatro"
+    },
+    "coo29/yippiemod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "coo29/yippiemod"
+    },
+    "countkiro/pmbalatromod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 9,
+      "canonicalRepository": "countkiro/pmbalatromod"
+    },
+    "cozmo496/marco": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "cozmo496/marco"
+    },
+    "craigsidcarlson/eternal-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "craigsidcarlson/eternal-balatro"
+    },
+    "cristiandis/blueprint-ui": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "cristiandis/blueprint-ui"
+    },
+    "crmykybord/sculio": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 25,
+      "canonicalRepository": "crmykybord/sculio"
+    },
+    "cybergaster/vanillaredux": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "cybergaster/vanillaredux"
+    },
+    "cybernetic2884/poopoofart": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "cybernetic2884/poopoofart"
+    },
+    "czar-khasm/ars-goetia-balatro-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "czar-khasm/ars-goetia-balatro-mod"
+    },
+    "danitsdev/lost_edition": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 41,
+      "canonicalRepository": "danitsdev/lost_edition"
+    },
+    "danivals/vanillaplusdecks": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "shovelflow/vanillaplusdecks"
+    },
+    "darkautumn2618/balatro-planetnine": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "darkautumn2618/balatro-planetnine"
+    },
+    "darklouie18/dark-louie-balala-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "darklouie18/dark-louie-balala-mod"
+    },
+    "dashandregeometry-dev/el-super-mod-estupido-que-nadie-entiende-ni-entendera-": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "dashandregeometry-dev/el-super-mod-estupido-que-nadie-entiende-ni-entendera-"
+    },
+    "decoxfe/pokerleven": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 13,
+      "canonicalRepository": "decoxfe/pokerleven"
+    },
+    "dee9c-git/balatro-callmewhatyouwant": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "dee9c-git/balatro-callmewhatyouwant"
+    },
+    "dee9c-git/balatro-foolsdisplay": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "dee9c-git/balatro-foolsdisplay"
+    },
+    "dee9c-git/balatro-lasthand": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "dee9c-git/balatro-lasthand"
+    },
+    "demondesmods/balatro-reshuffled": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "demondesmods/balatro-reshuffled"
+    },
+    "desmero/frenchtarotcavaliercard": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "desmero/frenchtarotcavaliercard"
+    },
+    "developerrowan/amplifiedscreenshake": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "developerrowan/amplifiedscreenshake"
+    },
+    "digitaldetective47/justice": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "digitaldetective47/justice"
+    },
+    "digitaldetective47/next-ante-preview": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 10,
+      "canonicalRepository": "digitaldetective47/next-ante-preview"
+    },
+    "digitaldetective47/profiles-plus": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "digitaldetective47/profiles-plus"
+    },
+    "digitaldetective47/strange-library": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "digitaldetective47/strange-library"
+    },
+    "digitaldetective47/strange-pencil": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "digitaldetective47/strange-pencil"
+    },
+    "digitaldetective47/suit-order": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "digitaldetective47/suit-order"
+    },
+    "divvycr/balatro-history": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 27,
+      "canonicalRepository": "divvycr/balatro-history"
+    },
+    "divvycr/balatro-preview": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 159,
+      "canonicalRepository": "divvycr/balatro-preview"
+    },
+    "dogg-fly/another-stupid-balatro-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "dogg-fly/another-stupid-balatro-mod"
+    },
+    "dogg-fly/kloun-demo": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "dogg-fly/kloun-demo"
+    },
+    "dorkdad141/balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "dorkdad141/balatro"
+    },
+    "dorkdad141/keyboard-shortcuts": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 15,
+      "canonicalRepository": "dorkdad141/keyboard-shortcuts"
+    },
+    "doubleaadev/balatroobserver": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "doubleaadev/balatroobserver"
+    },
+    "dps2004/5cebalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "dps2004/5cebalatro"
+    },
+    "dps2004/super-balatrio-bros": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "dps2004/super-balatrio-bros"
+    },
+    "dualthefool/spudlatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "dualthefool/spudlatro"
+    },
+    "dvrp0/distro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 15,
+      "canonicalRepository": "dvrp0/distro"
+    },
+    "easternfarmer/easternfarmers_corner": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "easternfarmer/easternfarmers_corner"
+    },
+    "eliiinyt/balatro-spotify-connect": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "eliiinyt/balatro-spotify-connect"
+    },
+    "emmadenslemma/agarmons": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "emmadenslemma/agarmons"
+    },
+    "emperorgesar/balatro-colour-selector": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 7,
+      "canonicalRepository": "emperorgesar/balatro-colour-selector"
+    },
+    "encarvlucas/encarvlucasbalatromods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "encarvlucas/encarvlucasbalatromods"
+    },
+    "endergoodra/textile": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "endergoodra/textile"
+    },
+    "energykid/superfine": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "energykid/superfine"
+    },
+    "epixium/executioner": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "epixium/executioner"
+    },
+    "erachlin/pijoker": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "erachlin/pijoker"
+    },
+    "eramdam/sticky-fingers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 25,
+      "canonicalRepository": "eramdam/sticky-fingers"
+    },
+    "eremel/galdur": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 73,
+      "canonicalRepository": "eremel/galdur"
+    },
+    "eremel/hd-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "eremel/hd-balatro"
+    },
+    "eremel/malverk": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 57,
+      "canonicalRepository": "eremel/malverk"
+    },
+    "eremel/spectralrecolours": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "eremel/spectralrecolours"
+    },
+    "eremelmods/ortalab": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 24,
+      "canonicalRepository": "eremelmods/ortalab"
+    },
+    "ericthetoon/fortlatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 10,
+      "canonicalRepository": "ericthetoon/fortlatro"
+    },
+    "eternalnacho/nachospokermondip": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 7,
+      "canonicalRepository": "eternalnacho/nachospokermondip"
+    },
+    "eternalnacho/troubadour": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "eternalnacho/troubadour"
+    },
+    "ethangreen-dev/lovely-injector": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 614,
+      "canonicalRepository": "ethangreen-dev/lovely-injector"
+    },
+    "falatro/balatro-waves": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "falatro/balatro-waves"
+    },
+    "fantom-balatro/fantoms-preview": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 23,
+      "canonicalRepository": "fantom-balatro/fantoms-preview"
+    },
+    "fatalerror404x/uberlatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "fatalerror404x/uberlatro"
+    },
+    "femboy-airlines/todd_oddities": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "femboy-airlines/todd_oddities"
+    },
+    "finnaware/finn-pokecards": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "finnaware/finn-pokecards"
+    },
+    "finnaware/finn-pokelatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "finnaware/finn-pokelatro"
+    },
+    "finnaware/kyu-latro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "finnaware/kyu-latro"
+    },
+    "firch/bunco": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 216,
+      "canonicalRepository": "firch/bunco"
+    },
+    "fireice421/balatrodash": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "fireice421/balatrodash"
+    },
+    "flounderlul/dice-seals": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "flounderlul/dice-seals"
+    },
+    "flounderlul/floundersjokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "flounderlul/floundersjokers"
+    },
+    "flowirexen/shimmerberry": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "flowirexen/shimmerberry"
+    },
+    "fogold/holy-fools": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "fogold/holy-fools"
+    },
+    "fosterbarnes/balatrogaypenis": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 12,
+      "canonicalRepository": "fosterbarnes/balatrogaypenis"
+    },
+    "franciscoarr/espalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "franciscoarr/espalatro"
+    },
+    "frbmt-bigetnouf/balatro-french-translations": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 20,
+      "canonicalRepository": "frbmt-bigetnouf/balatro-french-translations"
+    },
+    "frostice482/amulet": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 31,
+      "canonicalRepository": "frostice482/amulet"
+    },
+    "frostice482/balatro-imm": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "frostice482/balatro-imm"
+    },
+    "gabepesco/balatroancientjokerfix": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 7,
+      "canonicalRepository": "gabepesco/balatroancientjokerfix"
+    },
+    "gainumki/garbshit": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 11,
+      "canonicalRepository": "gainumki/garbshit"
+    },
+    "gauntletgames-2086/d6-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "gauntletgames-2086/d6-jokers"
+    },
+    "gauntletgames-2086/flower-pot": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 15,
+      "canonicalRepository": "gauntletgames-2086/flower-pot"
+    },
+    "georgetherat/bundlesoffun": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 14,
+      "canonicalRepository": "georgetherat/bundlesoffun"
+    },
+    "gfreitash/balatro-mods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "gfreitash/balatro-mods"
+    },
+    "gfsgfspunchlineguy/punchline": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "gfsgfspunchlineguy/punchline"
+    },
+    "ghostsalt/bfdi": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "ghostsalt/bfdi"
+    },
+    "ghostsalt/catan": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "ghostsalt/catan"
+    },
+    "ghostsalt/flipbook": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "ghostsalt/flipbook"
+    },
+    "ghostsalt/ghostcards": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "ghostsalt/ghostcards"
+    },
+    "ghostsalt/phanta": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 7,
+      "canonicalRepository": "ghostsalt/phanta"
+    },
+    "gitnether/balagay": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "gitnether/balagay"
+    },
+    "gitnether/paperback": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 98,
+      "canonicalRepository": "balatro-paperback/paperback"
+    },
+    "glopticalillusion/my-singing-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "glopticalillusion/my-singing-jokers"
+    },
+    "goldenepsilon/balatro-communitypack": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "goldenepsilon/balatro-communitypack"
+    },
+    "goldenepsilon/balatro_collectionfix": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "goldenepsilon/balatro_collectionfix"
+    },
+    "goldenepsilon/shampack": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "goldenepsilon/shampack"
+    },
+    "goldfighter5/golds-cards": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "goldfighter5/golds-cards"
+    },
+    "goonstowerdefense/goonlatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "goonstowerdefense/goonlatro"
+    },
+    "greenkookie56/sholatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "greenkookie56/sholatro"
+    },
+    "greenkookie56/sholium": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "greenkookie56/sholium"
+    },
+    "guillorycraft/extracredit": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 80,
+      "canonicalRepository": "guillorycraft/extracredit"
+    },
+    "gunnablescum/visibility": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "gunnablescum/visibility"
+    },
+    "gyrogold/baleggtro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "gyrogold/baleggtro"
+    },
+    "hailfire805/2-for-1-tarots": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "hailfire805/2-for-1-tarots"
+    },
+    "happinyz/balatrofoldbutton": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "happinyz/balatrofoldbutton"
+    },
+    "hawker-balatro-mods/card-parser": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "hawker-balatro-mods/card-parser"
+    },
+    "haykira/balatro-expedition33-cards": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "haykira/balatro-expedition33-cards"
+    },
+    "hazzamc/ajollyexpansion": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "hazzamc/ajollyexpansion"
+    },
+    "hellyom/hellyombalatromods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 11,
+      "canonicalRepository": "hellyom/hellyombalatromods"
+    },
+    "henhat583/hebrewbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "henhat583/hebrewbalatro"
+    },
+    "henryarst/digital-circus-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "henryarst/digital-circus-balatro"
+    },
+    "heyimkyu/balatro-gay": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 21,
+      "canonicalRepository": "heyimkyu/balatro-gay"
+    },
+    "heyimkyu/balatro-slutty-joker": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "heyimkyu/balatro-slutty-joker"
+    },
+    "horizon7006/dumbtro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "horizon7006/dumbtro"
+    },
+    "hotchrissbuns/leviathanmod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "hotchrissbuns/leviathanmod"
+    },
+    "hoversquid/condensed_ui": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "hoversquid/condensed_ui"
+    },
+    "hunterj360/everything_upgrade_balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "hunterj360/everything_upgrade_balatro"
+    },
+    "hurlemort/balatro_tao_mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "hurlemort/balatro_tao_mod"
+    },
+    "huythekiller/locfixer": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "huythekiller/locfixer"
+    },
+    "huythekiller/sagatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "huythekiller/sagatro"
+    },
+    "huythekiller/saukhonghudecks": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "huythekiller/saukhonghudecks"
+    },
+    "huythekiller/silktouch": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 11,
+      "canonicalRepository": "huythekiller/silktouch"
+    },
+    "huythekiller/vietnamesebalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "huythekiller/vietnamesebalatro"
+    },
+    "hyperbeast43/hypers-stuff": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "hyperbeast43/hypers-stuff"
+    },
+    "iceberglettuce0/plantain": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 13,
+      "canonicalRepository": "iceberglettuce0/plantain"
+    },
+    "icecanno/partner-api": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 32,
+      "canonicalRepository": "icecanno/partner-api"
+    },
+    "icreatedthisaccountforamsmbackground/wavemod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "icreatedthisaccountforamsmbackground/wavemod"
+    },
+    "icyethics/glue-for-modpacks": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 15,
+      "canonicalRepository": "icyethics/glue-for-modpacks"
+    },
+    "icyethics/kino": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 14,
+      "canonicalRepository": "icyethics/kino"
+    },
+    "ijohnmaged/multi-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "ijohnmaged/multi-jokers"
+    },
+    "ilikecheese0/cheesyjokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "ilikecheese0/cheesyjokers"
+    },
+    "inertsteak/jimbos-histories-inertsteak": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "inertsteak/jimbos-histories-inertsteak"
+    },
+    "inertsteak/pokermon": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 357,
+      "canonicalRepository": "inertsteak/pokermon"
+    },
+    "infarcactus/balatro-custom-sound-player": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "infarctus/balatro-custom-sound-player"
+    },
+    "inkyenby/inkysuitskins": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "inkyenby/inkysuitskins"
+    },
+    "inkyenby/paradoxicalpoker": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "inkyenby/paradoxicalpoker"
+    },
+    "inspectorballoonicorn/beelatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "inspectorballoonicorn/beelatro"
+    },
+    "isotopereal/runelatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "realisotope/runelatro"
+    },
+    "itayfeder/codex-arcanum": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 59,
+      "canonicalRepository": "itayfeder/codex-arcanum"
+    },
+    "itayfeder/federapi-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 7,
+      "canonicalRepository": "itayfeder/federapi-balatro"
+    },
+    "itayfeder/musicalsuit": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "itayfeder/musicalsuit"
+    },
+    "its-edalo/slay-the-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 21,
+      "canonicalRepository": "its-edalo/slay-the-jokers"
+    },
+    "itsamicrowave/horizon-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "itsamicrowave/horizon-mod"
+    },
+    "itsgraphax/reddit-bonanza": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 20,
+      "canonicalRepository": "itsgraphax/reddit-bonanza"
+    },
+    "jacksoncmu/smallworld-deck-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "jacksoncmu/smallworld-deck-balatro"
+    },
+    "jacobr1227/double_seals": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "jacobr1227/double_seals"
+    },
+    "jagodben/balatro-record-stats-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "jagodben/balatro-record-stats-mod"
+    },
+    "jakey2booboo/-booboobalatro-": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "jakey2booboo/-booboobalatro-"
+    },
+    "jamesgiesbrecht/lucky-seven": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "jamesgiesbrecht/lucky-seven"
+    },
+    "jamesthejellyfish/badapplebalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 6,
+      "canonicalRepository": "jamesthejellyfish/badapplebalatro"
+    },
+    "jamesthejellyfish/infinitescoremod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "jamesthejellyfish/infinitescoremod"
+    },
+    "jamesthejellyfish/jellymod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 14,
+      "canonicalRepository": "jamesthejellyfish/jellymod"
+    },
+    "jan-balatro/gracebalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "jan-balatro/gracebalatro"
+    },
+    "janw4ld/balatro-casey-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "kasimeka/balatro-casey-mod"
+    },
+    "jayeaaaaa/jokeypony": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 9,
+      "canonicalRepository": "jayeaaaaa/jokeypony"
+    },
+    "jboss-64/ultrakill-face-cards-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "jboss-64/ultrakill-face-cards-mod"
+    },
+    "jdbye/balatromods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "jdbye/balatromods"
+    },
+    "jeffvi/dx-tarots": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 16,
+      "canonicalRepository": "jeffvi/dx-tarots"
+    },
+    "jeipey/noita-deck-balatro-mod-": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "jeipey/noita-deck-balatro-mod-"
+    },
+    "jenwalter666/jensbalatrocollection": {
+      "status": "missing",
+      "httpStatus": 404,
+      "stars": null
+    },
+    "jie65535/jmods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "jie65535/jmods"
+    },
+    "jimbostats/jimbo-stats-mod": {
+      "status": "missing",
+      "httpStatus": 404,
+      "stars": null
+    },
+    "jkd3vld/balatrotagpreview": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "jkd3vld/balatrotagpreview"
+    },
+    "jlwoolf/dnasplice": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "jlwoolf/balatro-dna-splice"
+    },
+    "joelmforsyth/heldjoker": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "joelmforsyth/heldjoker"
+    },
+    "joglacraft/debugplusplus": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "jogla-the-wizard/debugplusplus"
+    },
+    "jonahficklin/jonahtro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "jonahficklin/jonahtro"
+    },
+    "jopstro/balatromods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "jopstro/balatromods"
+    },
+    "josephpb0909/curilatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "josephpb0909/curilatro"
+    },
+    "joshi-13/joshi-sdecks": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "joshi-13/joshi-sdecks"
+    },
+    "joshi-13/nomoreshoppingsimulator": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "joshi-13/nomoreshoppingsimulator"
+    },
+    "jotagame/jotaket-s-stuff": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "jotagame/jotaket-s-stuff"
+    },
+    "juliandeclercq/harambes-chosen": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "juliandeclercq/balatro-harambes-chosen"
+    },
+    "jumbocarrot0/bunco": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 30,
+      "canonicalRepository": "jumbocarrot0/bunco"
+    },
+    "jumbocarrot0/redux-arcanum": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 23,
+      "canonicalRepository": "jumbocarrot0/redux-arcanum"
+    },
+    "kahnio-110/balatro_producciones": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "kahnio-110/balatro_producciones"
+    },
+    "kasimeka/balatro-mobile-essentials-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "kasimeka/balatro-mobile-essentials-mod"
+    },
+    "kasimeka/balatro-typist-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 28,
+      "canonicalRepository": "kasimeka/balatro-typist-mod"
+    },
+    "kastamera/slaytheprincess": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "kastamera/slaytheprincess"
+    },
+    "kavid-115/worlds-collide": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "kavid-115/worlds-collide"
+    },
+    "kcgidw/kcvanilla": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 39,
+      "canonicalRepository": "kcgidw/kcvanilla"
+    },
+    "kekulism/deckskinslite": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 15,
+      "canonicalRepository": "kekulism/deckskinslite"
+    },
+    "kekulism/vortex": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "kekulism/vortex"
+    },
+    "ken-shi/balatro_cardbackinjection": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "ken-shi/balatro_cardbackinjection"
+    },
+    "ken-shi/balatro_highcardmod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 14,
+      "canonicalRepository": "ken-shi/balatro_highcardmod"
+    },
+    "kierkat10/cryptposting": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 12,
+      "canonicalRepository": "kierkat10/cryptposting"
+    },
+    "kingmaxthe2/kingmaxthe2-joker-pack": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "kingmaxthe2/kingmaxthe2-joker-pack"
+    },
+    "kiyomilovesoreos/rew1red": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "kiyomilovesoreos/rew1red"
+    },
+    "kjossul/betterstakes": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 6,
+      "canonicalRepository": "kjossul/betterstakes"
+    },
+    "kjossul/neowblessings": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 6,
+      "canonicalRepository": "kjossul/neowblessings"
+    },
+    "kkingofficial/vermin-of-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "kkingofficial/vermin-of-balatro"
+    },
+    "knockoffdev/blitztvbox": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "knockoffdev/blitztvbox"
+    },
+    "kooluve/better-mouse-and-gamepad": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 60,
+      "canonicalRepository": "kooluve/better-mouse-and-gamepad"
+    },
+    "kranlaxprogrammer/kranlaxdlc": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "kranlaxprogrammer/kranlaxdlc"
+    },
+    "kranlaxprogrammer/warpzone-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "kranlaxprogrammer/warpzone-mod"
+    },
+    "kroool/tiendita-s-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "kroool/tiendita-s-jokers"
+    },
+    "kuraku1245/batrocities": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "kuraku1245/batrocities"
+    },
+    "kusanehexaku/hanged-man": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "kusanehexaku/hanged-man"
+    },
+    "lafiosca/greenneedle": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "lafiosca/greenneedle"
+    },
+    "lammies-yum/slaythespirejokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "lammies-yum/slaythespirejokers"
+    },
+    "lammies-yum/socpenseggs": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "lammies-yum/socpenseggs"
+    },
+    "larswijn/cardsleeves": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 145,
+      "canonicalRepository": "larswijn/cardsleeves"
+    },
+    "lawyerred01/rw-karma-cards": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "lawyerred01/rw-karma-cards"
+    },
+    "lfmoth/requiem": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "lfmoth/requiem"
+    },
+    "liafonx/balatro-saverewinder": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 17,
+      "canonicalRepository": "liafonx/balatro-saverewinder"
+    },
+    "lichton/morne": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "lichton/morne"
+    },
+    "lilaclila/rebalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "lilaclila/rebalatro"
+    },
+    "limeeffy/celestial-funk": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 32,
+      "canonicalRepository": "limeeffy/celestial-funk"
+    },
+    "liminaldrenge/spectral-arcana": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "liminaldrenge/spectral-arcana"
+    },
+    "linkasplay/linkasoutrageousbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "linkasplay/linkasoutrageousbalatro"
+    },
+    "lnxfca/balatro-mods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 20,
+      "canonicalRepository": "lnxfca/balatro-mods"
+    },
+    "lowdelta/magician": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "lowdelta/magician"
+    },
+    "lshtech/codex-arcanum": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "lshtech/codex-arcanum"
+    },
+    "luccamargiotta/temperance": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "luccamargiotta/temperance"
+    },
+    "lunaastracassiopeia/blindside": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 10,
+      "canonicalRepository": "lunaastracassiopeia/blindside"
+    },
+    "lunaastracassiopeia/lunasbalatromods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 11,
+      "canonicalRepository": "lunaastracassiopeia/lunasbalatromods"
+    },
+    "lusciousdev/lushmod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "lusciousdev/lushmod"
+    },
+    "luuumine/balaquints": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "luuumine/balaquints"
+    },
+    "macplayz12/pixel-perfect": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "macplayz12/pixel-perfect"
+    },
+    "maelmc/pokermon-maelmc": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 13,
+      "canonicalRepository": "maelmc/pokermon-maelmc"
+    },
+    "maelmc/the-binding-of-jimbo": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "maelmc/the-binding-of-jimbo"
+    },
+    "mamikeriko/luckyjimbos": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 6,
+      "canonicalRepository": "mamikeriko/luckyjimbos"
+    },
+    "mamikeriko/luckylegends": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "mamikeriko/luckylegends"
+    },
+    "mamikeriko/rofflatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 18,
+      "canonicalRepository": "mamikeriko/rofflatro"
+    },
+    "marinaposting/marinefoolin": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "marinaposting/marinefoolin"
+    },
+    "markodankic85/balatro-minecraft-title-text-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "markodankic85/balatro-minecraft-title-text-mod"
+    },
+    "martinkauppinen/colorblind-seals": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "martinkauppinen/colorblind-seals"
+    },
+    "mathguy23/cruel-blinds": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 7,
+      "canonicalRepository": "mathguy23/cruel-blinds"
+    },
+    "mathguy23/grim": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 22,
+      "canonicalRepository": "mathguy23/grim"
+    },
+    "mathguy23/hit": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "mathguy23/hit"
+    },
+    "mathisfun0/jensbalatrocollection": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "mathisfun0/jensbalatrocollection"
+    },
+    "mathisfun0/talisman": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 143,
+      "canonicalRepository": "spectralpack/talisman"
+    },
+    "mathisfun0/trance": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 22,
+      "canonicalRepository": "spectralpack/trance"
+    },
+    "meragenio/unblind": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 15,
+      "canonicalRepository": "meragenio/unblind"
+    },
+    "mi1ck/jimbos-histories": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 23,
+      "canonicalRepository": "mi1ck/jimbos-histories"
+    },
+    "mi1ck/milcks-qol": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 16,
+      "canonicalRepository": "mi1ck/milcks-qol"
+    },
+    "michael-andrzejewski/reinforcement-deck": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "michael-andrzejewski/reinforcement-deck"
+    },
+    "mikamiamy/amy-s-balatro-texturepack": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "mikamiamy/amy-s-balatro-texturepack"
+    },
+    "mikaschoenmakers/mikasbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 37,
+      "canonicalRepository": "mikaschoenmakers/mikasbalatro"
+    },
+    "milankapitein/milatro-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 6,
+      "canonicalRepository": "milankapitein/milatro-mod"
+    },
+    "mine4114/elwatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "mine4114/elwatro"
+    },
+    "misenrol/terrariaxbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "negativeblueprint/terrariaxbalatro"
+    },
+    "mistyk1/showdown": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "mistyk1/showdown"
+    },
+    "mleaf233/teocean": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 7,
+      "canonicalRepository": "mleaf233/teocean"
+    },
+    "mod-of-theseus/mod-of-theseus": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 9,
+      "canonicalRepository": "mod-of-theseus/mod-of-theseus"
+    },
+    "mojimoon/mojibalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "mojimoon/mojibalatro"
+    },
+    "morpline/feedthevampire": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "morpline/feedthevampire"
+    },
+    "morpline/morjokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "morpline/morjokers"
+    },
+    "mpa-lhutchinson/regals-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "mpa-lhutchinson/regals-mod"
+    },
+    "mrpeon/mrpeon-evilatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "mrpeon/mrpeon-evilatro"
+    },
+    "mrthumble/balatro-house-rules": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "mrthumble/balatro-house-rules"
+    },
+    "muddieee/balatro_victory_royale": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "moonlit3/balatro_victory_royale"
+    },
+    "muddieee/metal_card_falling": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "moonlit3/metal_card_falling"
+    },
+    "muddieee/sun_is_sus": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "moonlit3/sun_is_sus"
+    },
+    "mwithington/silverseal": {
+      "status": "missing",
+      "httpStatus": 404,
+      "stars": null
+    },
+    "mysthaps/balatromods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "mysthaps/balatromods"
+    },
+    "mysthaps/lobotomycorp": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 28,
+      "canonicalRepository": "mysthaps/lobotomycorp"
+    },
+    "n0ttoxicplayer/flushtro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "n0ttoxicplayer/flushtro"
+    },
+    "natakilar/balatro-wilds": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "natakilar/balatro-wilds"
+    },
+    "neatoqueen/neatojokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 73,
+      "canonicalRepository": "neatoqueen/neatojokers"
+    },
+    "nebula434/gamblers-set": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "nebula434/gamblers-set"
+    },
+    "newcat07/gemsteeltexture": {
+      "status": "missing",
+      "httpStatus": 404,
+      "stars": null
+    },
+    "newtthefish/sylviesilly": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "newtthefish/sylviesilly"
+    },
+    "nh6574/jokerdisplay": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 180,
+      "canonicalRepository": "nh6574/jokerdisplay"
+    },
+    "nicholassam6425/balatro-mods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 31,
+      "canonicalRepository": "nicholassam6425/balatro-mods"
+    },
+    "nightmarebalatro/nightmarish": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "nightmarebalatro/nightmarish"
+    },
+    "nitablade/balatro_properrussian": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 126,
+      "canonicalRepository": "nitablade/balatro_properrussian"
+    },
+    "noah-bunis/fgcbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "noah-bunis/fgcbalatro"
+    },
+    "noodlemire/balatro-dream-bbq-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "noodlemire/balatro-dream-bbq-mod"
+    },
+    "northdoo/foolish-dreams": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "northdoo/foolish-dreams"
+    },
+    "numbuh214/enhanceapi": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "numbuh214/enhanceapi"
+    },
+    "numbuh214/x-card": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "numbuh214/x-card"
+    },
+    "nyanko-army-knife/nyankatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "nyanko-army-knife/nyankatro"
+    },
+    "oceanramen/brainstorm": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 131,
+      "canonicalRepository": "oceanramen/brainstorm"
+    },
+    "oceanramen/saturn": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 97,
+      "canonicalRepository": "oceanramen/saturn"
+    },
+    "odd-owl/gi-hsr-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "odd-owl/gi-hsr-jokers"
+    },
+    "odd-owl/glorplatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "odd-owl/glorplatro"
+    },
+    "olenicandrei/balatro-romanian-translations": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "olenicandrei/balatro-romanian-translations"
+    },
+    "omnilax/gofishbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "omnilax/gofishbalatro"
+    },
+    "onesuchkeeper/hunatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "onesuchkeeper/hunatro"
+    },
+    "onesuchkeeper/telepurtedeck": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "onesuchkeeper/telepurtedeck"
+    },
+    "ookayoak/challenger-deep": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "ookayoak/challenger-deep"
+    },
+    "ookayoak/challenger-examples": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "ookayoak/challenger-examples"
+    },
+    "ookayoak/opalstuff": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "ookayoak/opalstuff"
+    },
+    "oppositewolf770/jokersellvalue": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 11,
+      "canonicalRepository": "oppositewolf770/jokersellvalue"
+    },
+    "oppositewolf770/souleverything": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "oppositewolf770/souleverything"
+    },
+    "otherboxofpencils-bit/superpostional8ball": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "otherboxofpencils-bit/superpostional8ball"
+    },
+    "ouiiskey/manifold": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "ouiiskey/manifold"
+    },
+    "packid879/albert-and-mart-balatro-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "packid879/albert-and-mart-balatro-mod"
+    },
+    "packid879/karambit-blue-gem-balatro-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "packid879/karambit-blue-gem-balatro-mod"
+    },
+    "pawpatoes/balatromodded": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "pawpatoes/balatromodded"
+    },
+    "pawpatoes/baltroze-s-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "pawpatoes/baltroze-s-jokers"
+    },
+    "pawpatoes/mayhem": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "pawpatoes/mayhem"
+    },
+    "pawpatoes/oops-all-paws": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "pawpatoes/oops-all-paws"
+    },
+    "pawpatoes/paw-s-shenanigans": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "pawpatoes/paw-s-shenanigans"
+    },
+    "pawpatoes/redprint": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "pawpatoes/redprint"
+    },
+    "peakshitposts/peakshitmod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "peakshitposts/peakshitmod"
+    },
+    "pi-cubed-cat/pi_cubeds_jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "pi-cubed-cat/pi_cubeds_jokers"
+    },
+    "pinkmaggit-hub/buffoonery": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 30,
+      "canonicalRepository": "pinkmaggit-hub/buffoonery"
+    },
+    "pixeledlobster/balatro-alternative-speed-toggle": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "pixeledlobster/balatro-alternative-speed-toggle"
+    },
+    "pixeledlobster/quick-hand-selector": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "pixeledlobster/quick-hand-selector"
+    },
+    "pixellello/ena-deck": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "pixellello/ena-deck"
+    },
+    "plagger7/balatro-story-mode": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "plagger7/balatro-story-mode"
+    },
+    "plagger7/flowery-plant": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "plagger7/flowery-plant"
+    },
+    "plagger7/house-of-hearts": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "plagger7/house-of-hearts"
+    },
+    "plasmaphrase/smallpox": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "cosmeggo/smallpox"
+    },
+    "poktux/rose-s-dumbass-balatro-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "poktux/rose-s-dumbass-balatro-mod"
+    },
+    "poqoida/balatro-shop-undo": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "poqoida/balatro-shop-undo"
+    },
+    "porkifynet/porkify": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "porkifynet/porkify"
+    },
+    "prost0iva/minorarcana": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "prost0iva/minorarcana"
+    },
+    "protoanowastaken/canned-laughter": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "protoanowastaken/canned-laughter"
+    },
+    "pyromantis/oneshot-x-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "pyromantis/oneshot-x-balatro"
+    },
+    "r-metal/balatro-seed-suite": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "r-metal/balatro-seed-suite"
+    },
+    "r0maps/gigajokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "r0maps/gigajokers"
+    },
+    "radadav2/balatro-collabplusplus": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "radadav2/balatro-collabplusplus"
+    },
+    "rakibryan/after-five-api": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "rakibryan/after-five-api"
+    },
+    "rakibryan/always-show-seed-rekindled-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "rakibryan/always-show-seed-rekindled-balatro"
+    },
+    "rakibryan/betmma-jokers-mobile-friendly": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "rakibryan/betmma-jokers-mobile-friendly"
+    },
+    "rakibryan/exit-button-rekindled-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "rakibryan/exit-button-rekindled-balatro"
+    },
+    "rakibryan/hand-of-six-smods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "rakibryan/hand-of-six-smods"
+    },
+    "rakibryan/rule-breaker-joker": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "rakibryan/rule-breaker-joker"
+    },
+    "rakibryan/simple-fps-display-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "rakibryan/simple-fps-display-balatro"
+    },
+    "rattlingsnow353/familiar": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 16,
+      "canonicalRepository": "rattlingsnow353/familiar"
+    },
+    "rattlingsnow353/inkandcolor": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 7,
+      "canonicalRepository": "rattlingsnow353/inkandcolor"
+    },
+    "rattlingsnow353/snow-s-mods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "rattlingsnow353/snow-s-mods"
+    },
+    "raytrac3r/adventuretro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "raytrac3r/adventuretro"
+    },
+    "real-niacat/vallkarri": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 14,
+      "canonicalRepository": "felli-modding-studio/vallkarri"
+    },
+    "redrcknrbn/panley-joker": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "redrcknrbn/panley-joker"
+    },
+    "refractz/flushful": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "refractz/flushful"
+    },
+    "reigansander-cloud/thespianjokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "reigansander-cloud/thespianjokers"
+    },
+    "rensnek/gamblingismagic": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "rensnek/gamblingismagic"
+    },
+    "rgtriforce/balatroghosttrickskins": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "rgtriforce/balatroghosttrickskins"
+    },
+    "rivfalcon/multitextbox": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "rivfalcon/multitextbox"
+    },
+    "robelym/seal-seals": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "robelym/seal-seals"
+    },
+    "robertbsmith/balatroaudiohotswitch": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "robertbsmith/balatroaudiohotswitch"
+    },
+    "rodneyyyyyyyy/epic-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "rodneyyyyyyyy/epic-jokers"
+    },
+    "rodro-dev/monopoly-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "rodro-dev/monopoly-mod"
+    },
+    "sabslikesobs/pitywheel": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 10,
+      "canonicalRepository": "angerson/pitywheel"
+    },
+    "sadcubeart/artbox": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 24,
+      "canonicalRepository": "sadcubeart/artbox"
+    },
+    "sailaltoffical-commits/memeflyed-mod-for-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "sailaltoffical-commits/memeflyed-mod-for-balatro"
+    },
+    "salpootsy/bossjokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "salpootsy/bossjokers"
+    },
+    "samtabareh/balatro-gardens": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "samtabareh/balatro-gardens"
+    },
+    "saucequest/sauces-condiment-pack---balatro-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "saucequest/sauces-condiment-pack---balatro-mod"
+    },
+    "saucequest/vanillasauce": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "saucequest/vanillasauce"
+    },
+    "sdm0/joker-evolution": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 14,
+      "canonicalRepository": "sdm0/joker-evolution"
+    },
+    "sdm0/sdm_0-s-stuff": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 33,
+      "canonicalRepository": "sdm0/sdm_0-s-stuff"
+    },
+    "sebascontre/sebalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "sebascontre/sebalatro"
+    },
+    "sensen-gaming/thebalalaexperience": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "sensen-gaming/thebalalaexperience"
+    },
+    "shenanigansbunul/balatro-shenanigans-decks": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "shenanigansbunul/balatro-shenanigans-decks"
+    },
+    "siivagunner/qualatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 37,
+      "canonicalRepository": "siivagunner/qualatro"
+    },
+    "silver-streak/calamitydeck": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "silver-streak/calamitydeck"
+    },
+    "simplyran/israelistreamermod": {
+      "status": "missing",
+      "httpStatus": 404,
+      "stars": null
+    },
+    "sirmaiquis/balatro-baldatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "sirmaiquis/balatro-baldatro"
+    },
+    "sirmaiquis/balatro-finalboss": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "sirmaiquis/balatro-finalboss"
+    },
+    "sirmaiquis/balatro-stickers-always-shown": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 18,
+      "canonicalRepository": "sirmaiquis/balatro-stickers-always-shown"
+    },
+    "sirmaiquis/balatro-tagmanager": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "sirmaiquis/balatro-tagmanager"
+    },
+    "skywardtardis/balatro_reverse_tarots": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "skywardtardis/balatro_reverse_tarots"
+    },
+    "sleepyg11/handybalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 150,
+      "canonicalRepository": "sleepyg11/handybalatro"
+    },
+    "sleepyg11/theencounterbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "sleepyg11/theencounterbalatro"
+    },
+    "sluggly/azerothbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "sluggly/azerothbalatro"
+    },
+    "smg9000/cryptid-moremariojokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 6,
+      "canonicalRepository": "smg9000/cryptid-moremariojokers"
+    },
+    "snoresville/balatro-blunt-joker": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "snoresville/balatro-blunt-joker"
+    },
+    "snoresville/balatro-double-tag-joker": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "snoresville/balatro-double-tag-joker"
+    },
+    "snoresville/balatro-emergence-joker": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "snoresville/balatro-emergence-joker"
+    },
+    "snoresville/snoresville_turbulent_jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "snoresville/snoresville_turbulent_jokers"
+    },
+    "snowylight/datealivebalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "snowylight/datealivebalatro"
+    },
+    "snowylight/gamespeed-display-and-spacereroll": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "snowylight/gamespeed-display-and-spacereroll"
+    },
+    "snowylight/multipack": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 6,
+      "canonicalRepository": "snowylight/multipack"
+    },
+    "snowylight/starrailevents": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "snowylight/starrailevents"
+    },
+    "snowylight/zilliax": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "snowylight/zilliax"
+    },
+    "someone23832/ruinadecks": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "someone23832/ruinadecks"
+    },
+    "somethingcom515/sealsonjokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "somethingcom515/sealsonjokers"
+    },
+    "somethingcom515/yorick": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "somethingcom515/yorick"
+    },
+    "sonfivetv/pokermonplus": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 13,
+      "canonicalRepository": "sonfivetv/pokermonplus"
+    },
+    "spadesmaster/balatrojokerfilter": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "spadesmaster/balatrojokerfilter"
+    },
+    "sparklesrolf/furlatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 6,
+      "canonicalRepository": "sparklesrolf/furlatro"
+    },
+    "sparktimus/balatro95": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 14,
+      "canonicalRepository": "sparktimus/balatro95"
+    },
+    "spikeof2010/jankjonklers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 21,
+      "canonicalRepository": "spikeof2010/jankjonklers"
+    },
+    "spire-winder/balatro-draft": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 11,
+      "canonicalRepository": "thaeta-of-diamonds/balatro-draft"
+    },
+    "splasboi/mahrlatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "splasboi/mahrlatro"
+    },
+    "squidguset/toomanydecks": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "squidguset/toomanydecks"
+    },
+    "sse2/balatro-ultimate-speedup-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 10,
+      "canonicalRepository": "sse2/balatro-ultimate-speedup-mod"
+    },
+    "ssyangchn/manualflip": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "ssyangchn/manualflip"
+    },
+    "staegloth/balatromarvelmidnightsuns": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "staegloth/balatromarvelmidnightsuns"
+    },
+    "staegloth/balatrothoth": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "staegloth/balatrothoth"
+    },
+    "steamodded/examples": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 29,
+      "canonicalRepository": "steamodded/examples"
+    },
+    "steamodded/smods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 997,
+      "canonicalRepository": "steamodded/smods"
+    },
+    "steamopollys/steamodded": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 997,
+      "canonicalRepository": "steamodded/smods"
+    },
+    "stellrvr/fears-phobias": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "stellrvr/fears-phobias"
+    },
+    "stupxd/blueprint": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 70,
+      "canonicalRepository": "stupxd/blueprint"
+    },
+    "stupxd/cartomancer": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 82,
+      "canonicalRepository": "stupxd/cartomancer"
+    },
+    "subspaceember/signalistarot": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "subspaceember/signalistarot"
+    },
+    "sup3p/jokerhub": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "sup3p/jokerhub"
+    },
+    "surelynotclover/kevin-s-uty-balatro-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "surelynotclover/kevin-s-uty-balatro-mod"
+    },
+    "survovoaneend/all-in-jest": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 121,
+      "canonicalRepository": "survovoaneend/all-in-jest"
+    },
+    "sylviblossom/banner": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 24,
+      "canonicalRepository": "sylviblossom/banner"
+    },
+    "symmetricspiral/balatromods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "symmetricspiral/balatromods"
+    },
+    "system-of-root/roots_balatro_mods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "system-of-root/roots_balatro_mods"
+    },
+    "tamersoup625/balatro-highest-priestess": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "tamersoup625/balatro-highest-priestess"
+    },
+    "techninja119/judgesments-order": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "techninja119/judgesments-order"
+    },
+    "tetraminus/tetrapak": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "tetraminus/tetrapak"
+    },
+    "tgem7/gem-pokermon": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 7,
+      "canonicalRepository": "tgem7/gem-pokermon"
+    },
+    "tgreenmonkey/deck-inversion-challenge-konfiguration": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "tgreenmonkey/deck-inversion-challenge-konfiguration"
+    },
+    "the-2nd-olsberg/balatrospringfield": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "the-2nd-olsberg/balatrospringfield"
+    },
+    "the-2nd-olsberg/jambatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "the-2nd-olsberg/jambatro"
+    },
+    "theactualfirsttry/busted-buffoons": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "theactualfirsttry/busted-buffoons"
+    },
+    "thebearodactyl/insolence-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "thebearodactyl/insolence-balatro"
+    },
+    "thecodingzombie/pmcsbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "thecodingzombie/pmcsbalatro"
+    },
+    "thefaketh30ne/grab-bag": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 13,
+      "canonicalRepository": "thefaketh30ne/grab-bag"
+    },
+    "thefloppaguy/endless-chihuahuas-": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "thefloppaguy/endless-chihuahuas-"
+    },
+    "thelazyturtle33/balatrofirebotmodlist": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "thelazyturtle33/balatrofirebotmodlist"
+    },
+    "thelazyturtle33/smokey": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "thelazyturtle33/smokey"
+    },
+    "thelazyturtle33/solarbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "thelazyturtle33/solarbalatro"
+    },
+    "thelazyturtle33/turtleschallenges": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "thelazyturtle33/turtleschallenges"
+    },
+    "themediumkey/regretevator-check-raising-balatro-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "themediumkey/regretevator-check-raising-balatro-mod"
+    },
+    "theonegoofali/togapackbalatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 14,
+      "canonicalRepository": "theonegoofali/togapackbalatro"
+    },
+    "thezamos/isaac-tarot": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "thezamos/isaac-tarot"
+    },
+    "thorsgirdle/toxic-stall": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "thorsgirdle/toxic-stall"
+    },
+    "threepottpie/jane-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "threepottpie/jane-jokers"
+    },
+    "timelessc1/balatro-run-tracker": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "timelessc1/balatro-run-tracker"
+    },
+    "toeler/balatro-handpreview": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 29,
+      "canonicalRepository": "toeler/balatro-handpreview"
+    },
+    "traditionaldimension/pantomimeparadox": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "traditionaldimension/pantomimeparadox"
+    },
+    "traditionaldimension/showstreak": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "traditionaldimension/showstreak"
+    },
+    "trif3ctal/lucky-rabbit": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 9,
+      "canonicalRepository": "trif3ctal/lucky-rabbit"
+    },
+    "trigalela777-beep/bananatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "trigalela777-beep/bananatro"
+    },
+    "tsunamiinfantasy/balatroquickload": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 9,
+      "canonicalRepository": "tsunamiinfantasy/balatroquickload"
+    },
+    "tucaonormal/laststand": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "tucaonormal/laststand"
+    },
+    "tvroonhove/hanafudahybridmod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "tvroonhove/hanafudahybridmod"
+    },
+    "typ0codes/fir-mod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "typ0codes/fir-mod"
+    },
+    "typ0codes/reduced-decks": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "typ0codes/reduced-decks"
+    },
+    "typ0codes/typ0s-random-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "typ0codes/typ0s-random-jokers"
+    },
+    "unfanciousthewizard/imbored-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "unfanciousthewizard/imbored-balatro"
+    },
+    "unknow1022/cracklatro": {
+      "status": "missing",
+      "httpStatus": 404,
+      "stars": null
+    },
+    "uppedhealer8521/ogtextures": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "uppedhealer8521/ogtextures"
+    },
+    "uppedhealer8521/riff-raffling": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 4,
+      "canonicalRepository": "uppedhealer8521/riff-raffling"
+    },
+    "v-rtualized/disableverdantleaf": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "v-rtualized/disableverdantleaf"
+    },
+    "vegatheavali/vega-s-stuff": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "vegatheavali/vega-s-stuff"
+    },
+    "wangy-szu/finalscorepreview": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "wangy-szu/finalscorepreview"
+    },
+    "wanyatta/balatro-takanaka": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 59,
+      "canonicalRepository": "wanyatta/balatro-takanaka"
+    },
+    "wiktorproj/totally_balanced": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "wiktorproj/totally_balanced"
+    },
+    "wilsonthewolf/balatro-mods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "wilsonthewolf/balatro-mods"
+    },
+    "wilsonthewolf/debugplus": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 89,
+      "canonicalRepository": "wilsonthewolf/debugplus"
+    },
+    "wingedcatgirl/fusion-jokers": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 16,
+      "canonicalRepository": "wingedcatgirl/fusion-jokers"
+    },
+    "wingedcatgirl/go-to-bed--minty": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "wingedcatgirl/go-to-bed--minty"
+    },
+    "wingedcatgirl/menthol": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "wingedcatgirl/menthol"
+    },
+    "wingedcatgirl/re-unlock-all": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 6,
+      "canonicalRepository": "wingedcatgirl/re-unlock-all"
+    },
+    "wingedcatgirl/spectrumframework": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 6,
+      "canonicalRepository": "wingedcatgirl/spectrumframework"
+    },
+    "wiwiweb/balatromods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 10,
+      "canonicalRepository": "wiwiweb/balatromods"
+    },
+    "xenocheart/crimsons-ultimate-card-collection": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 5,
+      "canonicalRepository": "xenocheart/crimsons-ultimate-card-collection"
+    },
+    "xioxin/balatromods": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 12,
+      "canonicalRepository": "xioxin/balatromods"
+    },
+    "xxcubesawayxx/fundamental-joker-education": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "xxcubesawayxx/fundamental-joker-education"
+    },
+    "xz47sv/balatro_mod_utils": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "xz47sv/balatro_mod_utils"
+    },
+    "xz47sv/balatro_subtractions": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "xz47sv/balatro_subtractions"
+    },
+    "yahiamice/yahimod-balatro": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 135,
+      "canonicalRepository": "yahiamice/yahimod-balatro"
+    },
+    "yinzhi24/fabulousbeasts": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "yinzhi24/fabulousbeasts"
+    },
+    "yinzhi24/taoisttalismans": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "yinzhi24/taoisttalismans"
+    },
+    "yuorki/fazbears-video-poker-simulator": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 2,
+      "canonicalRepository": "yuorki/fazbears-video-poker-simulator"
+    },
+    "yvarrsrwra/jjk-cursed-deck": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "yvarrsrwra/jjk-cursed-deck"
+    },
+    "ywssp/balatro-coloredsuittarots": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 8,
+      "canonicalRepository": "ywssp/balatro-coloredsuittarots"
+    },
+    "zarenoff/balatro-handpreview-ru": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "zarenoff/balatro-handpreview-ru"
+    },
+    "zei33/balatro-safety-balamod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 0,
+      "canonicalRepository": "zei33/balatro-safety-balamod"
+    },
+    "zei33/balatro-safety-steamodded": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 10,
+      "canonicalRepository": "zei33/balatro-safety-steamodded"
+    },
+    "zei33/deselect-all-balamod": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 1,
+      "canonicalRepository": "zei33/deselect-all-balamod"
+    },
+    "zei33/deselect-all-steamodded": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 7,
+      "canonicalRepository": "zei33/deselect-all-steamodded"
+    },
+    "zjwcy/balatro_big_bang_by_zjwcy": {
+      "status": "available",
+      "httpStatus": 200,
+      "stars": 3,
+      "canonicalRepository": "zjwcy/balatro_big_bang_by_zjwcy"
+    }
+  },
+  "links": {
+    "https://alexyothefirst.com/mods/lynverse": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://batabata3.github.io/balatro-pampa-joker-pack": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://canary.discord.com/channels/1116389027176787968/1235719119093891184": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1209857245316255744": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1209916317604511814": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1210101577550008390": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1211094025159966790": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1211776677584175125": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1212307751980498975": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1212498071649521694": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1212504558853689434": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1212507813792714762": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1212584088968368208": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1212843840814325780": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1213040102138323024": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1213054535334109184": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1213521072591208548": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1213893814343696414": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1213904100065021962": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1214695661094572092": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1214857669932744714": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1215091624829517876": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1215120640563089470": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1215144701586575360": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1215385607686066287": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1215417507440107540": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1215786968433164328": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1215870212847698020": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1216064295633289286": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1217062797167427624": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1217466648135733328": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1217950156318707813": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1218775422066622585": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1219343995822407750": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1219422385451700304": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1219528214486192138": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1220733310360359033": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1220733310360359033/1220733397899542630": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1220733310360359033/1221074837343305789": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1220733310360359033/1221782780157886484": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1221088657251897344": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1221328616164691978": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1221853064475050064": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1223117435356577824": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1223241971154292808": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1223603584285937774": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1224707324061552640": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1224728153310887956": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1227500439055110175": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1227566624375312455": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1228149931257237664": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1229090507720757390": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1229482445074857996": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1229566404278358128": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1229891707793969265": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1230007377806229595": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1230178381342179350": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1230341696957448222": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1230900655426637864": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1230941930288844891": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1231746124994449458": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1231769435749220362": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1236675603495653416": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1241172556849876993": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1242974974701080617": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1245962046235873301": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1246280922412744774": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1246389947556958240": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1247049217621360640": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1247528518842191971": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1248431147784863840": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1248493580537040917": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1248729661815521381": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1248780371974295592": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1248865517112918016": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1248924034716930100": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1249450412143153266": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1249518446669074474": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://discord.com/channels/1116389027176787968/1331076935362547833": {
+      "status": "restricted",
+      "httpStatus": 200
+    },
+    "https://drive.google.com/drive/folders/1QrVoxrdkrcmmGhZYlnDTpaXwOj3UA4bP": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://dvrp-balatro-mods.pages.dev/reverie": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://dvrp-balatro-mods.pages.dev/risk-of-jesters": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://gist.github.com/n4ru/4ab14a6c9fd13e79e2f3bc8715e1a079": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://gist.github.com/n4ru/885293b844f27e7c90705e4cca9c0f3f": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://gist.github.com/theVDude/c8d33960f869207da4a69cc7c035e68d": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://git.benstokman.me/benjistokman/colored-card-pack": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/3XPLwastaken/naneINF-Balatro-Modloader": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/AbhinavR314/BalatroOlympus": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/acetna/Quilombo": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/adambennett/Balatro-DeckCreator": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Agoraaa/FlushHotkeys": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/AiksiLotl/Pauper-Deck": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/AkitaAttribute/IncreaseJokerCap": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/AkitaAttribute/IncreaseSoulProbability": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/AkitaAttribute/ReplaceJokers": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/aleksxar/EclipseTextures": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/AlexDavies8/balatro-mods": {
+      "status": "missing",
+      "httpStatus": 404
+    },
+    "https://github.com/alexse13dev/Balatro-Texture-Packs": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/AlexZGreat/Ro-Balatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Amvoled/Masquerade": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Amvoled/Taikomochi": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/antler5/Balatro-Planet-Card-Cash-Out-Mod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/ao-u/ror2funnyitems": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Ard1tion/Improved-Booster-Tarots": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/ascriptmaster/Balatro-Nihility": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Aurelius7309/SixSuits": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Aurelius7309/StylishSleeves": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Aurelius7309/Survival": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/AutumnMood924/AutumnMoodMechanics": {
+      "status": "missing",
+      "httpStatus": 404
+    },
+    "https://github.com/AutumnMood924/TheAutumnCircus": {
+      "status": "missing",
+      "httpStatus": 404
+    },
+    "https://github.com/AxBolduc/GreenSeal": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/balamod/balamod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Bazinga9000/MathBlinds": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/BBBalatroMod/BBBalatro/tree/main": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/besteon/balatrobot": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/betmma/my_balatro_mods": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/bladeSk/readabletro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/BlizzowX/Balatro---Themed-Jokers": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Breezebuilder/SystemClock": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/bryanthaboi/solatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/cantlookback/BalatrOverlay": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/CarrotonMan/balatrodarkmode": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/chrishanel/grossbalatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/crmykybord/Sculio": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Desmero/FrenchTarotCavalierCard": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/developerrowan/AmplifiedScreenShake": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/DivvyCr/Balatro-History": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/DivvyCr/Balatro-Preview": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/DorkDad141/balatro/blob/main/RerollPacks.lua": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/DorkDad141/keyboard-shortcuts": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/DPS2004/5CEBalatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/DPS2004/Super-Balatrio-Bros": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/dvrp0/distro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/EmperorGesar/Balatro-Colour-Selector": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/encarvlucas/EncarvlucasBalatroMods": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/erachlin/PiJoker": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Eremel/Malverk": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Eremel/SpectralRecolours": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/EricTheToon/Fortlatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/ethangreen-dev/lovely-injector": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Firch/Bunco": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Flounderlul": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Flounderlul/Dice-seals": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Flounderlul/FloundersJokers": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/fosterbarnes/balatroGayPenis": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/FrBmt-BIGetNouf/balatro-french-translations": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/gabepesco/BalatroAncientJokerFix": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/GauntletGames-2086/D6-Jokers": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/GoldenEpsilon/Balatro_CollectionFix": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/GoldenEpsilon/Balatro-CommunityPack": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/GoldenEpsilon/ShamPack": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Goldfighter5/Golds-Cards": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/happinyz/BalatroFoldButton": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Hellyom/HellyomBalatroMods": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/HeyImKyu/balatro-gay": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/HeyImKyu/balatro-slutty-joker": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/HuyTheKiller/SilkTouch": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/iJohnMaged/multi-jokers": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/ilikecheese0/CheesyJokers": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Infarcactus/Balatro-Custom-Sound-Player": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/itayfeder/Codex-Arcanum": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/itayfeder/FederAPI-Balatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/itayfeder/MusicalSuit": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/jacksoncmu/smallworld-deck-balatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/jacobr1227/double_seals": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/jagodben/Balatro-Record-Stats-Mod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/jamesthejellyfish/BadAppleBalatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/jamesthejellyfish/InfiniteScoreMod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/jamesthejellyfish/JellyMod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Jdbye/BalatroMods/blob/main/BrainstormRerollButton.lua": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Jdbye/BalatroMods/blob/main/RestartRunButton.lua": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/JeffVi/DX-Tarots": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/jenwalter666/JensBalatroCollection/tree/main/Incantation": {
+      "status": "missing",
+      "httpStatus": 404
+    },
+    "https://github.com/jie65535/JMods/blob/main/JCursor": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/JimboStats/jimbo-stats-mod": {
+      "status": "missing",
+      "httpStatus": 404
+    },
+    "https://github.com/JKd3vLD/BalatroTagPreview": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/jlwoolf/DNASplice": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/JopStro/BalatroMods": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/JulianDeclercq/harambes-chosen": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/jumbocarrot0/Redux-Arcanum": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/kasimeka/balatro-typist-mod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Kastamera/SlayThePrincess": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Ken-Shi/Balatro_CardBackInjection": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Ken-Shi/Balatro_HighCardMod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/kjossul/BetterStakes": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/kjossul/NeowBlessings": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Kooluve/Better-Mouse-And-Gamepad": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/lafiosca/GreenNeedle": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/larswijn/CardSleeves": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/LnxFCA/balatro-mods/tree/main/hermit-level-up": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/LnxFCA/balatro-mods/tree/main/lock-the-deal": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/LunaAstraCassiopeia/LunasBalatroMods": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/lusciousdev/LushMod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Luuumine/BalaQuints": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/MathIsFun0/JensBalatroCollection/tree/main/Aurinko": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/MathIsFun0/Talisman": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/MathIsFun0/Trance": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Mi1cK/Jimbos-Histories": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Mi1cK/Milcks-QOL": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/MikaSchoenmakers/MikasBalatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/milankapitein/milatro-mod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/mojimoon/MojiBalatro/blob/main/EccentricDeck/EccentricDeck.lua": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/mojimoon/MojiBalatro/blob/main/JokerOnlyDeck/JokerOnlyDeck.lua": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/morpline/FeedTheVampire": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/morpline/morjokers": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Muddieee/balatro_victory_royale": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Muddieee/metal_card_falling": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Muddieee/sun_is_sus": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/mwithington/SilverSeal": {
+      "status": "missing",
+      "httpStatus": 404
+    },
+    "https://github.com/Mysthaps/BalatroMods": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Mysthaps/LobotomyCorp": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/NataKilar/Balatro-Wilds": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/NewtTheFish/SylvieSilly": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/nh6574/JokerDisplay": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/nicholassam6425/balatro-mods": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/nicholassam6425/balatro-mods?tab=readme-ov-file": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/nicholassam6425/balatro-mods/blob/main/steamodded/mods/quickrestart_steamodded.lua": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Nitablade/Balatro_ProperRussian": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Numbuh214/EnhanceAPI": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Numbuh214/X-Card": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/OceanRamen/Brainstorm": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/OceanRamen/Saturn": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/olenicandrei/balatro-romanian-translations": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/OppositeWolf770/JokerSellValue": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/PixeledLobster/balatro-alternative-speed-toggle": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/PixeledLobster/Quick-Hand-Selector": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/PLagger7/House-of-Hearts": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/r-metal/balatro-seed-suite": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/RakibRyan/After-Five-Api": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/RakibRyan/always-show-seed-rekindled-balatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/RakibRyan/Betmma-Jokers-Mobile-friendly": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/RakibRyan/exit-button-rekindled-balatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/RakibRyan/Hand-of-six-smods": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/RakibRyan/Rule-Breaker-Joker": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/RakibRyan/simple-fps-display-balatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/RattlingSnow353/InkAndColor": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/RedrcknRbn/Panley-Joker": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/sabslikesobs/pitywheel": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/SDM0/Joker-Evolution": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/SDM0/SDM_0-s-Stuff": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/SirMaiquis/Balatro-Baldatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/SirMaiquis/Balatro-FinalBoss": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/SirMaiquis/Balatro-Stickers-Always-Shown": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/SirMaiquis/Balatro-TagManager": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Snoresville/balatro-blunt-joker": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Snoresville/balatro-double-tag-joker": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Snoresville/balatro-emergence-joker": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/snowylight/DatealiveBalatro": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/snowylight/GameSpeed-Display-and-Spacereroll": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/snowylight/Multipack": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/snowylight/Starrailevents": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/snowylight/Zilliax": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Sparktimus/Balatro95": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/spikeof2010/JankJonklers": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/sse2/balatro-ultimate-speedup-mod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/ssyangchn/ManualFlip": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Steamodded/examples/blob/master/Mods/AbsoluteDeck.lua": {
+      "status": "missing",
+      "httpStatus": 404
+    },
+    "https://github.com/Steamodded/examples/blob/master/Mods/DeckOf4s.lua": {
+      "status": "missing",
+      "httpStatus": 404
+    },
+    "https://github.com/Steamodded/examples/blob/master/Mods/MoreSpeeds.lua": {
+      "status": "missing",
+      "httpStatus": 404
+    },
+    "https://github.com/Steamodded/examples/blob/master/Mods/UltimateRandom.lua": {
+      "status": "missing",
+      "httpStatus": 404
+    },
+    "https://github.com/Steamopollys/Steamodded": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/stupxd/Blueprint": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/stupxd/Cartomancer": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/System-of-Root/Roots_Balatro_Mods": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/tgreenmonkey/Deck-Inversion-Challenge-Konfiguration": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Toeler/Balatro-HandPreview": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/TsunamiinFantasy/BalatroQuickLoad": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Tucaonormal/LastStand": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/tvroonhove/HanafudaHybridMod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/UppedHealer8521/Ogtextures": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/UppedHealer8521/Riff-Raffling": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/V-rtualized/DisableVerdantLeaf": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/WilsontheWolf/balatro-mods/tree/master/lovely/ScoreImprovements": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/WilsontheWolf/balatro-mods/tree/master/steamodded/NoBackground": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/WilsontheWolf/balatro-mods/tree/master/steamodded/Rumble": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/WilsontheWolf/DebugPlus": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Wiwiweb/BalatroMods": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Wiwiweb/BalatroMods/blob/main/FasterStakesUnlock.lua": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Wiwiweb/BalatroMods/blob/main/HoldForFinalHandScore.lua": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/XenoCHeart/Crimsons-Ultimate-Card-Collection/releases/tag/RS-Release": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/xioxin/BalatroMods": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/ZarenOFF/Balatro-HandPreview-RU": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Zei33/balatro-safety-balamod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Zei33/balatro-safety-steamodded": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Zei33/deselect-all-balamod": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/Zei33/deselect-all-steamodded": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://github.com/ZJWCY/Balatro_BIG_BANG_by_ZJWCY": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://gitlab.com/CraftedCart/jimbos_metrics": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://itayfeder.github.io/Fusion-Jokers": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://nicholassam6425.github.io/balatro/arachnei_fortune": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://notmario.github.io/MoreFluff": {
+      "status": "missing",
+      "httpStatus": 404
+    },
+    "https://rattlingsnow353.github.io/Snow-s-Mods": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://snoresville.github.io/snoresville_turbulent_jokers": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://tetraminus.github.io/TetrapakWebsite": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://thunderstore.io/c/balatro/p/JoStro/Buffoon_Deck": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://thunderstore.io/c/balatro/p/JoStro/json": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://thunderstore.io/c/balatro/p/JoStro/JSUtils": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://thunderstore.io/c/balatro/p/JoStro/Parrot_Joker": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://www.bilibili.com/video/BV1zBFKe3EuZ": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://www.nexusmods.com/balatro/mods/11": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://www.nexusmods.com/balatro/mods/13": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://www.nexusmods.com/balatro/mods/331": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://www.nexusmods.com/balatro/mods/5": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://www.nexusmods.com/balatro/mods/7": {
+      "status": "available",
+      "httpStatus": 200
+    },
+    "https://www.nexusmods.com/balatro/mods/9": {
+      "status": "available",
+      "httpStatus": 200
+    }
+  },
+  "primaryCatalog": {
+    "repository": "kasimeka/balatro-mod-index",
+    "revision": "ee9c1d2dcc48530894ae61e007aa646289941f58",
+    "records": 448,
+    "invalidMetadata": [
+      "mods/Khasm@Friends-of-Phoenix-Wright/meta.json",
+      "mods/Rageinater@Quality/meta.json"
+    ]
+  },
+  "awesomeCatalog": {
+    "repository": "jie65535/awesome-balatro",
+    "readmeRevision": "1a0335a5834f3148cd24076983d65e6e2bd195c0",
+    "originalEntries": 325,
+    "retainedEntries": 314
+  },
+  "removedEntries": [
+    {
+      "title": "OddityAPI",
+      "sourceUrl": "https://github.com/AutumnMood924/AutumnMoodMechanics",
+      "sourceLines": [
+        122
+      ]
+    },
+    {
+      "title": "The Autumn Circus",
+      "sourceUrl": "https://github.com/AutumnMood924/TheAutumnCircus",
+      "sourceLines": [
+        159
+      ]
+    },
+    {
+      "title": "Absolute Deck",
+      "sourceUrl": "https://github.com/Steamodded/examples/blob/master/Mods/AbsoluteDeck.lua",
+      "sourceLines": [
+        163
+      ]
+    },
+    {
+      "title": "Deck of 4",
+      "sourceUrl": "https://github.com/Steamodded/examples/blob/master/Mods/DeckOf4s.lua",
+      "sourceLines": [
+        169
+      ]
+    },
+    {
+      "title": "Ultimate Random Deck",
+      "sourceUrl": "https://github.com/Steamodded/examples/blob/master/Mods/UltimateRandom.lua",
+      "sourceLines": [
+        205
+      ]
+    },
+    {
+      "title": "JimboStats",
+      "sourceUrl": "https://github.com/JimboStats/jimbo-stats-mod",
+      "sourceLines": [
+        244
+      ]
+    },
+    {
+      "title": "Incantation",
+      "sourceUrl": "https://github.com/jenwalter666/JensBalatroCollection/tree/main/Incantation",
+      "sourceLines": [
+        287
+      ]
+    },
+    {
+      "title": "More Speed",
+      "sourceUrl": "https://github.com/Steamodded/examples/blob/master/Mods/MoreSpeeds.lua",
+      "sourceLines": [
+        294
+      ]
+    },
+    {
+      "title": "MoreFluff",
+      "sourceUrl": "https://notmario.github.io/MoreFluff/",
+      "sourceLines": [
+        339
+      ]
+    },
+    {
+      "title": "Seven Sins",
+      "sourceUrl": "https://github.com/AlexDavies8/balatro-mods",
+      "sourceLines": [
+        356
+      ]
+    },
+    {
+      "title": "Silver Seal",
+      "sourceUrl": "https://github.com/mwithington/SilverSeal",
+      "sourceLines": [
+        372
+      ]
+    }
+  ]
+}

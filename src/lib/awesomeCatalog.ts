@@ -1,5 +1,10 @@
 import snapshot from "./data/awesome-balatro.json";
 import type { Mod } from "../stores/modStore";
+import {
+  canonicalGitHubRepository,
+  isKnownMissingSource,
+} from "./repositoryMetadata";
+export { canonicalGitHubRepository } from "./repositoryMetadata";
 
 export const AWESOME_BALATRO_REPOSITORY = "jie65535/awesome-balatro";
 export const AWESOME_BALATRO_README_URL =
@@ -330,7 +335,11 @@ function readCachedCatalog(): AwesomeCatalog | null {
     const parsed: unknown = JSON.parse(
       localStorage.getItem(CACHE_KEY) || "null",
     );
-    return isCatalog(parsed) ? parsed : null;
+    if (!isCatalog(parsed)) return null;
+    const catalog = filterUnavailableAwesomeEntries(parsed);
+    // Rewrite old caches so a prior app version's dead entries do not persist.
+    writeCachedCatalog(catalog);
+    return catalog;
   } catch {
     return null;
   }
@@ -345,7 +354,26 @@ function writeCachedCatalog(catalog: AwesomeCatalog): void {
   }
 }
 
-export const bundledAwesomeCatalog = snapshot as AwesomeCatalog;
+/** Only confirmed missing public sources are excluded; uncertain/gated links survive. */
+export function filterUnavailableAwesomeEntries(
+  catalog: AwesomeCatalog,
+): AwesomeCatalog {
+  const entries = catalog.entries
+    .filter((entry) => !isKnownMissingSource(entry.sourceUrl))
+    .map((entry) => ({
+      ...entry,
+      links: entry.links.filter((link) => !isKnownMissingSource(link.url)),
+    }));
+  return {
+    ...catalog,
+    source: { ...catalog.source, entryCount: entries.length },
+    entries,
+  };
+}
+
+export const bundledAwesomeCatalog = filterUnavailableAwesomeEntries(
+  snapshot as AwesomeCatalog,
+);
 
 export async function loadAwesomeCatalog(
   options: AwesomeCatalogLoadOptions = {},
@@ -372,12 +400,13 @@ export async function loadAwesomeCatalog(
     if (!response.ok)
       throw new Error(`GitHub returned HTTP ${response.status}`);
     const markdown = await response.text();
-    const catalog = parseAwesomeBalatroMarkdown(markdown);
-    if (catalog.entries.length < MINIMUM_EXPECTED_MODS) {
+    const parsed = parseAwesomeBalatroMarkdown(markdown);
+    if (parsed.entries.length < MINIMUM_EXPECTED_MODS) {
       throw new Error(
-        `Upstream list parsed only ${catalog.entries.length} entries; keeping the last known-good catalog`,
+        `Upstream list parsed only ${parsed.entries.length} entries; keeping the last known-good catalog`,
       );
     }
+    const catalog = filterUnavailableAwesomeEntries(parsed);
     writeCachedCatalog(catalog);
     return { catalog, origin: "live" };
   } catch (error) {
@@ -391,24 +420,6 @@ export async function loadAwesomeCatalog(
         };
   } finally {
     clearTimeout(timeout);
-  }
-}
-
-export function canonicalGitHubRepository(value: string): string | null {
-  const input = value.trim().replace(/^git\+/, "");
-  if (!input) return null;
-  const shorthand = input.match(/^@?([^/\s]+)\/([^/#?\s]+?)(?:\.git)?$/);
-  if (shorthand) return `${shorthand[1]}/${shorthand[2]}`.toLowerCase();
-  try {
-    const url = new URL(input);
-    if (url.hostname.toLowerCase() !== "github.com") return null;
-    const [owner, repository] = url.pathname
-      .replace(/^\/+|\/+$/g, "")
-      .split("/");
-    if (!owner || !repository) return null;
-    return `${owner}/${repository.replace(/\.git$/i, "")}`.toLowerCase();
-  } catch {
-    return null;
   }
 }
 

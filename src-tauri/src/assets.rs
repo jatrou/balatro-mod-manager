@@ -56,7 +56,7 @@ pub fn safe_slug(input: &str) -> String {
 /// Returns paths to the thumbnails and descriptions cache directories.
 /// Creates the directories if they don't exist (synchronous version).
 pub fn ensure_assets_dirs() -> Result<(PathBuf, PathBuf), String> {
-    let config_dir = dirs::config_dir().ok_or_else(|| "config dir not found".to_string())?;
+    let config_dir = bmm_lib::config_dir().ok_or_else(|| "config dir not found".to_string())?;
     let base = config_dir.join("Balatro").join("mod_assets");
     let thumbs = base.join("thumbnails");
     let descs = base.join("descriptions");
@@ -68,7 +68,7 @@ pub fn ensure_assets_dirs() -> Result<(PathBuf, PathBuf), String> {
 /// Returns paths to the thumbnails and descriptions cache directories.
 /// Creates the directories if they don't exist (async version).
 pub async fn ensure_assets_dirs_async() -> Result<(PathBuf, PathBuf), String> {
-    let config_dir = dirs::config_dir().ok_or_else(|| "config dir not found".to_string())?;
+    let config_dir = bmm_lib::config_dir().ok_or_else(|| "config dir not found".to_string())?;
     let base = config_dir.join("Balatro").join("mod_assets");
     let thumbs = base.join("thumbnails");
     let descs = base.join("descriptions");
@@ -84,7 +84,7 @@ pub async fn ensure_assets_dirs_async() -> Result<(PathBuf, PathBuf), String> {
 /// Returns paths to the mod details cache directory.
 /// Creates the directory if it doesn't exist (async version).
 pub async fn ensure_details_cache_dir_async() -> Result<PathBuf, String> {
-    let config_dir = dirs::config_dir().ok_or_else(|| "config dir not found".to_string())?;
+    let config_dir = bmm_lib::config_dir().ok_or_else(|| "config dir not found".to_string())?;
     let details_dir = config_dir
         .join("Balatro")
         .join("mod_assets")

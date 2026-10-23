@@ -105,7 +105,7 @@ fn read_path_from_registry() -> Result<String, std::io::Error> {
     let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
     let steam_path = hklm.open_subkey("SOFTWARE\\WOW6432Node\\Valve\\Steam")?;
 
-    Ok(steam_path.get_value("InstallPath")?)
+    steam_path.get_value("InstallPath")
 }
 
 fn remove_unexisting_paths(paths: &mut Vec<PathBuf>) {
@@ -448,11 +448,10 @@ pub fn is_steam_running() -> bool {
     #[cfg(target_os = "windows")]
     {
         let system = System::new_all();
-        let x = system
+        system
             .processes_by_exact_name(std::ffi::OsStr::new("steam.exe"))
             .next()
-            .is_some();
-        x
+            .is_some()
     }
 
     #[cfg(target_family = "unix")]
@@ -646,14 +645,15 @@ mod tests {
     fn test_get_installed_mods_filters_lovely_dirs() {
         let _lock = crate::ENV_LOCK.lock().unwrap();
         let tmp = tempdir().unwrap();
-        // Redirect config dir to temp using XDG_CONFIG_HOME and HOME (for macOS)
-        let original_cfg = std::env::var_os("XDG_CONFIG_HOME");
-        let original_home = std::env::var_os("HOME");
-        set_var("XDG_CONFIG_HOME", tmp.path());
-        // Ensure HOME points at temp so path resolution doesn't touch real user dirs.
-        set_var("HOME", tmp.path());
+        // Redirect BMM-owned data so this test cannot touch the user's config.
+        let original_data_dir = std::env::var_os("BMM_DATA_DIR");
+        let _restore = scopeguard::guard(original_data_dir, |value| match value {
+            Some(value) => set_var("BMM_DATA_DIR", value),
+            None => remove_var("BMM_DATA_DIR"),
+        });
+        set_var("BMM_DATA_DIR", tmp.path());
 
-        let mods_root = dirs::config_dir().unwrap().join("Balatro").join("Mods");
+        let mods_root = crate::config_dir().unwrap().join("Balatro").join("Mods");
         std::fs::create_dir_all(&mods_root).unwrap();
 
         // Create sample mod directories
@@ -674,15 +674,5 @@ mod tests {
         assert_eq!(mods.len(), 2);
         assert!(mods.iter().any(|p| p.ends_with("CoolMod")));
         assert!(mods.iter().any(|p| p.ends_with("Another")));
-
-        // restore environment
-        match original_cfg {
-            Some(val) => set_var("XDG_CONFIG_HOME", val),
-            None => remove_var("XDG_CONFIG_HOME"),
-        }
-        match original_home {
-            Some(val) => set_var("HOME", val),
-            None => remove_var("HOME"),
-        }
     }
 }

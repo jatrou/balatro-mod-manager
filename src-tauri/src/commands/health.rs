@@ -144,7 +144,7 @@ fn check_game_path(state: &tauri::State<'_, AppState>) -> HealthCheck {
 }
 
 async fn check_cache() -> HealthCheck {
-    let config_dir = match dirs::config_dir() {
+    let config_dir = match bmm_lib::config_dir() {
         Some(dir) => dir,
         None => {
             return HealthCheck {
@@ -283,7 +283,8 @@ pub async fn reset_database(state: tauri::State<'_, AppState>) -> Result<(), Str
 /// they live in the SQLite database, not in these caches.
 #[tauri::command]
 pub async fn clear_app_state() -> Result<(), String> {
-    let config_dir = dirs::config_dir().ok_or_else(|| "config directory not found".to_string())?;
+    let config_dir =
+        bmm_lib::config_dir().ok_or_else(|| "config directory not found".to_string())?;
     let balatro = config_dir.join("Balatro");
 
     let targets = [

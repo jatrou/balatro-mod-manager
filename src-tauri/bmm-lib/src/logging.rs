@@ -40,7 +40,7 @@ pub fn init_logger() -> Result<(), AppError> {
     }
 
     // Create log directory in config dir
-    let config_dir = dirs::config_dir()
+    let config_dir = crate::config_dir()
         .ok_or_else(|| AppError::DirNotFound(PathBuf::from("config directory")))?;
     let log_dir = config_dir.join("Balatro").join("logs");
 

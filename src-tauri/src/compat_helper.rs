@@ -2183,7 +2183,7 @@ fn write_config(enabled: bool, mods_dir: &Path) -> Result<(), String> {
         format!("enabled=false\nsafe_mode=true\nmods_dir={}\n", mods_dir_str)
     };
     let mut targets: Vec<PathBuf> = Vec::new();
-    if let Some(config_dir) = dirs::config_dir() {
+    if let Some(config_dir) = bmm_lib::config_dir() {
         targets.push(config_dir.join("Balatro"));
     }
     if let Some(parent) = mods_dir.parent() {

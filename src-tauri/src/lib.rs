@@ -128,7 +128,7 @@ pub fn run() {
                 }
 
                 // Remove legacy GitHub-based local clone directory if it exists
-                if let Some(cfg_dir) = dirs::config_dir() {
+                if let Some(cfg_dir) = bmm_lib::config_dir() {
                     let legacy_repo = cfg_dir.join("Balatro").join("mod_index");
                     if legacy_repo.exists() {
                         match std::fs::remove_dir_all(&legacy_repo) {
@@ -146,7 +146,7 @@ pub fn run() {
                 }
 
                 // Ensure the Mods directory exists
-                if let Some(cfg_dir) = dirs::config_dir() {
+                if let Some(cfg_dir) = bmm_lib::config_dir() {
                     let mods_dir = cfg_dir.join("Balatro").join("Mods");
                     if let Err(e) = std::fs::create_dir_all(&mods_dir) {
                         log::warn!(
@@ -238,7 +238,7 @@ pub fn run() {
 
                 // Lightweight fingerprint of Mods directory to detect additions/removals
                 fn mods_dir_fingerprint() -> Option<u64> {
-                    let config_dir = dirs::config_dir()?;
+                    let config_dir = bmm_lib::config_dir()?;
                     let mods_dir = config_dir.join("Balatro").join("Mods");
                     if !mods_dir.exists() {
                         return Some(0);
@@ -348,7 +348,7 @@ pub fn run() {
                         local_mod_detection::clear_detection_cache();
 
                         // Clean up empty directories in Mods folder
-                        if let Some(config_dir) = dirs::config_dir() {
+                        if let Some(config_dir) = bmm_lib::config_dir() {
                             let mods_dir = config_dir.join("Balatro").join("Mods");
                             if let Ok(entries) = std::fs::read_dir(&mods_dir) {
                                 for entry in entries.flatten() {

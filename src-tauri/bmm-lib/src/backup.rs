@@ -105,7 +105,7 @@ impl From<InstalledMod> for ModRecord {
 
 /// Get the backups directory path.
 pub fn get_backups_dir() -> Result<PathBuf, AppError> {
-    let config_dir = dirs::config_dir()
+    let config_dir = crate::config_dir()
         .ok_or_else(|| AppError::DirNotFound(PathBuf::from("config directory")))?;
     Ok(config_dir.join("Balatro").join("backups"))
 }
@@ -725,7 +725,7 @@ pub async fn get_total_backups_size() -> Result<u64, AppError> {
 
 /// Check if a restore was interrupted and return the backup ID if so.
 pub fn check_interrupted_restore() -> Option<String> {
-    let config_dir = dirs::config_dir()?;
+    let config_dir = crate::config_dir()?;
     let restore_marker = config_dir.join("Balatro").join(".restore_in_progress");
 
     if restore_marker.exists() {
@@ -737,7 +737,7 @@ pub fn check_interrupted_restore() -> Option<String> {
 
 /// Clear the interrupted restore marker.
 pub fn clear_interrupted_restore_marker() -> Result<(), AppError> {
-    let config_dir = dirs::config_dir()
+    let config_dir = crate::config_dir()
         .ok_or_else(|| AppError::DirNotFound(PathBuf::from("config directory")))?;
     let restore_marker = config_dir.join("Balatro").join(".restore_in_progress");
 

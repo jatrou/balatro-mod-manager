@@ -70,7 +70,7 @@ impl Database {
     /// Returns an error if the config directory cannot be found, the database
     /// cannot be opened, or migrations fail.
     pub fn new() -> Result<Self, AppError> {
-        let config_dir = dirs::config_dir()
+        let config_dir = crate::config_dir()
             .ok_or_else(|| AppError::DirNotFound(PathBuf::from("config directory")))?;
         let balatro_dir = config_dir.join("Balatro");
         let storage_path = resolve_storage_path(&balatro_dir);
@@ -891,6 +891,10 @@ impl Database {
 
 fn resolve_storage_path(primary_balatro_dir: &Path) -> PathBuf {
     let primary = primary_balatro_dir.join("bmm_storage.db");
+
+    if crate::data_dir_override().is_some() {
+        return primary;
+    }
 
     // Detect database created by the Flatpak build (config dir lives under ~/.var/app/io.balatro.ModManager)
     let flatpak_db = dirs::home_dir()

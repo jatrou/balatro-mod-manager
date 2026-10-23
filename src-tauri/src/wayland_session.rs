@@ -123,7 +123,7 @@ impl GpuState {
 
 /// Returns the base directory for lock files.
 fn lock_dir() -> Option<PathBuf> {
-    dirs::data_dir().map(|p| p.join("balatro-mod-manager"))
+    bmm_lib::data_dir().map(|p| p.join("balatro-mod-manager"))
 }
 
 /// Returns the path to the Wayland session lock file.

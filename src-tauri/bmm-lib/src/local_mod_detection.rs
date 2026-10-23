@@ -581,6 +581,10 @@ pub fn ensure_proton_mod_dir_link(_game_path: Option<&Path>) -> Result<(), Strin
 /// Returns Ok(true) if migration was performed, Ok(false) if no migration needed.
 #[cfg(target_os = "linux")]
 pub fn migrate_legacy_mods_dir() -> Result<bool, String> {
+    if crate::data_dir_override().is_some() {
+        return Ok(false);
+    }
+
     let Some(home) = dirs::home_dir() else {
         return Ok(false);
     };
@@ -713,15 +717,21 @@ pub fn migrate_legacy_mods_dir() -> Result<bool, String> {
 }
 
 pub fn mod_dir_candidates() -> Result<Vec<PathBuf>, String> {
+    // An explicit isolation root must never fall through to real Steam, host,
+    // Flatpak, or legacy locations, even if one of those directories exists.
+    if let Some(data_dir) = crate::data_dir_override() {
+        return Ok(vec![data_dir.join("Balatro").join("Mods")]);
+    }
+
     // Lovely 0.9.0+ uses XDG data directory (~/.local/share/Balatro/Mods) on Linux native
     #[cfg(target_os = "linux")]
-    let primary = dirs::data_dir()
+    let primary = crate::data_dir()
         .ok_or_else(|| "Could not find data directory".to_string())?
         .join("Balatro")
         .join("Mods");
 
     #[cfg(not(target_os = "linux"))]
-    let primary = dirs::config_dir()
+    let primary = crate::config_dir()
         .ok_or_else(|| "Could not find config directory".to_string())?
         .join("Balatro")
         .join("Mods");

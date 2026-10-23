@@ -79,7 +79,9 @@ pub async fn load_versions_cache(mod_type: String) -> Result<Option<(Vec<String>
 
 #[tauri::command]
 pub async fn save_mods_cache(mods: Vec<Mod>) -> Result<(), String> {
-    map_error(cache::save_cache(&mods))
+    map_error(cache::save_cache(&mods))?;
+    *MOD_CACHE.write().await = None;
+    Ok(())
 }
 
 #[tauri::command]
@@ -96,7 +98,7 @@ pub async fn clear_cache() -> Result<(), String> {
     }
 
     // Also clear the repo mod index cache we maintain under the config directory
-    let config_dir = match dirs::config_dir() {
+    let config_dir = match bmm_lib::config_dir() {
         Some(p) => p,
         None => {
             // If we can't resolve config dir, return any prior error or success for the primary cache
@@ -389,6 +391,27 @@ mod tests {
     #[test]
     fn test_mod_cache_ttl_is_30_seconds() {
         assert_eq!(MOD_CACHE_TTL, Duration::from_secs(30));
+    }
+
+    #[tokio::test]
+    async fn save_mods_cache_invalidates_shared_cache() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let original = std::env::var_os("BMM_DATA_DIR");
+        let _restore = scopeguard::guard(original, |value| unsafe {
+            match value {
+                Some(value) => std::env::set_var("BMM_DATA_DIR", value),
+                None => std::env::remove_var("BMM_DATA_DIR"),
+            }
+        });
+        unsafe { std::env::set_var("BMM_DATA_DIR", temp_dir.path()) };
+        *MOD_CACHE.write().await = Some(CachedMods {
+            mods: Arc::new(Vec::new()),
+            loaded_at: Instant::now(),
+        });
+
+        save_mods_cache(Vec::new()).await.unwrap();
+
+        assert!(MOD_CACHE.read().await.is_none());
     }
 
     #[test]

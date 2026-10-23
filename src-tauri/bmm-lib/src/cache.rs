@@ -28,6 +28,9 @@ use std::time::{SystemTime, UNIX_EPOCH};
 const CACHE_DURATION: u64 = 15 * 60; // 15 minutes in seconds
 
 fn flatpak_cache_path() -> Option<PathBuf> {
+    if crate::data_dir_override().is_some() {
+        return None;
+    }
     dirs::home_dir().map(|home| {
         home.join(".var/app/io.balatro.ModManager/cache/balatro-mod-manager/mods.cache.bin.gz")
     })
@@ -121,7 +124,7 @@ impl From<i32> for Category {
 }
 
 pub fn clear_cache() -> Result<(), AppError> {
-    let cache_dir = dirs::cache_dir()
+    let cache_dir = crate::cache_dir()
         .ok_or_else(|| AppError::DirNotFound(PathBuf::from("cache directory")))?
         .join("balatro-mod-manager");
     let mut targets = vec![cache_dir.join("mods.cache.bin.gz")];
@@ -159,7 +162,7 @@ pub fn clear_cache() -> Result<(), AppError> {
 }
 
 pub fn save_versions_cache(mod_type: &str, versions: &[String]) -> Result<(), AppError> {
-    let mut path = dirs::cache_dir()
+    let mut path = crate::cache_dir()
         .ok_or_else(|| AppError::DirNotFound(PathBuf::from("cache directory")))?
         .join("balatro-mod-manager");
 
@@ -218,7 +221,7 @@ pub fn save_versions_cache(mod_type: &str, versions: &[String]) -> Result<(), Ap
 }
 
 pub fn load_versions_cache(mod_type: &str) -> Result<Option<Vec<String>>, AppError> {
-    let path = dirs::cache_dir()
+    let path = crate::cache_dir()
         .ok_or_else(|| AppError::DirNotFound(PathBuf::from("cache directory")))?
         .join("balatro-mod-manager")
         .join(format!("versions-{mod_type}.cache.bin.gz"));
@@ -268,7 +271,7 @@ struct VersionCache {
 
 pub fn get_cache_path() -> Result<PathBuf, AppError> {
     // Primary cache location (used when writing)
-    let mut path = dirs::cache_dir()
+    let mut path = crate::cache_dir()
         .ok_or_else(|| AppError::DirNotFound(PathBuf::from("cache directory")))?
         .join("balatro-mod-manager");
 
@@ -282,7 +285,7 @@ pub fn get_cache_path() -> Result<PathBuf, AppError> {
 }
 
 fn select_cache_path_for_read() -> Result<PathBuf, AppError> {
-    let primary = dirs::cache_dir()
+    let primary = crate::cache_dir()
         .ok_or_else(|| AppError::DirNotFound(PathBuf::from("cache directory")))?
         .join("balatro-mod-manager")
         .join("mods.cache.bin.gz");
@@ -406,25 +409,14 @@ mod tests {
     fn with_temp_cache<T>(test: impl FnOnce(PathBuf) -> T) -> T {
         let _lock = crate::ENV_LOCK.lock().unwrap();
         let temp_dir = tempdir().unwrap();
-        let original_cache = std::env::var_os("XDG_CACHE_HOME");
-        let original_home = std::env::var_os("HOME");
+        let original = std::env::var_os("BMM_DATA_DIR");
+        let _restore = scopeguard::guard(original, |value| match value {
+            Some(value) => set_var("BMM_DATA_DIR", value),
+            None => remove_var("BMM_DATA_DIR"),
+        });
 
-        set_var("XDG_CACHE_HOME", temp_dir.path());
-        // Ensure HOME points at temp so flatpak cache fallbacks don't hit real user data.
-        set_var("HOME", temp_dir.path());
-        let result = test(temp_dir.path().to_path_buf());
-
-        // restore env
-        match original_cache {
-            Some(val) => set_var("XDG_CACHE_HOME", val),
-            None => remove_var("XDG_CACHE_HOME"),
-        }
-        match original_home {
-            Some(val) => set_var("HOME", val),
-            None => remove_var("HOME"),
-        }
-
-        result
+        set_var("BMM_DATA_DIR", temp_dir.path());
+        test(temp_dir.path().to_path_buf())
     }
 
     #[test]

@@ -27,7 +27,7 @@ pub async fn process_dropped_file(
     path: String,
 ) -> Result<String, String> {
     let config_dir =
-        dirs::config_dir().ok_or_else(|| "Could not find config directory".to_string())?;
+        bmm_lib::config_dir().ok_or_else(|| "Could not find config directory".to_string())?;
     let mods_dir = config_dir.join("Balatro").join("Mods");
     tokio::fs::create_dir_all(&mods_dir)
         .await
@@ -62,7 +62,7 @@ pub async fn process_mod_archive(
     filename: String,
     data: Vec<u8>,
 ) -> Result<String, String> {
-    let config_dir = dirs::config_dir()
+    let config_dir = bmm_lib::config_dir()
         .ok_or_else(|| AppError::DirNotFound(PathBuf::from("config directory")).to_string())?;
     let mods_dir = config_dir.join("Balatro").join("Mods");
     tokio::fs::create_dir_all(&mods_dir)

@@ -935,6 +935,24 @@ fn unique_work_dir(parent: &Path, purpose: &str, mod_name: &str) -> PathBuf {
     ))
 }
 
+fn unique_backup_dir_outside_mods_root(target_dir: &Path) -> Result<PathBuf, AppError> {
+    let mods_root = target_dir
+        .parent()
+        .ok_or_else(|| AppError::PathValidation {
+            path: target_dir.to_path_buf(),
+            reason: "Install target has no Mods directory parent".into(),
+        })?;
+    let backup_parent = mods_root.parent().ok_or_else(|| AppError::PathValidation {
+        path: target_dir.to_path_buf(),
+        reason: "Mods directory has no parent for a safe update backup".into(),
+    })?;
+    let mod_name = target_dir
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("mod");
+    Ok(unique_work_dir(backup_parent, "backup", mod_name))
+}
+
 /// Commit a fully prepared directory while retaining the previous install
 /// until the replacement is in place. If the commit rename fails, the old
 /// directory is restored before the error is returned.
@@ -946,43 +964,30 @@ pub(crate) fn commit_staged_directory(
         return Err(AppError::DirNotFound(staged_dir.to_path_buf()));
     }
 
-    let parent = target_dir
-        .parent()
-        .ok_or_else(|| AppError::PathValidation {
-            path: target_dir.to_path_buf(),
-            reason: "Install target has no parent directory".into(),
-        })?;
-    let mod_name = target_dir
-        .file_name()
-        .and_then(|name| name.to_str())
-        .unwrap_or("mod");
-    let backup_dir = unique_work_dir(parent, "backup", mod_name);
     let had_existing = target_dir.exists();
-    let existing_had_root_marker = target_dir.join(".lovelyignore").exists();
+    // Keep the old install beside the Mods directory, rather than inside it.
+    // A partially removed backup inside Mods could become loadable if cleanup
+    // deletes its ignore marker before encountering a locked nested file.
+    let backup_dir = if had_existing {
+        Some(unique_backup_dir_outside_mods_root(target_dir)?)
+    } else {
+        None
+    };
 
     if had_existing {
-        fs::rename(target_dir, &backup_dir).map_err(|e| AppError::FileWrite {
+        let backup_dir = backup_dir.as_ref().expect("created for existing target");
+        fs::rename(target_dir, backup_dir).map_err(|e| AppError::FileWrite {
             path: target_dir.to_path_buf(),
             source: format!("Failed to move existing mod aside for update: {e}"),
         })?;
-
-        // If cleanup is interrupted or blocked, the retained backup must not
-        // be loaded as a second copy of the mod.
-        if let Err(e) = fs::write(backup_dir.join(".lovelyignore"), "") {
-            let _ = fs::rename(&backup_dir, target_dir);
-            return Err(AppError::FileWrite {
-                path: backup_dir.join(".lovelyignore"),
-                source: format!("Failed to disable update backup: {e}"),
-            });
-        }
     }
 
     if let Err(commit_error) = fs::rename(staged_dir, target_dir) {
         let restore_result = if had_existing {
-            if !existing_had_root_marker {
-                let _ = fs::remove_file(backup_dir.join(".lovelyignore"));
-            }
-            fs::rename(&backup_dir, target_dir)
+            fs::rename(
+                backup_dir.as_ref().expect("created for existing target"),
+                target_dir,
+            )
         } else {
             Ok(())
         };
@@ -997,11 +1002,13 @@ pub(crate) fn commit_staged_directory(
         });
     }
 
-    if had_existing && let Err(e) = remove_dir_with_retry(&backup_dir, 5) {
-        // The new install is complete. The backup carries .lovelyignore, so
-        // leaving it for a later cleanup is safer than deleting the new copy.
+    if let Some(backup_dir) = backup_dir
+        && let Err(e) = remove_dir_with_retry(&backup_dir, 5)
+    {
+        // The new install is complete. The backup is outside the scanned Mods
+        // directory, so leaving it for later cleanup cannot load a second copy.
         log::warn!(
-            "Updated mod installed, but disabled backup cleanup failed at {}: {}",
+            "Updated mod installed, but backup cleanup failed at {}: {}",
             backup_dir.display(),
             e
         );
@@ -1404,6 +1411,26 @@ mod tests {
                     .file_name()
                     .to_string_lossy()
                     .starts_with(".bmm-backup-"))
+        );
+    }
+
+    #[test]
+    fn update_backup_is_outside_the_scanned_mods_root() {
+        let td = tempdir().unwrap();
+        let game_dir = td.path().join("Balatro");
+        let mods_dir = game_dir.join("Mods");
+        let target = mods_dir.join("TestMod");
+
+        let backup = unique_backup_dir_outside_mods_root(&target).unwrap();
+
+        assert_eq!(backup.parent(), Some(game_dir.as_path()));
+        assert_ne!(backup.parent(), Some(mods_dir.as_path()));
+        assert!(
+            backup
+                .file_name()
+                .unwrap()
+                .to_string_lossy()
+                .starts_with(".bmm-backup-TestMod-")
         );
     }
 

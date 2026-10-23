@@ -226,7 +226,8 @@ async fn install_windows_injector(
                     Some(version) => version.to_string(),
                     None => get_latest_lovely_version_fresh().await?,
                 };
-                download_windows_injector(&cached_dll, &version).await?;
+                let injector = fetch_windows_injector(&version).await?;
+                replace_file_transactionally(&cached_dll, injector.as_slice())?;
             }
         }
 

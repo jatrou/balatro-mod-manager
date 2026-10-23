@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 const BMI_CACHE_FILE: &str = "bmi_mods_cache";
 const THUMB_CACHE_TTL_SECS: u64 = 60 * 60 * 24 * 7;
 const MOD_DETAILS_CACHE_TTL_SECS: u64 = 60 * 60 * 48; // 48 hours
+static CATALOG_SYNC_LOCK: tokio::sync::Mutex<()> = tokio::sync::Mutex::const_new(());
 
 /// Unified mod details response - fetches all needed data in one API call
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -158,75 +159,26 @@ pub struct ArchiveModItem {
 // Fetch mod metadata and descriptions via the BMI HTTP service.
 #[tauri::command]
 pub async fn fetch_repo_mods(sort: Option<String>) -> Result<Vec<ArchiveModItem>, String> {
+    let _sync_guard = CATALOG_SYNC_LOCK.lock().await;
     let client = BmiClient::new()?;
-    client.check_health().await.map_err(|e| {
-        let msg = format!("BMI health check failed: {e}");
+    let sort_mode = SortMode::from_optional(sort.clone());
+    // One source cache is shared across all display sorts. Every call first verifies
+    // the live Git tree; cache data is used only for unchanged blob SHAs and is never
+    // returned as an offline authority.
+    let (cache_dir, cache_file) = bmi_cache_paths(None)?;
+    let previous = load_bmi_cache(&cache_file).await;
+    let cache_state = client.sync_catalog(previous.as_ref()).await.map_err(|e| {
+        let msg = format!("Mod index refresh failed: {e}");
         log::warn!("{msg}");
         msg
     })?;
-    let sort_mode = SortMode::from_optional(sort.clone());
-    let (cache_dir, cache_file) = bmi_cache_paths(sort.as_deref())?;
-    let cache = load_bmi_cache(&cache_file).await;
-
-    let (mut items, mut latest_updated) = if let Some(existing) = cache.as_ref() {
-        (existing.items.clone(), existing.last_updated_at.clone())
-    } else {
-        (Vec::new(), None)
-    };
-    if items.iter().any(|item| {
-        if !item.has_thumbnail {
-            return false;
-        }
-        let url = item.image_url.trim();
-        url.is_empty() || !(url.starts_with("http://") || url.starts_with("https://"))
-    }) {
-        items.clear();
-        latest_updated = None;
-    }
-    if items.iter().any(|item| item.meta.downloads.is_none()) {
-        items.clear();
-        latest_updated = None;
-    }
-
-    let force_full_refresh = matches!(sort_mode, SortMode::DownloadsAsc | SortMode::DownloadsDesc);
-    if force_full_refresh || items.is_empty() || latest_updated.is_none() {
-        let (fresh, updated_at) = client.fetch_all_mods(sort_mode).await.map_err(|e| {
-            let msg = format!("BMI fetch_all_mods failed: {e}");
-            log::warn!("{msg}");
-            msg
-        })?;
-        items = fresh;
-        latest_updated = updated_at;
-    } else if let Some(since) = latest_updated.clone() {
-        let (changed, updated_at) =
-            client
-                .fetch_changed_mods(&since, sort_mode)
-                .await
-                .map_err(|e| {
-                    let msg = format!("BMI fetch_changed_mods failed: {e}");
-                    log::warn!("{msg}");
-                    msg
-                })?;
-        if !changed.is_empty() {
-            items = bmi::apply_changed(&items, changed, &client)?;
-        }
-        latest_updated = bmi::pick_latest_updated(latest_updated, updated_at);
-    }
-    if !matches!(sort_mode, SortMode::DownloadsAsc | SortMode::DownloadsDesc) {
-        let _ = client.refresh_downloads(&mut items, sort_mode).await;
-        sort_archive_items(&mut items, sort_mode);
-    }
-
-    // Persist cache for future incremental sync
-    let cache_state = SyncCache {
-        last_updated_at: latest_updated,
-        items: items.clone(),
-    };
     let _ = tokio::fs::create_dir_all(&cache_dir).await;
     if let Ok(json) = serde_json::to_string_pretty(&cache_state) {
         let _ = tokio::fs::write(&cache_file, json).await;
     }
 
+    let mut items = cache_state.items;
+    sort_archive_items(&mut items, sort_mode);
     Ok(items)
 }
 
@@ -235,13 +187,12 @@ pub async fn fetch_repo_downloads(
     sort: Option<String>,
 ) -> Result<std::collections::HashMap<String, ModDownloads>, String> {
     let client = BmiClient::new()?;
-    client.check_health().await?;
     let sort_mode = SortMode::from_optional(sort);
     client.fetch_downloads_map(sort_mode).await
 }
 
 fn bmi_cache_paths(sort: Option<&str>) -> Result<(PathBuf, PathBuf), String> {
-    let config_dir = dirs::config_dir()
+    let config_dir = bmm_lib::config_dir()
         .ok_or_else(|| AppError::DirNotFound(PathBuf::from("config directory")).to_string())?;
     let cache_dir = config_dir.join("Balatro").join("mod_index_cache");
     let suffix = sort
@@ -290,7 +241,16 @@ fn sort_archive_items(items: &mut [ArchiveModItem], sort_mode: SortMode) {
                 other => other,
             })
         }
-        SortMode::DownloadsAsc | SortMode::DownloadsDesc => {}
+        // The maintained Git index does not publish download counters. Keep
+        // legacy sort values deterministic for old frontend state/bookmarks.
+        SortMode::DownloadsAsc | SortMode::DownloadsDesc => items.sort_by(|a, b| {
+            let a_key = a.meta.title.to_lowercase();
+            let b_key = b.meta.title.to_lowercase();
+            match a_key.cmp(&b_key) {
+                Ordering::Equal => a.dir_name.cmp(&b.dir_name),
+                other => other,
+            }
+        }),
     }
 }
 
@@ -1149,19 +1109,15 @@ mod tests {
     }
 
     #[test]
-    fn test_sort_archive_items_downloads_noop() {
+    fn test_sort_archive_items_downloads_falls_back_to_name() {
         let mut items = vec![
             make_test_item("Mod B", "b", 1000),
             make_test_item("Mod A", "a", 1000),
         ];
 
-        let original_order: Vec<_> = items.iter().map(|i| i.dir_name.clone()).collect();
-
-        // Downloads sorting is a no-op (handled elsewhere)
         sort_archive_items(&mut items, SortMode::DownloadsAsc);
-
-        let new_order: Vec<_> = items.iter().map(|i| i.dir_name.clone()).collect();
-        assert_eq!(original_order, new_order);
+        assert_eq!(items[0].meta.title, "Mod A");
+        assert_eq!(items[1].meta.title, "Mod B");
     }
 
     #[test]

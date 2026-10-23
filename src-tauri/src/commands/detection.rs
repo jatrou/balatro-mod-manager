@@ -117,8 +117,8 @@ pub struct OrphanReconcileResult {
 /// index. Marks installed mods missing from `remote_titles` as orphaned, and
 /// clears the flag for mods that have reappeared.
 ///
-/// A safety threshold mirrors the frontend prune guard: a tiny incoming set
-/// (likely an API hiccup) must not cause every installed mod to be flagged.
+/// The caller only invokes this after a complete, validated catalog refresh, so
+/// the supplied set is authoritative even when many entries were removed.
 #[tauri::command]
 pub async fn reconcile_orphan_mods(
     state: tauri::State<'_, AppState>,
@@ -126,26 +126,6 @@ pub async fn reconcile_orphan_mods(
     remote_titles: Vec<String>,
 ) -> Result<OrphanReconcileResult, String> {
     let mut db = state.db.lock().unwrap_or_else(|e| e.into_inner());
-    let installed = map_error(db.get_installed_mods())?;
-    let non_orphan_count = installed.iter().filter(|m| !m.orphaned).count();
-
-    // Safety: skip when the remote returned nothing, or returned far fewer
-    // entries than we have tracked. Mirrors frontend mergeIncomingMods guard.
-    let threshold = std::cmp::max(10usize, non_orphan_count / 2);
-    if remote_titles.is_empty() || remote_titles.len() < threshold {
-        log::info!(
-            "reconcile_orphan_mods: skipped (remote={}, tracked_non_orphan={}, threshold={})",
-            remote_titles.len(),
-            non_orphan_count,
-            threshold
-        );
-        return Ok(OrphanReconcileResult {
-            skipped: true,
-            changed: Vec::new(),
-            orphan_total: installed.iter().filter(|m| m.orphaned).count(),
-        });
-    }
-
     let present: std::collections::HashSet<String> = remote_titles.into_iter().collect();
     let changed = map_error(db.reconcile_orphaned_mods(&present))?;
     let orphan_total = map_error(db.get_installed_mods())?
@@ -211,19 +191,19 @@ mod tests {
 
     #[test]
     fn reindex_db_removes_missing_paths() {
-        // Redirect config dir to temp
+        // Redirect BMM-owned data so this test cannot touch the user's config.
         let td = tempdir().unwrap();
-        let original_cfg = std::env::var_os("XDG_CONFIG_HOME");
-        let original_home = std::env::var_os("HOME");
-        set_var("XDG_CONFIG_HOME", td.path());
-        if cfg!(target_os = "macos") {
-            set_var("HOME", td.path());
-        }
+        let original_data_dir = std::env::var_os("BMM_DATA_DIR");
+        let _restore = scopeguard::guard(original_data_dir, |value| match value {
+            Some(value) => set_var("BMM_DATA_DIR", value),
+            None => remove_var("BMM_DATA_DIR"),
+        });
+        set_var("BMM_DATA_DIR", td.path());
 
         let db = Database::new().expect("db");
 
         // Create one existing and one missing mod path
-        let mods_dir = dirs::config_dir().unwrap().join("Balatro").join("Mods");
+        let mods_dir = bmm_lib::config_dir().unwrap().join("Balatro").join("Mods");
         std::fs::create_dir_all(&mods_dir).unwrap();
         let existing = mods_dir.join("Exists");
         std::fs::create_dir_all(&existing).unwrap();
@@ -240,16 +220,6 @@ mod tests {
         let remaining = db.get_installed_mods().unwrap();
         assert_eq!(remaining.len(), 1);
         assert_eq!(remaining[0].name, "Existing");
-
-        // restore env
-        match original_cfg {
-            Some(val) => set_var("XDG_CONFIG_HOME", val),
-            None => remove_var("XDG_CONFIG_HOME"),
-        }
-        match original_home {
-            Some(val) => set_var("HOME", val),
-            None => remove_var("HOME"),
-        }
     }
 }
 
@@ -264,7 +234,7 @@ pub async fn delete_manual_mod(path: String) -> Result<(), String> {
         ));
     }
     let config_dir =
-        dirs::config_dir().ok_or_else(|| "Could not find config directory".to_string())?;
+        bmm_lib::config_dir().ok_or_else(|| "Could not find config directory".to_string())?;
     let mods_dir = config_dir.join("Balatro").join("Mods");
 
     let canonicalized_path = tokio::fs::canonicalize(&path)

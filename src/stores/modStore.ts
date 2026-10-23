@@ -3,6 +3,7 @@ import {
   safeLocalStorageSet,
   monitorStorageQuota,
 } from "../utils/storage-quota";
+import { hydrateModsFromCache, prepareModsForCache } from "../lib/catalogMerge";
 
 export interface Mod {
   id?: string;
@@ -12,6 +13,8 @@ export interface Mod {
   imageFallback?: string;
   // Internal optional fields used by views/cache
   _dirName?: string;
+  /** True when a row came from the remote catalog or its display-only cache. */
+  _catalogEntry?: boolean;
   _installedPath?: string;
   _hasThumbnail?: boolean;
   /** True when this mod is tracked locally but no longer present in the remote index. */
@@ -57,7 +60,7 @@ export enum SortOption {
 
 export const backgroundEnabled = writable(false);
 
-export const currentSort = writable<SortOption>(SortOption.DownloadsDesc);
+export const currentSort = writable<SortOption>(SortOption.NameAsc);
 
 /** Search/filter query for Installed Mods view */
 export const installedModsSearchStore = writable<string>("");
@@ -215,24 +218,9 @@ export async function withModsCachePersistenceSuspended<T>(
 
 function persistModsCache(value: Mod[]) {
   try {
-    const slim = value.map((m) => ({
-      title: m.title,
-      categories: m.categories,
-      colors: m.colors,
-      requires_steamodded: m.requires_steamodded,
-      requires_talisman: m.requires_talisman,
-      publisher: m.publisher,
-      repo: m.repo,
-      downloadURL: m.downloadURL,
-      folderName: m.folderName ?? null,
-      version: m.version ?? null,
-      installed: m.installed,
-      last_updated: m.last_updated,
-      _dirName: m._dirName,
-      _installedPath: m._installedPath,
-      _hasThumbnail: m._hasThumbnail ?? true,
-      // omit description and image fields (largest strings)
-    }));
+    // Cached catalog rows are display-only until a live refresh. The helper
+    // preserves provenance while omitting the largest display strings.
+    const slim = prepareModsForCache(value);
 
     const jsonData = JSON.stringify(slim);
     if (!safeLocalStorageSet("mods-cache", jsonData)) {
@@ -278,10 +266,7 @@ if (typeof window !== "undefined") {
   try {
     const cached = localStorage.getItem("mods-cache");
     if (cached) {
-      const parsed: Mod[] = JSON.parse(cached);
-      if (Array.isArray(parsed)) {
-        modsStore.set(parsed);
-      }
+      modsStore.set(hydrateModsFromCache(JSON.parse(cached)));
     }
     const ts = localStorage.getItem("mods-cache-ts");
     if (ts) {

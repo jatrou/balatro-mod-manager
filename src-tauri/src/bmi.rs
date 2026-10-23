@@ -1,44 +1,19 @@
-use std::cmp::Ordering;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::time::Duration;
 
-use reqwest::Url;
-use serde::de::DeserializeOwned;
-use serde::{Deserialize, Deserializer, Serialize};
+use futures::{StreamExt, stream};
+use reqwest::{StatusCode, Url};
+use serde::{Deserialize, Serialize};
 
 use crate::models::{ModDownloads, ModMeta};
 
-pub const DEFAULT_BMI_SERVER_URL: &str = "https://api-bmi.dasguney.com";
-
-/// Direct origin server IP for the BMI API.
-///
-/// # Why this exists
-/// Some users experience extreme latency (10-20+ seconds) when connecting through
-/// Cloudflare due to DNS resolution issues, regional blocking, or proxy slowness.
-/// Connecting directly to the origin IP bypasses these issues.
-///
-/// # How it works
-/// - The app first tries the primary domain (`api-bmi.dasguney.com`)
-/// - If any request takes longer than `FAST_TIMEOUT` (3 seconds), the app
-///   "hot-swaps" to the direct IP for the remainder of the session
-/// - The `Host: api-bmi.dasguney.com` header is sent so the server routes correctly
-///
-/// # When to update
-/// Update this IP if:
-/// - The BMI API server migrates to a new host
-/// - The hosting provider changes
-/// - You see "connection refused" errors when falling back to IP
-///
-/// To find the current IP: `dig +short api-bmi.dasguney.com` (look for the non-Cloudflare IP)
-/// or check the server's hosting dashboard.
-pub const BMI_FALLBACK_IP: &str = "45.136.18.191";
-
-const REQUEST_TIMEOUT: Duration = Duration::from_secs(10);
-/// Timeout before switching to fallback IP. If a request takes longer than this,
-/// we cancel it and retry with the direct IP connection.
-const FAST_TIMEOUT: Duration = Duration::from_secs(3);
-const MAX_RETRIES: u32 = 3;
-const PAGE_LIMIT: usize = 200;
+/// Community-maintained continuation of the catalog originally used by BMM.
+pub const DEFAULT_INDEX_REPOSITORY: &str = "kasimeka/balatro-mod-index";
+const DEFAULT_GITHUB_API_URL: &str = "https://api.github.com/";
+const DEFAULT_GITHUB_RAW_URL: &str = "https://raw.githubusercontent.com/";
+const INDEX_BRANCH: &str = "main";
+const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
+const CATALOG_FETCH_CONCURRENCY: usize = 16;
 
 #[derive(Clone, Copy, Debug)]
 pub enum SortMode {
@@ -61,79 +36,34 @@ impl SortMode {
             _ => SortMode::NameAsc,
         }
     }
-
-    fn as_param(&self) -> &'static str {
-        match self {
-            SortMode::NameAsc => "name_asc",
-            SortMode::NameDesc => "name_desc",
-            SortMode::UpdatedAsc => "updated_asc",
-            SortMode::UpdatedDesc => "updated_desc",
-            SortMode::DownloadsAsc => "downloads_asc",
-            SortMode::DownloadsDesc => "downloads_desc",
-        }
-    }
 }
 
-/// HTTP client for the Balatro Mod Index (BMI) API.
-///
-/// Handles connection to the mod repository with automatic fallback to direct IP
-/// if the primary domain is slow or unreachable. See [`BMI_FALLBACK_IP`] for details.
 #[derive(Clone)]
 pub struct BmiClient {
-    /// Primary API URL (the domain)
-    base_url: Url,
-    /// Direct IP fallback URL, used when primary is slow
-    fallback_url: Option<Url>,
-    /// Standard HTTP client with normal timeout
+    repository: String,
+    api_base: Url,
+    raw_base: Url,
     client: reqwest::Client,
-    /// Fast HTTP client used for timeout racing
-    fast_client: reqwest::Client,
-    /// Flag indicating whether we've switched to fallback mode for this session
-    use_fallback: std::sync::Arc<std::sync::atomic::AtomicBool>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct BmiMod {
-    #[serde(default, alias = "id", alias = "mod_id")]
-    pub id: Option<String>,
-    #[serde(default, alias = "dir_name", alias = "dirName", alias = "slug")]
-    pub dir_name: Option<String>,
-    #[serde(default, alias = "name", alias = "title")]
-    pub name: Option<String>,
-    #[serde(default, alias = "author", alias = "publisher")]
-    pub author: Option<String>,
-    #[serde(default, alias = "version")]
-    pub version: Option<String>,
-    #[serde(default, alias = "summary")]
+    #[serde(default)]
     pub summary: Option<String>,
-    #[serde(default, alias = "categories")]
-    pub categories: Vec<String>,
-    #[serde(default, alias = "repo", alias = "repository")]
+    #[serde(default, alias = "repository")]
     pub repo: Option<String>,
-    #[serde(
-        default,
-        alias = "homepage",
-        alias = "home_page",
-        alias = "homepage_url"
-    )]
+    #[serde(default, alias = "home_page", alias = "homepage_url")]
     pub homepage: Option<String>,
     #[serde(default, alias = "requires_steamodded", alias = "requires-steamodded")]
     pub requires_steamodded: Option<bool>,
     #[serde(default, alias = "requires_talisman", alias = "requires-talisman")]
     pub requires_talisman: Option<bool>,
-    #[serde(default, alias = "download_url", alias = "downloadURL")]
-    pub download_url: Option<String>,
-    #[serde(default, alias = "folder_name", alias = "folderName")]
-    pub folder_name: Option<String>,
     #[serde(default)]
-    pub downloads: Option<ModDownloads>,
-    #[serde(default, alias = "dependencies")]
     pub dependencies: Vec<String>,
     #[serde(default)]
     pub meta: Option<ModMeta>,
     #[serde(
         default,
-        alias = "description",
         alias = "body",
         alias = "content",
         alias = "markdown",
@@ -142,1030 +72,650 @@ pub struct BmiMod {
         alias = "description_markdown"
     )]
     pub description: Option<String>,
-    #[serde(default, alias = "description_html", alias = "descriptionHtml")]
+    #[serde(default, alias = "descriptionHtml")]
     pub description_html: Option<String>,
-    #[serde(
-        default,
-        alias = "thumbnail_url",
-        alias = "thumbnailUrl",
-        alias = "thumbnail"
-    )]
-    pub thumbnail_url: Option<String>,
-    #[serde(
-        default,
-        deserialize_with = "deserialize_updated_at",
-        alias = "updated_at",
-        alias = "updatedAt",
-        alias = "last_updated_at",
-        alias = "lastUpdatedAt"
-    )]
-    pub updated_at: Option<String>,
-    #[serde(default, alias = "deleted", alias = "is_deleted", alias = "removed")]
-    pub deleted: bool,
 }
 
-#[derive(Debug, Clone, Deserialize)]
-struct ModsPage {
-    #[serde(default, alias = "mods", alias = "items", alias = "data")]
-    items: Vec<BmiMod>,
-    #[serde(default, alias = "nextCursor", alias = "next_cursor")]
-    next_cursor: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct SyncCache {
+    /// Legacy field retained so existing cache files can still be read.
+    #[serde(default)]
     pub last_updated_at: Option<String>,
+    /// Exact Git tree revision against which this catalog was built.
+    #[serde(default)]
+    pub source_revision: Option<String>,
+    /// Per-mod meta.json blob revisions allow a refresh to fetch only changed mods.
+    #[serde(default)]
+    pub item_revisions: HashMap<String, String>,
+    #[serde(default)]
     pub items: Vec<crate::commands::repo::ArchiveModItem>,
+}
+
+#[derive(Debug, Deserialize)]
+struct GitTreeResponse {
+    sha: String,
+    #[serde(default)]
+    truncated: bool,
+    #[serde(default)]
+    tree: Vec<GitTreeEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct GitTreeEntry {
+    path: String,
+    #[serde(rename = "type")]
+    kind: String,
+    sha: String,
+}
+
+#[derive(Clone, Debug)]
+struct CatalogEntry {
+    id: String,
+    meta_sha: String,
+    has_thumbnail: bool,
+}
+
+#[derive(Debug)]
+enum CatalogItemError {
+    Invalid(String),
+    Fatal(String),
 }
 
 impl BmiClient {
     pub fn new() -> Result<Self, String> {
-        let base_url = bmi_server_url()?;
+        let repository = std::env::var("BMM_MOD_INDEX_REPOSITORY")
+            .unwrap_or_else(|_| DEFAULT_INDEX_REPOSITORY.to_string());
+        validate_repository_name(&repository)?;
+        let api_base = parse_base_url(
+            "BMM_GITHUB_API_URL",
+            std::env::var("BMM_GITHUB_API_URL")
+                .unwrap_or_else(|_| DEFAULT_GITHUB_API_URL.to_string()),
+        )?;
+        let raw_base = parse_base_url(
+            "BMM_GITHUB_RAW_URL",
+            std::env::var("BMM_GITHUB_RAW_URL")
+                .unwrap_or_else(|_| DEFAULT_GITHUB_RAW_URL.to_string()),
+        )?;
         let client = reqwest::Client::builder()
             .timeout(REQUEST_TIMEOUT)
             .connect_timeout(Duration::from_secs(10))
-            .user_agent("balatro-mod-manager/1.0")
+            .user_agent("balatro-mod-manager/0.4 (+https://github.com/jatrou/balatro-mod-manager)")
             .build()
             .map_err(|e| e.to_string())?;
-        let fast_client = reqwest::Client::builder()
-            .timeout(FAST_TIMEOUT)
-            .connect_timeout(FAST_TIMEOUT)
-            .user_agent("balatro-mod-manager/1.0")
-            .danger_accept_invalid_certs(true)
-            .build()
-            .map_err(|e| e.to_string())?;
-        let fallback_url = Url::parse(&format!("https://{BMI_FALLBACK_IP}/")).ok();
         Ok(Self {
-            base_url,
-            fallback_url,
+            repository,
+            api_base,
+            raw_base,
             client,
-            fast_client,
-            use_fallback: std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false)),
         })
     }
 
-    pub async fn check_health(&self) -> Result<(), String> {
-        let url = self
-            .effective_base_url()
-            .join("healthz")
-            .map_err(|e| e.to_string())?;
-        log::debug!("Checking BMI health at: {}", url);
-        let resp = self
-            .send_request(|| self.http_client().get(url.clone()))
-            .await?;
-        if resp.status().is_success() {
-            log::debug!("BMI health check passed");
-            return Ok(());
-        }
-        let status = resp.status();
-        let body = resp.bytes().await.map_err(|e| e.to_string())?;
-        log::error!(
-            "BMI health check failed: status={}, body={}",
-            status,
-            preview_bytes(&body)
-        );
-        Err(format!(
-            "BMI healthz failed with status {}: {}",
-            status,
-            preview_bytes(&body)
-        ))
-    }
-
     pub fn thumbnail_url(&self, id: &str) -> Result<String, String> {
-        let encoded = encode_path(id);
-        let base = self.effective_base_url();
-        let url = base
-            .join(&format!("thumbnails/{encoded}.webp"))
-            .map_err(|e| e.to_string())?;
-        Ok(url.to_string())
+        self.raw_file_url(INDEX_BRANCH, id, "thumbnail.jpg")
+            .map(|url| url.to_string())
     }
 
     pub fn http_client(&self) -> &reqwest::Client {
-        if self.use_fallback.load(std::sync::atomic::Ordering::Relaxed) {
-            &self.fast_client
-        } else {
-            &self.client
-        }
-    }
-
-    fn effective_base_url(&self) -> &Url {
-        if self.use_fallback.load(std::sync::atomic::Ordering::Relaxed) {
-            self.fallback_url.as_ref().unwrap_or(&self.base_url)
-        } else {
-            &self.base_url
-        }
-    }
-
-    fn is_using_fallback(&self) -> bool {
-        self.use_fallback.load(std::sync::atomic::Ordering::Relaxed)
+        &self.client
     }
 
     pub async fn get_bytes(&self, url: Url) -> Result<Vec<u8>, String> {
-        let resp = self
-            .send_request(|| self.http_client().get(url.clone()))
-            .await?;
-        resp.bytes()
+        let response = self.send(self.client.get(url), "file").await?;
+        response
+            .bytes()
             .await
-            .map(|b| b.to_vec())
-            .map_err(|e| e.to_string())
+            .map(|bytes| bytes.to_vec())
+            .map_err(|e| format!("Mod index file download failed: {e}"))
     }
 
-    pub async fn fetch_all_mods(
-        &self,
-        sort: SortMode,
-    ) -> Result<(Vec<crate::commands::repo::ArchiveModItem>, Option<String>), String> {
-        let mut cursor: Option<String> = None;
-        let mut all = Vec::new();
-        let mut latest_updated: Option<String> = None;
-        loop {
-            let page = self.fetch_mods_page(cursor.as_deref(), sort).await?;
-            for item in page.items {
-                let (archive, updated_at) = bmi_to_archive(item, self)?;
-                if let Some(updated) = updated_at {
-                    latest_updated = pick_latest_updated(latest_updated, Some(updated));
-                }
-                all.push(archive);
-            }
-            match page.next_cursor {
-                Some(next) => cursor = Some(next),
-                None => break,
+    /// Synchronize against one authoritative Git tree snapshot. Removed directories
+    /// disappear from the result; a partial or failed refresh is never accepted.
+    pub async fn sync_catalog(&self, previous: Option<&SyncCache>) -> Result<SyncCache, String> {
+        let tree = self.fetch_catalog_tree().await?;
+        let entries = catalog_entries(&tree)?;
+
+        if previous.and_then(|cache| cache.source_revision.as_deref()) == Some(tree.sha.as_str()) {
+            let previous_ids: HashSet<&str> = previous
+                .into_iter()
+                .flat_map(|cache| cache.items.iter().map(|item| item.dir_name.as_str()))
+                .collect();
+            let live_ids: HashSet<&str> = entries.iter().map(|entry| entry.id.as_str()).collect();
+            if !previous_ids.is_empty() && previous_ids == live_ids {
+                return Ok(previous.expect("checked above").clone());
             }
         }
-        Ok((all, latest_updated))
+
+        let previous_items: HashMap<&str, &crate::commands::repo::ArchiveModItem> = previous
+            .into_iter()
+            .flat_map(|cache| {
+                cache
+                    .items
+                    .iter()
+                    .map(|item| (item.dir_name.as_str(), item))
+            })
+            .collect();
+        let previous_revisions = previous
+            .map(|cache| &cache.item_revisions)
+            .cloned()
+            .unwrap_or_default();
+
+        let mut items = Vec::with_capacity(entries.len());
+        let mut changed = Vec::new();
+        let mut item_revisions = HashMap::with_capacity(entries.len());
+        for entry in entries {
+            if previous_revisions.get(&entry.id) == Some(&entry.meta_sha)
+                && let Some(item) = previous_items.get(entry.id.as_str())
+            {
+                let mut reused = (*item).clone();
+                reused.has_thumbnail = entry.has_thumbnail;
+                reused.image_url = if entry.has_thumbnail {
+                    self.thumbnail_url(&entry.id)?
+                } else {
+                    String::new()
+                };
+                item_revisions.insert(entry.id.clone(), entry.meta_sha.clone());
+                items.push(reused);
+            } else {
+                changed.push(entry);
+            }
+        }
+
+        let revision = tree.sha.clone();
+        let fetched: Vec<(
+            CatalogEntry,
+            Result<crate::commands::repo::ArchiveModItem, CatalogItemError>,
+        )> = stream::iter(changed)
+            .map(|entry| {
+                let client = self.clone();
+                let revision = revision.clone();
+                async move {
+                    let result = client.fetch_archive_item(&entry, &revision).await;
+                    (entry, result)
+                }
+            })
+            .buffer_unordered(CATALOG_FETCH_CONCURRENCY)
+            .collect()
+            .await;
+        for (entry, result) in fetched {
+            match result {
+                Ok(item) => {
+                    item_revisions.insert(entry.id, entry.meta_sha);
+                    items.push(item);
+                }
+                Err(CatalogItemError::Invalid(error)) => {
+                    log::warn!("Ignoring invalid mod-index entry '{}': {error}", entry.id);
+                }
+                Err(CatalogItemError::Fatal(error)) => return Err(error),
+            }
+        }
+
+        if items.is_empty() {
+            return Err("Mod index contained no valid mods; refusing to replace the cache".into());
+        }
+
+        let unique_count = items
+            .iter()
+            .map(|item| item.dir_name.as_str())
+            .collect::<HashSet<_>>()
+            .len();
+        if unique_count != items.len() {
+            return Err("Mod index contains duplicate mod directory IDs".to_string());
+        }
+
+        Ok(SyncCache {
+            last_updated_at: Some(tree.sha.clone()),
+            source_revision: Some(tree.sha),
+            item_revisions,
+            items,
+        })
     }
 
     pub async fn fetch_downloads_map(
         &self,
-        sort: SortMode,
+        _sort: SortMode,
     ) -> Result<HashMap<String, ModDownloads>, String> {
-        let mut cursor: Option<String> = None;
-        let mut out: HashMap<String, ModDownloads> = HashMap::new();
-        loop {
-            let page = self.fetch_mods_page(cursor.as_deref(), sort).await?;
-            for item in page.items {
-                let id = match item.id.clone().or(item.dir_name.clone()) {
-                    Some(val) => val,
-                    None => continue,
-                };
-                if let Some(downloads) = item
-                    .downloads
-                    .clone()
-                    .or_else(|| item.meta.as_ref().and_then(|m| m.downloads.clone()))
-                {
-                    out.insert(id, downloads);
-                }
-            }
-            match page.next_cursor {
-                Some(next) => cursor = Some(next),
-                None => break,
-            }
-        }
-        Ok(out)
-    }
-
-    pub async fn refresh_downloads(
-        &self,
-        items: &mut [crate::commands::repo::ArchiveModItem],
-        sort: SortMode,
-    ) -> Result<(), String> {
-        let downloads = self.fetch_downloads_map(sort).await?;
-        for item in items {
-            if let Some(updated) = downloads.get(&item.dir_name) {
-                item.meta.downloads = Some(updated.clone());
-            }
-        }
-        Ok(())
-    }
-
-    pub async fn fetch_changed_mods(
-        &self,
-        since: &str,
-        sort: SortMode,
-    ) -> Result<(Vec<BmiMod>, Option<String>), String> {
-        let mut cursor: Option<String> = None;
-        let mut all = Vec::new();
-        let mut latest_updated: Option<String> = None;
-        loop {
-            let page = self
-                .fetch_changed_page(since, cursor.as_deref(), sort)
-                .await?;
-            for item in page.items {
-                let updated_at = updated_at_value(&item);
-                if let Some(updated) = updated_at {
-                    latest_updated = pick_latest_updated(latest_updated, Some(updated));
-                }
-                all.push(item);
-            }
-            match page.next_cursor {
-                Some(next) => cursor = Some(next),
-                None => break,
-            }
-        }
-        Ok((all, latest_updated))
+        // Git index metadata has no download counters. An empty delta leaves the
+        // catalog's deterministic zero values alone and costs no network requests.
+        Ok(HashMap::new())
     }
 
     pub async fn fetch_mod(&self, id: &str) -> Result<BmiMod, String> {
-        let encoded = encode_path(id);
-        let url = self
-            .effective_base_url()
-            .join(&format!("mods/{encoded}"))
-            .map_err(|e| e.to_string())?;
-        let resp = self
-            .send_request(|| self.http_client().get(url.clone()))
+        validate_mod_id(id)?;
+        let meta: ModMeta = self
+            .get_json(
+                self.raw_file_url(INDEX_BRANCH, id, "meta.json")?,
+                "mod metadata",
+            )
             .await?;
-        decode_json(resp, "mod detail").await
+        let description = self
+            .get_optional_text(self.raw_file_url(INDEX_BRANCH, id, "description.md")?)
+            .await?;
+        Ok(BmiMod {
+            summary: None,
+            repo: Some(meta.repo.clone()),
+            homepage: None,
+            requires_steamodded: Some(meta.requires_steamodded),
+            requires_talisman: Some(meta.requires_talisman),
+            dependencies: Vec::new(),
+            meta: Some(meta),
+            description,
+            description_html: None,
+        })
     }
 
     pub async fn post_download(&self, id: &str) -> Result<String, String> {
-        #[derive(Deserialize)]
-        struct DownloadResponse {
-            #[serde(default, alias = "download_url", alias = "downloadUrl", alias = "url")]
-            download_url: Option<String>,
+        validate_mod_id(id)?;
+        // Check the authoritative tree at install time. This prevents an old raw-CDN
+        // response or a stale UI cache from resurrecting a removed entry.
+        let tree = self.fetch_catalog_tree().await?;
+        if !catalog_entries(&tree)?.iter().any(|entry| entry.id == id) {
+            return Err(format!("Mod index entry '{id}' was removed"));
         }
-
-        let encoded = encode_path(id);
-        let url = self
-            .effective_base_url()
-            .join(&format!("mods/{encoded}/download"))
-            .map_err(|e| e.to_string())?;
-        let resp = self
-            .send_request(|| self.http_client().post(url.clone()))
-            .await?;
-
-        let status = resp.status();
-        if status.as_u16() == 204 {
-            let detail = self.fetch_mod(id).await?;
-            return detail
-                .download_url
-                .ok_or_else(|| "BMI download URL missing in mod detail".to_string());
-        }
-        let content_type = resp
-            .headers()
-            .get(reqwest::header::CONTENT_TYPE)
-            .and_then(|v| v.to_str().ok())
-            .unwrap_or("")
-            .to_string();
-        let body = resp.bytes().await.map_err(|e| e.to_string())?;
-        if content_type.contains("application/json") {
-            let parsed: DownloadResponse =
-                serde_json::from_slice(&body).map_err(|e| e.to_string())?;
-            if let Some(url) = parsed.download_url {
-                return Ok(url);
-            }
-        }
-        if status.is_success() {
-            let detail = self.fetch_mod(id).await?;
-            return detail
-                .download_url
-                .ok_or_else(|| "BMI download URL missing in mod detail".to_string());
-        }
-        Err(format!(
-            "BMI download failed with status {}: {}",
-            status,
-            preview_bytes(&body)
-        ))
-    }
-
-    async fn fetch_mods_page(
-        &self,
-        cursor: Option<&str>,
-        sort: SortMode,
-    ) -> Result<ModsPage, String> {
-        let mut url = self
-            .effective_base_url()
-            .join("mods")
-            .map_err(|e| e.to_string())?;
-        {
-            let mut pairs = url.query_pairs_mut();
-            pairs.append_pair("limit", &PAGE_LIMIT.to_string());
-            pairs.append_pair("sort", sort.as_param());
-            if let Some(cursor) = cursor {
-                pairs.append_pair("cursor", cursor);
-            }
-        }
-        log::debug!("Fetching mods page: {}", url);
-        let resp = self
-            .send_request(|| self.http_client().get(url.clone()))
-            .await?;
-        decode_json(resp, "mods page").await
-    }
-
-    async fn fetch_changed_page(
-        &self,
-        since: &str,
-        cursor: Option<&str>,
-        sort: SortMode,
-    ) -> Result<ModsPage, String> {
-        let mut url = self
-            .effective_base_url()
-            .join("mods/changed")
-            .map_err(|e| e.to_string())?;
-        {
-            let mut pairs = url.query_pairs_mut();
-            pairs.append_pair("since", since);
-            pairs.append_pair("limit", &PAGE_LIMIT.to_string());
-            pairs.append_pair("sort", sort.as_param());
-            if let Some(cursor) = cursor {
-                pairs.append_pair("cursor", cursor);
-            }
-        }
-        let resp = self
-            .send_request(|| self.http_client().get(url.clone()))
-            .await?;
-        decode_json(resp, "mods changed page").await
-    }
-
-    async fn send_request<F>(&self, make_req: F) -> Result<reqwest::Response, String>
-    where
-        F: Fn() -> reqwest::RequestBuilder,
-    {
-        // If already using fallback, go straight to it
-        if self.is_using_fallback() {
-            return self
-                .send_with_backoff(|| make_req().header("Host", "api-bmi.dasguney.com"))
-                .await;
-        }
-
-        // Race the request against a 3s timer
-        let request_fut = self
-            .client
-            .execute(make_req().build().map_err(|e| e.to_string())?);
-
-        tokio::select! {
-            result = request_fut => {
-                match result {
-                    Ok(resp) if resp.status().as_u16() != 429 => {
-                        return resp.error_for_status().map_err(|e| {
-                            log::error!("BMI request failed with HTTP error: {}", e);
-                            e.to_string()
-                        });
-                    }
-                    Ok(_) => {
-                        // 429 rate limited, fall through to retry logic
-                    }
-                    Err(e) => {
-                        log::debug!("BMI request failed: {}", e);
-                        // Fall through to try fallback
-                    }
-                }
-            }
-            _ = tokio::time::sleep(FAST_TIMEOUT) => {
-                // Request took too long - immediately switch to fallback
-                log::info!("BMI request slow (>3s), hot-switching to direct IP fallback");
-                if let Some(fallback) = &self.fallback_url
-                    && let Ok(original_req) = make_req().build()
-                {
-                    let method = original_req.method().clone();
-                    let url = original_req.url();
-                    let path_and_query = url.path().to_string()
-                        + url.query().map(|q| format!("?{}", q)).as_deref().unwrap_or("");
-                    if let Ok(fallback_url) =
-                        fallback.join(path_and_query.trim_start_matches('/'))
-                    {
-                        let fallback_result = self
-                            .fast_client
-                            .request(method, fallback_url)
-                            .header("Host", "api-bmi.dasguney.com")
-                            .send()
-                            .await;
-                        match fallback_result {
-                            Ok(resp) if resp.status().is_success() => {
-                                log::info!(
-                                    "BMI fallback successful, using direct IP for future requests"
-                                );
-                                self.use_fallback
-                                    .store(true, std::sync::atomic::Ordering::Relaxed);
-                                return resp.error_for_status().map_err(|e| e.to_string());
-                            }
-                            Ok(resp) if resp.status().as_u16() == 429 => {
-                                log::info!(
-                                    "BMI fallback connected (rate limited), using direct IP for future requests"
-                                );
-                                self.use_fallback
-                                    .store(true, std::sync::atomic::Ordering::Relaxed);
-                                // Fall through to retry logic
-                            }
-                            Ok(resp) => {
-                                log::debug!("BMI fallback returned status: {}", resp.status());
-                            }
-                            Err(e) => {
-                                log::debug!("BMI fallback failed: {}", e);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Fall back to normal retry with current effective URL
-        let using_fallback = self.is_using_fallback();
-        self.send_with_backoff(|| {
-            let req = make_req();
-            if using_fallback {
-                req.header("Host", "api-bmi.dasguney.com")
-            } else {
-                req
-            }
-        })
-        .await
-    }
-
-    async fn send_with_backoff<F>(&self, make_req: F) -> Result<reqwest::Response, String>
-    where
-        F: Fn() -> reqwest::RequestBuilder,
-    {
-        let mut delay = Duration::from_millis(250);
-        let mut last_error: Option<String> = None;
-        for attempt in 0..=MAX_RETRIES {
-            match make_req().send().await {
-                Ok(resp) => {
-                    if resp.status().as_u16() != 429 {
-                        return resp.error_for_status().map_err(|e| {
-                            log::error!("BMI request failed with HTTP error: {}", e);
-                            e.to_string()
-                        });
-                    }
-                    log::warn!(
-                        "BMI rate limited (429), attempt {}/{}, retrying in {:?}",
-                        attempt + 1,
-                        MAX_RETRIES + 1,
-                        delay
-                    );
-                    if attempt == MAX_RETRIES {
-                        return Err("BMI rate limited after retries".to_string());
-                    }
-                }
-                Err(e) => {
-                    let err_msg = e.to_string();
-                    log::warn!(
-                        "BMI request failed (attempt {}/{}): {}",
-                        attempt + 1,
-                        MAX_RETRIES + 1,
-                        err_msg
-                    );
-                    last_error = Some(err_msg);
-                    if attempt == MAX_RETRIES {
-                        let msg = format!(
-                            "BMI request failed after {} attempts: {}",
-                            MAX_RETRIES + 1,
-                            last_error.unwrap_or_else(|| "unknown error".to_string())
-                        );
-                        log::error!("{}", msg);
-                        return Err(msg);
-                    }
-                }
-            }
-            tokio::time::sleep(delay).await;
-            delay = delay.saturating_mul(2);
-        }
-        Err(last_error.unwrap_or_else(|| "BMI request failed".to_string()))
-    }
-}
-
-async fn decode_json<T: DeserializeOwned>(
-    resp: reqwest::Response,
-    context: &str,
-) -> Result<T, String> {
-    let status = resp.status();
-    let body = resp.bytes().await.map_err(|e| {
-        let err_str = e.to_string();
-        let is_timeout = e.is_timeout() || err_str.contains("timed out");
-        let is_connection = e.is_connect() || err_str.contains("connection");
-
-        let user_msg = if is_timeout {
-            format!("BMI {} timed out. Connection may be slow.", context)
-        } else if is_connection {
-            format!("BMI {} connection failed. Check your internet.", context)
-        } else if err_str.contains("decoding") || err_str.contains("body") {
-            format!(
-                "BMI {} received corrupted data. A firewall or antivirus may be interfering.",
-                context
+        let meta: ModMeta = self
+            .get_json(
+                self.raw_file_url(&tree.sha, id, "meta.json")?,
+                "mod metadata",
             )
-        } else {
-            format!("BMI {} download failed. Check your internet.", context)
-        };
+            .await?;
+        meta.download_url
+            .filter(|url| !url.trim().is_empty())
+            .ok_or_else(|| format!("Mod index entry '{id}' has no download URL"))
+    }
 
-        log::error!(
-            "BMI {} download error (status {}): {}",
-            context,
-            status,
-            err_str
-        );
-        user_msg
-    })?;
-    serde_json::from_slice::<T>(&body).map_err(|e| {
-        let payload = payload_preview(&body);
-        log::error!(
-            "BMI {} JSON parse failed (status {}): {}; payload={}",
-            context,
-            status,
-            e,
-            payload
-        );
-        format!(
-            "BMI {} JSON parse failed (status {}): {}",
-            context,
-            status,
-            preview_bytes(&body)
-        )
-    })
-}
-
-fn payload_preview(bytes: &[u8]) -> String {
-    const MAX_LOG_BYTES: usize = 50_000;
-    let text = String::from_utf8_lossy(bytes);
-    if bytes.len() <= MAX_LOG_BYTES {
-        text.trim().to_string()
-    } else {
-        format!(
-            "{}...[truncated {} bytes]",
-            text.chars().take(2000).collect::<String>().trim(),
-            bytes.len().saturating_sub(MAX_LOG_BYTES)
-        )
-    }
-}
-
-fn preview_bytes(bytes: &[u8]) -> String {
-    let text = String::from_utf8_lossy(bytes);
-    let trimmed = text.trim();
-    if trimmed.len() > 400 {
-        format!("{}...", &trimmed[..400])
-    } else {
-        trimmed.to_string()
-    }
-}
-
-fn encode_path(value: &str) -> String {
-    urlencoding::encode(value).into_owned()
-}
-
-pub fn bmi_server_url() -> Result<Url, String> {
-    let raw =
-        std::env::var("BMI_SERVER_URL").unwrap_or_else(|_| DEFAULT_BMI_SERVER_URL.to_string());
-    let trimmed = raw.trim_end_matches('/');
-    let base = format!("{trimmed}/");
-    Url::parse(&base).map_err(|e| format!("Invalid BMI_SERVER_URL: {e}"))
-}
-
-pub fn bmi_to_archive(
-    item: BmiMod,
-    client: &BmiClient,
-) -> Result<(crate::commands::repo::ArchiveModItem, Option<String>), String> {
-    let id = item
-        .id
-        .clone()
-        .or(item.dir_name.clone())
-        .ok_or_else(|| "BMI mod missing id".to_string())?;
-    let mut meta = match item.meta.clone() {
-        Some(meta) => meta,
-        None => ModMeta {
-            requires_steamodded: false,
-            requires_talisman: false,
-            categories: if item.categories.is_empty() {
-                vec!["Miscellaneous".to_string()]
-            } else {
-                item.categories.clone()
-            },
-            author: item.author.clone().unwrap_or_else(|| "Unknown".to_string()),
-            repo: item
-                .repo
-                .clone()
-                .or(item.homepage.clone())
-                .unwrap_or_default(),
-            title: item.name.clone().unwrap_or_else(|| id.clone()),
-            download_url: item.download_url.clone(),
-            folder_name: item.folder_name.clone().unwrap_or_default(),
-            version: item.version.clone().unwrap_or_default(),
-            automatic_version_check: false,
-            last_updated: item
-                .updated_at
-                .as_ref()
-                .and_then(|v| v.parse::<u64>().ok())
-                .unwrap_or_default(),
-            downloads: item.downloads.clone(),
-        },
-    };
-    if meta.title.trim().is_empty() {
-        meta.title = item.name.clone().unwrap_or_else(|| id.clone());
-    }
-    if meta.author.trim().is_empty() {
-        meta.author = item.author.clone().unwrap_or_else(|| "Unknown".to_string());
-    }
-    if meta.repo.trim().is_empty() {
-        meta.repo = item
-            .repo
-            .clone()
-            .or(item.homepage.clone())
-            .unwrap_or_default();
-    }
-    if meta.categories.is_empty() {
-        meta.categories = if item.categories.is_empty() {
-            vec!["Miscellaneous".to_string()]
-        } else {
-            item.categories.clone()
-        };
-    }
-    if meta.download_url.is_none() {
-        meta.download_url = item.download_url.clone();
-    }
-    if meta.folder_name.trim().is_empty() {
-        meta.folder_name = item.folder_name.clone().unwrap_or_default();
-    }
-    if meta.version.trim().is_empty() {
-        meta.version = item.version.clone().unwrap_or_default();
-    }
-    let (req_steam, req_talisman) = derive_requires(&item);
-    meta.requires_steamodded = meta.requires_steamodded || req_steam;
-    meta.requires_talisman = meta.requires_talisman || req_talisman;
-    if meta.downloads.is_none() {
-        meta.downloads = item.downloads.clone();
-    }
-    meta.download_url = Some(format!("bmi://{id}"));
-    let updated_at = updated_at_value(&item).or_else(|| {
-        if meta.last_updated > 0 {
-            Some(meta.last_updated.to_string())
-        } else {
-            None
+    async fn fetch_archive_item(
+        &self,
+        entry: &CatalogEntry,
+        revision: &str,
+    ) -> Result<crate::commands::repo::ArchiveModItem, CatalogItemError> {
+        let mut meta: ModMeta = self
+            .get_catalog_metadata(
+                self.raw_file_url(revision, &entry.id, "meta.json")
+                    .map_err(CatalogItemError::Fatal)?,
+            )
+            .await?;
+        if meta.title.trim().is_empty() {
+            return Err(CatalogItemError::Invalid(
+                "entry has an empty title".to_string(),
+            ));
         }
-    });
-    let description = match item.description_html.as_deref() {
-        Some(text) if !text.trim().is_empty() => text.to_string(),
-        _ => match item.description.as_deref() {
-            Some(text) if !text.trim().is_empty() => text.to_string(),
-            _ => item.summary.clone().unwrap_or_default(),
-        },
-    };
-    let has_thumbnail = item
-        .thumbnail_url
-        .as_ref()
-        .map(|url| !url.trim().is_empty())
-        .unwrap_or(false);
-    let image_url = if has_thumbnail {
-        normalize_thumbnail_url(client, item.thumbnail_url.as_ref().unwrap())?
-    } else {
-        String::new()
-    };
-    Ok((
-        crate::commands::repo::ArchiveModItem {
-            dir_name: id,
+        if meta.download_url.as_deref().unwrap_or("").trim().is_empty() {
+            return Err(CatalogItemError::Invalid(
+                "entry has no download URL".to_string(),
+            ));
+        }
+        meta.download_url = Some(format!("bmi://{}", entry.id));
+        meta.downloads = Some(ModDownloads::default());
+        Ok(crate::commands::repo::ArchiveModItem {
+            dir_name: entry.id.clone(),
             meta,
-            description,
-            image_url,
-            has_thumbnail,
-        },
-        updated_at,
-    ))
+            description: String::new(),
+            image_url: if entry.has_thumbnail {
+                self.thumbnail_url(&entry.id)
+                    .map_err(CatalogItemError::Fatal)?
+            } else {
+                String::new()
+            },
+            has_thumbnail: entry.has_thumbnail,
+        })
+    }
+
+    async fn get_catalog_metadata(&self, url: Url) -> Result<ModMeta, CatalogItemError> {
+        let response = self
+            .send(self.client.get(url.clone()), "mod metadata")
+            .await
+            .map_err(CatalogItemError::Fatal)?;
+        let bytes = response.bytes().await.map_err(|error| {
+            CatalogItemError::Fatal(format!(
+                "Mod index mod metadata download failed for {url}: {error}"
+            ))
+        })?;
+        parse_json_with_trailing_commas(&bytes).map_err(|error| {
+            CatalogItemError::Invalid(format!("invalid metadata at {url}: {error}"))
+        })
+    }
+
+    async fn fetch_catalog_tree(&self) -> Result<GitTreeResponse, String> {
+        let tree: GitTreeResponse = self
+            .get_json(
+                self.api_url(&format!("git/trees/{INDEX_BRANCH}"), true)?,
+                "catalog tree",
+            )
+            .await?;
+        if tree.truncated {
+            return Err(
+                "GitHub returned a truncated mod-index tree; refusing a partial catalog".into(),
+            );
+        }
+        Ok(tree)
+    }
+
+    fn api_url(&self, suffix: &str, recursive: bool) -> Result<Url, String> {
+        let mut url = self
+            .api_base
+            .join(&format!("repos/{}/{suffix}", self.repository))
+            .map_err(|e| e.to_string())?;
+        if recursive {
+            url.query_pairs_mut().append_pair("recursive", "1");
+        }
+        Ok(url)
+    }
+
+    fn raw_file_url(&self, revision: &str, id: &str, file: &str) -> Result<Url, String> {
+        validate_mod_id(id)?;
+        let mut url = self.raw_base.clone();
+        url.path_segments_mut()
+            .map_err(|_| "Invalid GitHub raw base URL".to_string())?
+            .extend(self.repository.split('/'))
+            .push(revision)
+            .push("mods")
+            .push(id)
+            .push(file);
+        Ok(url)
+    }
+
+    async fn get_json<T: for<'de> Deserialize<'de>>(
+        &self,
+        url: Url,
+        context: &str,
+    ) -> Result<T, String> {
+        let response = self.send(self.client.get(url.clone()), context).await?;
+        let bytes = response
+            .bytes()
+            .await
+            .map_err(|e| format!("Mod index {context} download failed: {e}"))?;
+        parse_json_with_trailing_commas::<T>(&bytes)
+            .map_err(|e| format!("Invalid {context} from mod index at {url}: {e}"))
+    }
+
+    async fn get_optional_text(&self, url: Url) -> Result<Option<String>, String> {
+        let response = self
+            .client
+            .get(url.clone())
+            .send()
+            .await
+            .map_err(|e| format!("Mod index description request failed for {url}: {e}"))?;
+        if response.status() == StatusCode::NOT_FOUND {
+            return Ok(None);
+        }
+        response
+            .error_for_status()
+            .map_err(|e| format!("Mod index description request failed for {url}: {e}"))?
+            .text()
+            .await
+            .map(Some)
+            .map_err(|e| format!("Mod index description download failed: {e}"))
+    }
+
+    async fn send(
+        &self,
+        request: reqwest::RequestBuilder,
+        context: &str,
+    ) -> Result<reqwest::Response, String> {
+        let response = request
+            .send()
+            .await
+            .map_err(|e| format!("Mod index {context} request failed: {e}"))?;
+        let status = response.status();
+        if status == StatusCode::FORBIDDEN
+            && response
+                .headers()
+                .get("x-ratelimit-remaining")
+                .and_then(|value| value.to_str().ok())
+                == Some("0")
+        {
+            return Err("GitHub mod-index rate limit reached; try refreshing later".into());
+        }
+        response
+            .error_for_status()
+            .map_err(|e| format!("Mod index {context} request failed ({status}): {e}"))
+    }
 }
 
-pub fn apply_changed(
-    existing: &[crate::commands::repo::ArchiveModItem],
-    changed: Vec<BmiMod>,
-    client: &BmiClient,
-) -> Result<Vec<crate::commands::repo::ArchiveModItem>, String> {
-    let mut out: Vec<crate::commands::repo::ArchiveModItem> = existing.to_vec();
-    let mut index: std::collections::HashMap<String, usize> = out
+fn catalog_entries(tree: &GitTreeResponse) -> Result<Vec<CatalogEntry>, String> {
+    let thumbnail_ids: HashSet<&str> = tree
+        .tree
         .iter()
-        .enumerate()
-        .map(|(idx, item)| (item.dir_name.clone(), idx))
+        .filter_map(|entry| path_mod_id(&entry.path, "thumbnail.jpg"))
         .collect();
-    for item in changed {
-        let id = item
-            .id
-            .clone()
-            .or(item.dir_name.clone())
-            .ok_or_else(|| "BMI mod missing id".to_string())?;
-        if item.deleted {
-            if let Some(idx) = index.get(&id).copied() {
-                out.remove(idx);
-                index = out
-                    .iter()
-                    .enumerate()
-                    .map(|(idx, item)| (item.dir_name.clone(), idx))
-                    .collect();
+    let mut entries: Vec<CatalogEntry> = tree
+        .tree
+        .iter()
+        .filter(|entry| entry.kind == "blob")
+        .filter_map(|entry| {
+            let id = path_mod_id(&entry.path, "meta.json")?;
+            Some(CatalogEntry {
+                id: id.to_string(),
+                meta_sha: entry.sha.clone(),
+                has_thumbnail: thumbnail_ids.contains(id),
+            })
+        })
+        .collect();
+    entries.sort_by(|a, b| a.id.cmp(&b.id));
+    if entries.is_empty() {
+        return Err("Mod index tree contained no mods; refusing to replace the cache".into());
+    }
+    Ok(entries)
+}
+
+fn path_mod_id<'a>(path: &'a str, filename: &str) -> Option<&'a str> {
+    let mut parts = path.split('/');
+    if parts.next()? != "mods" {
+        return None;
+    }
+    let id = parts.next()?;
+    if id.is_empty() || parts.next()? != filename || parts.next().is_some() {
+        return None;
+    }
+    Some(id)
+}
+
+fn validate_repository_name(repository: &str) -> Result<(), String> {
+    let parts: Vec<&str> = repository.split('/').collect();
+    if parts.len() != 2
+        || parts.iter().any(|part| {
+            part.is_empty()
+                || !part
+                    .chars()
+                    .all(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '-' | '_' | '.'))
+        })
+    {
+        return Err("BMM_MOD_INDEX_REPOSITORY must be in owner/repository form".into());
+    }
+    Ok(())
+}
+
+fn validate_mod_id(id: &str) -> Result<(), String> {
+    if id.is_empty()
+        || id == "."
+        || id == ".."
+        || id.contains('/')
+        || id.contains('\\')
+        || id.chars().any(char::is_control)
+    {
+        return Err("Invalid mod index ID".into());
+    }
+    Ok(())
+}
+
+fn parse_base_url(name: &str, raw: String) -> Result<Url, String> {
+    Url::parse(&format!("{}/", raw.trim_end_matches('/')))
+        .map_err(|e| format!("Invalid {name}: {e}"))
+}
+
+fn remove_trailing_json_commas(input: &[u8]) -> Vec<u8> {
+    let mut output = Vec::with_capacity(input.len());
+    let mut in_string = false;
+    let mut escaped = false;
+    let mut index = 0;
+    while index < input.len() {
+        let byte = input[index];
+        if in_string {
+            output.push(byte);
+            if escaped {
+                escaped = false;
+            } else if byte == b'\\' {
+                escaped = true;
+            } else if byte == b'"' {
+                in_string = false;
             }
+            index += 1;
             continue;
         }
-        let (archive, _) = bmi_to_archive(item, client)?;
-        if let Some(idx) = index.get(&id).copied() {
-            out[idx] = archive;
-        } else {
-            index.insert(id, out.len());
-            out.push(archive);
+        if byte == b'"' {
+            in_string = true;
+            output.push(byte);
+            index += 1;
+            continue;
         }
+        if byte == b',' {
+            let mut next = index + 1;
+            while next < input.len() && input[next].is_ascii_whitespace() {
+                next += 1;
+            }
+            if next < input.len() && matches!(input[next], b'}' | b']') {
+                index += 1;
+                continue;
+            }
+        }
+        output.push(byte);
+        index += 1;
     }
-    Ok(out)
+    output
 }
 
-pub fn updated_at_value(item: &BmiMod) -> Option<String> {
-    item.updated_at.clone().or_else(|| {
-        item.meta
-            .as_ref()
-            .and_then(|meta| (meta.last_updated > 0).then(|| meta.last_updated.to_string()))
+fn parse_json_with_trailing_commas<T: for<'de> Deserialize<'de>>(
+    bytes: &[u8],
+) -> Result<T, serde_json::Error> {
+    serde_json::from_slice::<T>(bytes).or_else(|original| {
+        // A few inherited index entries contain a harmless trailing comma.
+        // Accept that narrow defect while keeping all other JSON validation.
+        let repaired = remove_trailing_json_commas(bytes);
+        serde_json::from_slice::<T>(&repaired).map_err(|_| original)
     })
 }
 
 pub fn derive_requires(item: &BmiMod) -> (bool, bool) {
-    let mut requires_steamodded = item.requires_steamodded.unwrap_or(false);
-    let mut requires_talisman = item.requires_talisman.unwrap_or(false);
+    let mut steamodded = item.requires_steamodded.unwrap_or(false);
+    let mut talisman = item.requires_talisman.unwrap_or(false);
     if let Some(meta) = &item.meta {
-        requires_steamodded = requires_steamodded || meta.requires_steamodded;
-        requires_talisman = requires_talisman || meta.requires_talisman;
+        steamodded |= meta.requires_steamodded;
+        talisman |= meta.requires_talisman;
     }
-    if !requires_steamodded || !requires_talisman {
-        for dep in &item.dependencies {
-            let dep = dep.to_lowercase();
-            if dep.contains("steamodded") {
-                requires_steamodded = true;
-            }
-            if dep.contains("talisman") {
-                requires_talisman = true;
-            }
-        }
+    for dependency in &item.dependencies {
+        let dependency = dependency.to_lowercase();
+        steamodded |= dependency.contains("steamodded");
+        talisman |= dependency.contains("talisman");
     }
-    (requires_steamodded, requires_talisman)
-}
-
-fn deserialize_updated_at<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let value: Option<serde_json::Value> = Option::deserialize(deserializer)?;
-    match value {
-        None | Some(serde_json::Value::Null) => Ok(None),
-        Some(serde_json::Value::Number(num)) => Ok(Some(num.to_string())),
-        Some(serde_json::Value::String(s)) => Ok(Some(s)),
-        Some(other) => Ok(Some(other.to_string())),
-    }
-}
-
-fn normalize_thumbnail_url(client: &BmiClient, raw: &str) -> Result<String, String> {
-    if raw.starts_with("http://") || raw.starts_with("https://") {
-        let mut url = Url::parse(raw).map_err(|e| e.to_string())?;
-        if let Some(path) = normalize_thumbnail_path(url.path()) {
-            url.set_path(&path);
-        }
-        // Rewrite to fallback IP if we're using fallback mode
-        if client.is_using_fallback()
-            && let Some(fallback) = &client.fallback_url
-        {
-            let path_and_query = url.path().to_string()
-                + url
-                    .query()
-                    .map(|q| format!("?{}", q))
-                    .as_deref()
-                    .unwrap_or("");
-            if let Ok(rewritten) = fallback.join(path_and_query.trim_start_matches('/')) {
-                return Ok(rewritten.to_string());
-            }
-        }
-        return Ok(url.to_string());
-    }
-    let path = normalize_thumbnail_path(raw).unwrap_or_else(|| raw.to_string());
-    client
-        .effective_base_url()
-        .join(path.trim_start_matches('/'))
-        .map(|u| u.to_string())
-        .map_err(|e| e.to_string())
-}
-
-fn normalize_thumbnail_path(raw: &str) -> Option<String> {
-    let raw = raw.trim();
-    let prefix = "/thumbnails/";
-    if !raw.starts_with(prefix) || !raw.ends_with(".webp") {
-        return None;
-    }
-    let name = raw.trim_start_matches(prefix).trim_end_matches(".webp");
-    let decoded = urlencoding::decode(name).ok().map(|s| s.into_owned());
-    let encoded = urlencoding::encode(decoded.as_deref().unwrap_or(name)).into_owned();
-    Some(format!("{prefix}{encoded}.webp"))
-}
-
-pub fn pick_latest_updated(current: Option<String>, candidate: Option<String>) -> Option<String> {
-    match (current, candidate) {
-        (None, None) => None,
-        (Some(val), None) => Some(val),
-        (None, Some(val)) => Some(val),
-        (Some(a), Some(b)) => {
-            if compare_updated_at(&a, &b) == Ordering::Less {
-                Some(b)
-            } else {
-                Some(a)
-            }
-        }
-    }
-}
-
-fn compare_updated_at(a: &str, b: &str) -> Ordering {
-    let parse = |s: &str| s.parse::<i64>().ok();
-    match (parse(a), parse(b)) {
-        (Some(x), Some(y)) => x.cmp(&y),
-        _ => a.cmp(b),
-    }
+    (steamodded, talisman)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::models::ModMeta;
 
-    fn sample_meta(title: &str, last_updated: u64) -> ModMeta {
-        ModMeta {
-            requires_steamodded: false,
-            requires_talisman: false,
-            categories: vec!["Content".to_string()],
-            author: "Test".to_string(),
-            repo: "https://example.com/repo".to_string(),
-            title: title.to_string(),
-            download_url: Some("bmi://mod-1".to_string()),
-            folder_name: "mod1".to_string(),
-            version: "1.0.0".to_string(),
-            automatic_version_check: false,
-            last_updated,
-            downloads: None,
+    fn tree(paths: &[(&str, &str)]) -> GitTreeResponse {
+        GitTreeResponse {
+            sha: "tree-sha".to_string(),
+            truncated: false,
+            tree: paths
+                .iter()
+                .map(|(path, sha)| GitTreeEntry {
+                    path: (*path).to_string(),
+                    kind: "blob".to_string(),
+                    sha: (*sha).to_string(),
+                })
+                .collect(),
         }
     }
 
     #[test]
-    fn apply_changed_updates_and_deletes() {
-        let client = BmiClient::new().expect("client");
-        let existing = vec![
-            crate::commands::repo::ArchiveModItem {
-                dir_name: "mod-1".to_string(),
-                meta: sample_meta("Alpha", 10),
-                description: "Old".to_string(),
-                image_url: "https://example.com/thumb.webp".to_string(),
-                has_thumbnail: true,
-            },
-            crate::commands::repo::ArchiveModItem {
-                dir_name: "mod-2".to_string(),
-                meta: sample_meta("Beta", 20),
-                description: "Keep".to_string(),
-                image_url: "https://example.com/thumb2.webp".to_string(),
-                has_thumbnail: true,
-            },
-        ];
-        let changed = vec![
-            BmiMod {
-                id: Some("mod-1".to_string()),
-                dir_name: None,
-                name: None,
-                author: None,
-                version: None,
-                summary: None,
-                categories: Vec::new(),
-                repo: None,
-                homepage: None,
-                requires_steamodded: None,
-                requires_talisman: None,
-                download_url: None,
-                folder_name: None,
-                downloads: None,
-                dependencies: Vec::new(),
-                meta: Some(sample_meta("Alpha Updated", 30)),
-                description: Some("New".to_string()),
-                description_html: None,
-                thumbnail_url: Some("https://example.com/new.webp".to_string()),
-                updated_at: Some("30".to_string()),
-                deleted: false,
-            },
-            BmiMod {
-                id: Some("mod-2".to_string()),
-                dir_name: None,
-                name: None,
-                author: None,
-                version: None,
-                summary: None,
-                categories: Vec::new(),
-                repo: None,
-                homepage: None,
-                requires_steamodded: None,
-                requires_talisman: None,
-                download_url: None,
-                folder_name: None,
-                downloads: None,
-                dependencies: Vec::new(),
-                meta: None,
-                description: None,
-                description_html: None,
-                thumbnail_url: None,
-                updated_at: None,
-                deleted: true,
-            },
-        ];
-
-        let merged = apply_changed(&existing, changed, &client).expect("merge");
-        assert_eq!(merged.len(), 1);
-        assert_eq!(merged[0].dir_name, "mod-1");
-        assert_eq!(merged[0].meta.title, "Alpha Updated");
-        assert_eq!(merged[0].description, "New");
+    fn catalog_entries_only_accept_exact_mod_file_layout() {
+        let entries = catalog_entries(&tree(&[
+            ("mods/Author@One/meta.json", "meta-one"),
+            ("mods/Author@One/thumbnail.jpg", "thumb-one"),
+            ("mods/Author@Two/meta.json", "meta-two"),
+            ("mods/Author@Two/subdir/meta.json", "nested"),
+            ("other/Author@Three/meta.json", "other"),
+        ]))
+        .expect("catalog");
+        assert_eq!(entries.len(), 2);
+        assert_eq!(entries[0].id, "Author@One");
+        assert!(entries[0].has_thumbnail);
+        assert_eq!(entries[1].id, "Author@Two");
+        assert!(!entries[1].has_thumbnail);
     }
 
     #[test]
-    fn paging_stops_when_cursor_is_none() {
-        let client = BmiClient::new().expect("client");
-        let pages = vec![
-            ModsPage {
-                items: vec![BmiMod {
-                    id: Some("mod-1".to_string()),
-                    dir_name: None,
-                    name: None,
-                    author: None,
-                    version: None,
-                    summary: None,
-                    categories: Vec::new(),
-                    repo: None,
-                    homepage: None,
-                    requires_steamodded: None,
-                    requires_talisman: None,
-                    download_url: None,
-                    folder_name: None,
-                    downloads: None,
-                    dependencies: Vec::new(),
-                    meta: Some(sample_meta("Alpha", 5)),
-                    description: Some("First".to_string()),
-                    description_html: None,
-                    thumbnail_url: None,
-                    updated_at: Some("5".to_string()),
-                    deleted: false,
-                }],
-                next_cursor: Some("next".to_string()),
-            },
-            ModsPage {
-                items: vec![BmiMod {
-                    id: Some("mod-2".to_string()),
-                    dir_name: None,
-                    name: None,
-                    author: None,
-                    version: None,
-                    summary: None,
-                    categories: Vec::new(),
-                    repo: None,
-                    homepage: None,
-                    requires_steamodded: None,
-                    requires_talisman: None,
-                    download_url: None,
-                    folder_name: None,
-                    downloads: None,
-                    dependencies: Vec::new(),
-                    meta: Some(sample_meta("Beta", 8)),
-                    description: Some("Second".to_string()),
-                    description_html: None,
-                    thumbnail_url: None,
-                    updated_at: Some("8".to_string()),
-                    deleted: false,
-                }],
-                next_cursor: None,
-            },
-            ModsPage {
-                items: vec![BmiMod {
-                    id: Some("mod-3".to_string()),
-                    dir_name: None,
-                    name: None,
-                    author: None,
-                    version: None,
-                    summary: None,
-                    categories: Vec::new(),
-                    repo: None,
-                    homepage: None,
-                    requires_steamodded: None,
-                    requires_talisman: None,
-                    download_url: None,
-                    folder_name: None,
-                    downloads: None,
-                    dependencies: Vec::new(),
-                    meta: Some(sample_meta("Gamma", 12)),
-                    description: Some("Third".to_string()),
-                    description_html: None,
-                    thumbnail_url: None,
-                    updated_at: Some("12".to_string()),
-                    deleted: false,
-                }],
-                next_cursor: Some("ignored".to_string()),
-            },
-        ];
+    fn catalog_entries_reject_empty_catalog() {
+        assert!(catalog_entries(&tree(&[("README.md", "sha")])).is_err());
+    }
 
-        let mut collected = Vec::new();
-        let mut latest = None;
-        for page in pages {
-            for item in page.items {
-                let (archive, updated_at) = bmi_to_archive(item, &client).expect("archive");
-                if let Some(updated) = updated_at {
-                    latest = pick_latest_updated(latest, Some(updated));
-                }
-                collected.push(archive);
-            }
-            if page.next_cursor.is_none() {
-                break;
-            }
+    #[test]
+    fn validates_repository_and_mod_ids() {
+        assert!(validate_repository_name("kasimeka/balatro-mod-index").is_ok());
+        assert!(validate_repository_name("missing-slash").is_err());
+        assert!(validate_repository_name("owner/repo/extra").is_err());
+        assert!(validate_mod_id("Author@Mod Name").is_ok());
+        assert!(validate_mod_id("../escape").is_err());
+        assert!(validate_mod_id("folder\\escape").is_err());
+    }
+
+    #[test]
+    fn repairs_only_trailing_json_commas() {
+        let input = br#"{"url":"https://example.test/a,b", "items":[1,2,],}"#;
+        let repaired = remove_trailing_json_commas(input);
+        let parsed: serde_json::Value = serde_json::from_slice(&repaired).expect("valid JSON");
+        assert_eq!(parsed["url"], "https://example.test/a,b");
+        assert_eq!(parsed["items"], serde_json::json!([1, 2]));
+
+        let unterminated = br#"{"downloadURL":"https://example.test/mod.zip}"#;
+        assert!(parse_json_with_trailing_commas::<serde_json::Value>(unterminated).is_err());
+    }
+
+    #[tokio::test]
+    #[ignore = "live GitHub catalog integration test"]
+    async fn live_catalog_is_complete_and_honors_known_removals() {
+        let cache = BmiClient::new()
+            .expect("client")
+            .sync_catalog(None)
+            .await
+            .expect("live catalog");
+        assert!(cache.items.len() >= 400);
+        let ids: HashSet<&str> = cache
+            .items
+            .iter()
+            .map(|item| item.dir_name.as_str())
+            .collect();
+        for removed in [
+            "Virtualized@Multiplayer",
+            "MathIsFun0@Cryptid",
+            "MathIsFun0@Talisman",
+            "lordruby@Entropy",
+            "lordruby@Overflow",
+        ] {
+            assert!(!ids.contains(removed), "removed catalog entry {removed}");
         }
 
-        assert_eq!(collected.len(), 2);
-        assert_eq!(latest, Some("8".to_string()));
-    }
-
-    #[test]
-    fn pick_latest_updated_prefers_larger_numeric() {
-        let updated = pick_latest_updated(Some("10".to_string()), Some("20".to_string()));
-        assert_eq!(updated, Some("20".to_string()));
+        // A previously cached entry that no longer exists upstream must not be
+        // reused simply because the rest of the tree revision is unchanged.
+        let mut stale = cache.clone();
+        let mut removed_item = stale.items[0].clone();
+        removed_item.dir_name = "Virtualized@Multiplayer".to_string();
+        stale.items.push(removed_item);
+        stale.item_revisions.insert(
+            "Virtualized@Multiplayer".to_string(),
+            "retired-revision".to_string(),
+        );
+        let refreshed = BmiClient::new()
+            .expect("client")
+            .sync_catalog(Some(&stale))
+            .await
+            .expect("refreshed live catalog");
+        assert!(
+            !refreshed
+                .items
+                .iter()
+                .any(|item| item.dir_name == "Virtualized@Multiplayer")
+        );
     }
 }

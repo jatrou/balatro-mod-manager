@@ -3,8 +3,7 @@
   import Github from "../GithubIcon.svelte";
   import { openExternal } from "$lib/opener";
 
-  const HELPER_URL = "https://bmi-helper.dasguney.com/";
-  const INDEX_REPO_URL = "https://github.com/skyline69/Balatro-Mod-Index";
+  const INDEX_REPO_URL = "https://github.com/kasimeka/balatro-mod-index";
   const README_URL = `${INDEX_REPO_URL}/blob/main/README.md`;
 
   const open = async (url: string) => {
@@ -25,18 +24,17 @@
       </div>
 
       <p>
-        Want to see your mod in the manager? The Submission Helper walks you
-        through adding it to the mod index, so you don't have to touch git or
-        write any config by hand.
+        Want to see your mod in the manager? Submit it to the maintained mod
+        index on GitHub. The original Submission Helper has been retired.
       </p>
 
       <div>
         <h3>How it works</h3>
         <ol>
           <li>Read the submission rules.</li>
-          <li>Open the Submission Helper in your browser.</li>
-          <li>Fill in your mod's details (name, author, repository, etc.).</li>
-          <li>The helper prepares a submission to the mod index for you.</li>
+          <li>Fork the mod index repository on GitHub.</li>
+          <li>Add your mod's metadata and description under mods/Author@Mod.</li>
+          <li>Open a pull request with your changes.</li>
           <li>The maintainers review it, then your mod shows up in BMM.</li>
         </ol>
       </div>
@@ -50,10 +48,10 @@
         </button>
         <button
           class="action-button submit-button"
-          on:click={() => open(HELPER_URL)}
+          on:click={() => open(`${INDEX_REPO_URL}/compare`)}
         >
           <ExternalLink size={20} />
-          <span>Open Submission Helper</span>
+          <span>Submit a Pull Request</span>
         </button>
         <button
           class="action-button repo-button"

@@ -12,16 +12,16 @@ describe("SubmitMod view", () => {
     vi.clearAllMocks();
   });
 
-  it("opens the submission helper when the button is clicked", async () => {
+  it("opens the maintained index contribution page", async () => {
     render(SubmitMod);
 
     const button = screen.getByRole("button", {
-      name: /open submission helper/i,
+      name: /submit a pull request/i,
     });
     await fireEvent.click(button);
 
     expect(openExternal).toHaveBeenCalledWith(
-      "https://bmi-helper.dasguney.com/",
+      "https://github.com/kasimeka/balatro-mod-index/compare",
     );
   });
 
@@ -34,7 +34,7 @@ describe("SubmitMod view", () => {
     await fireEvent.click(button);
 
     expect(openExternal).toHaveBeenCalledWith(
-      "https://github.com/skyline69/Balatro-Mod-Index",
+      "https://github.com/kasimeka/balatro-mod-index",
     );
   });
 });

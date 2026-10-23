@@ -76,6 +76,10 @@
   import { get, writable } from "svelte/store";
   import { addMessage } from "$lib/stores";
   import {
+    catalogIdFromBmiUrl,
+    mergeAuthoritativeCatalog,
+  } from "$lib/catalogMerge";
+  import {
     currentPage,
     itemsPerPage,
     paginationWindow,
@@ -507,17 +511,6 @@
     downloadsRefreshing = true;
     try {
       const sort = get(currentSort);
-      if (
-        sort === SortOption.DownloadsAsc ||
-        sort === SortOption.DownloadsDesc
-      ) {
-        const items = await invoke<ArchiveModItem[]>("fetch_repo_mods", {
-          sort,
-        });
-        const mods = mapArchiveItems(items);
-        mergeIncomingMods(mods);
-        return;
-      }
       const downloads = await invoke<
         Record<string, { total: number; today?: number }>
       >("fetch_repo_downloads", { sort });
@@ -1359,8 +1352,10 @@
         version: item.meta.version,
         installed: false,
         last_updated: item.meta["last-updated"] ?? 0,
-        downloads_total: item.meta.downloads?.total,
+        // The maintained Git catalog has no download counters.
+        downloads_total: undefined,
         _dirName: item.dir_name,
+        _catalogEntry: true,
       };
     });
   }
@@ -1376,11 +1371,9 @@
       .map((item) => {
         const image = item.image?.trim() || "/images/cover.jpg";
         const hasThumb = !/\/images\/cover\.jpg$/i.test(image);
-        const cachedId =
-          item.id ||
-          (item.downloadURL?.startsWith("bmi://")
-            ? item.downloadURL.slice("bmi://".length)
-            : (item.folderName ?? undefined));
+        // Only a validated bmi:// URL proves a cached row's catalog ID.
+        // folderName is an install-layout hint and is not authoritative identity.
+        const cachedId = catalogIdFromBmiUrl(item.downloadURL);
         return {
           id: cachedId,
           title: item.title,
@@ -1393,12 +1386,16 @@
           requires_talisman: item.requires_talisman ?? false,
           publisher: item.publisher ?? "",
           repo: item.repo ?? "",
-          downloadURL: item.downloadURL ?? "",
+          // Rust's binary cache is display-only until a live catalog refresh.
+          // Do not restore a removed mod's direct installer URL from stale data.
+          downloadURL: "",
           folderName: item.folderName ?? null,
           version: item.version ?? null,
           installed: item.installed ?? false,
           last_updated: 0,
           _hasThumbnail: hasThumb,
+          _dirName: cachedId,
+          _catalogEntry: true,
         };
       });
   }
@@ -1884,71 +1881,9 @@
   function mergeIncomingMods(incomingMods: Mod[]): number {
     let prunedCount = 0;
     modsStore.update((arr) => {
-      const incoming = new Map<string, Mod>();
-      for (const m of incomingMods) incoming.set(m.title, m);
-      const seen = new Set<string>();
-      const incomingOrder: string[] = [];
-      for (const m of incomingMods) {
-        if (!seen.has(m.title)) {
-          seen.add(m.title);
-          incomingOrder.push(m.title);
-        }
-      }
-      const existingRemoteCount = arr.reduce(
-        (n, it) => n + (it._dirName ? 1 : 0),
-        0,
-      );
-      const pruneAllowed =
-        incoming.size > 0 &&
-        incoming.size >= Math.max(10, Math.floor(existingRemoteCount * 0.5));
-      const existingByTitle = new Map<string, Mod>(
-        arr.map((m) => [m.title, m]),
-      );
-      const out: Mod[] = [];
-
-      for (const title of incomingOrder) {
-        const inc = incoming.get(title);
-        if (!inc) continue;
-        const existing = existingByTitle.get(title);
-        if (existing) {
-          const keepExistingImage =
-            Boolean(existing.image) &&
-            existing.image.trim().length > 0 &&
-            !/\bimages\/cover\.jpg$/i.test(existing.image.trim());
-          const preferExistingDesc =
-            (existing.description?.trim().length ?? 0) > 0;
-          out.push({
-            ...existing,
-            ...inc,
-            requires_steamodded:
-              existing.requires_steamodded || inc.requires_steamodded,
-            requires_talisman:
-              existing.requires_talisman || inc.requires_talisman,
-            description: preferExistingDesc
-              ? existing.description
-              : (inc.description ?? ""),
-            colors: existing.colors,
-            image: keepExistingImage ? existing.image : inc.image,
-            imageFallback: keepExistingImage
-              ? existing.imageFallback
-              : inc.imageFallback,
-          });
-        } else {
-          out.push(inc);
-        }
-      }
-
-      for (const existing of arr) {
-        if (incoming.has(existing.title)) continue;
-        if (!existing._dirName) {
-          out.push(existing);
-        } else if (pruneAllowed) {
-          prunedCount++;
-        } else {
-          out.push(existing);
-        }
-      }
-      return out;
+      const result = mergeAuthoritativeCatalog(arr, incomingMods);
+      prunedCount = result.prunedCount;
+      return result.mods;
     });
     return prunedCount;
   }
@@ -2287,8 +2222,6 @@
     { value: SortOption.NameDesc, label: "Name (Z-A)" },
     { value: SortOption.LastUpdatedDesc, label: "Last Updated" },
     { value: SortOption.LastUpdatedAsc, label: "Oldest Updated" },
-    { value: SortOption.DownloadsDesc, label: "Downloads (Most)" },
-    { value: SortOption.DownloadsAsc, label: "Downloads (Least)" },
   ];
 
   function getCurrentSortLabel(): string {

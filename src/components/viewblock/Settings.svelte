@@ -25,6 +25,7 @@
   import { descriptionsStore } from "../../stores/descriptions";
   import { cardScale, darkMode } from "../../stores/ui";
   import { browser } from "$app/environment";
+  import { openExternal } from "$lib/opener";
 
   let isReindexing = $state(false);
   let isClearingCache = $state(false);
@@ -378,8 +379,8 @@
             <div class="linux-note-content">
               <strong>Linux Steam launch:</strong>
               Set Steam launch options for Balatro to
-              <code>WINEDLLOVERRIDES="winmm=n,b" %command%</code> so Lovely
-              and mods load when using <code>steam -applaunch 2379780</code>.
+              <code>WINEDLLOVERRIDES="winmm=n,b" %command%</code> so Lovely and
+              mods load when using <code>steam -applaunch 2379780</code>.
               <div class="linux-note-actions">
                 <button
                   class="linux-copy-button"
@@ -390,6 +391,15 @@
                 </button>
                 <button class="linux-what-button" onclick={toggleLinuxHelp}>
                   {showLinuxHelp ? "Hide" : "What?"}
+                </button>
+                <button
+                  class="linux-what-button"
+                  onclick={() =>
+                    openExternal(
+                      "https://github.com/ethangreen-dev/lovely-injector/blob/master/README.md",
+                    )}
+                >
+                  Official Lovely guide
                 </button>
               </div>
               {#if showLinuxHelp}
@@ -412,46 +422,9 @@
                       />
                     </button>
                     <figcaption>
-                      1. Right-click Balatro → Properties.
+                      Right-click Balatro, open Properties, and paste the line
+                      shown above into Launch Options.
                     </figcaption>
-                  </figure>
-                  <figure>
-                    <button
-                      type="button"
-                      class="linux-help-button"
-                      onclick={() =>
-                        openHelpImage(
-                          "/images/steam-help-1.png",
-                          "Steam launch options menu",
-                        )}
-                      aria-label="Open step 2 help image"
-                    >
-                      <img
-                        src="/images/steam-help-1.png"
-                        alt="Steam launch options menu"
-                        draggable="false"
-                      />
-                    </button>
-                    <figcaption>2. Find the Launch Options field.</figcaption>
-                  </figure>
-                  <figure>
-                    <button
-                      type="button"
-                      class="linux-help-button"
-                      onclick={() =>
-                        openHelpImage(
-                          "/images/steam-help-2.png",
-                          "Set WINEDLLOVERRIDES launch options",
-                        )}
-                      aria-label="Open step 3 help image"
-                    >
-                      <img
-                        src="/images/steam-help-2.png"
-                        alt="Set WINEDLLOVERRIDES launch options"
-                        draggable="false"
-                      />
-                    </button>
-                    <figcaption>3. Paste the WINEDLLOVERRIDES line.</figcaption>
                   </figure>
                 </div>
               {/if}
@@ -503,8 +476,8 @@
             Launch command for Linux (Proton/Wine/Steam). Leave blank to use
             native LOVE. Use `{"{exe}"}` to place the Balatro.exe path, or
             `steam -applaunch 2379780` to launch via Steam. Lovely requires
-            `WINEDLLOVERRIDES=winmm=n,b` and uses the Proton Mods folder
-            (linked from your host Mods dir).
+            `WINEDLLOVERRIDES=winmm=n,b` and uses the Proton Mods folder (linked
+            from your host Mods dir).
           </p>
         {/if}
       </div>

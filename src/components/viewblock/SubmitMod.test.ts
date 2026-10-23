@@ -12,16 +12,16 @@ describe("SubmitMod view", () => {
     vi.clearAllMocks();
   });
 
-  it("opens the maintained index contribution page", async () => {
+  it("opens the maintained index pull requests", async () => {
     render(SubmitMod);
 
     const button = screen.getByRole("button", {
-      name: /submit a pull request/i,
+      name: /view pull requests/i,
     });
     await fireEvent.click(button);
 
     expect(openExternal).toHaveBeenCalledWith(
-      "https://github.com/kasimeka/balatro-mod-index/compare",
+      "https://github.com/kasimeka/balatro-mod-index/pulls",
     );
   });
 

@@ -15,6 +15,7 @@
   import RecoveryScreen from "../components/RecoveryScreen.svelte";
   import { updatePromptDisabled } from "../stores/update";
   import { invoke } from "@tauri-apps/api/core";
+  import { fetchLatestAppVersion } from "$lib/releases";
 
   const { data, children } = $props();
 
@@ -50,33 +51,8 @@
     try {
       if ($updatePromptDisabled) return;
       const cur = await invoke<string>("get_app_version");
-      let tag = "";
-      // Prefer tags API to avoid 404s when no releases exist
-      const tagRes = await fetch(
-        "https://api.github.com/repos/skyline69/balatro-mod-manager/tags?per_page=1",
-        { headers: { Accept: "application/vnd.github+json" } },
-      );
-      if (tagRes.ok) {
-        const tags = await tagRes.json();
-        if (Array.isArray(tags) && tags.length > 0) {
-          tag = tags[0].name || "";
-        }
-      }
-      if (!tag) {
-        // Fallback: newest release from list (handles repos without 'latest')
-        const relRes = await fetch(
-          "https://api.github.com/repos/skyline69/balatro-mod-manager/releases?per_page=1",
-          { headers: { Accept: "application/vnd.github+json" } },
-        );
-        if (relRes.ok) {
-          const list = await relRes.json();
-          if (Array.isArray(list) && list.length > 0) {
-            tag = list[0].tag_name || list[0].name || "";
-          }
-        }
-      }
-      if (!tag) return;
-      const latest = tag.replace(/^v/i, "");
+      const latest = await fetchLatestAppVersion();
+      if (!latest) return;
       if (cmp(cur, latest) < 0) {
         updatePopupStore.set({
           visible: true,

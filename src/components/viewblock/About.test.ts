@@ -23,14 +23,16 @@ describe("About view", () => {
     );
   });
 
-  it("opens the BMM status page when status button is clicked", async () => {
+  it("opens the maintained project when its button is clicked", async () => {
     render(About);
 
-    const statusButton = screen.getByRole("button", { name: /status page/i });
+    const statusButton = screen.getByRole("button", {
+      name: /project on github/i,
+    });
     await fireEvent.click(statusButton);
 
     expect(openExternal).toHaveBeenCalledWith(
-      "https://status.dasguney.com/status/bmm",
+      "https://github.com/jatrou/balatro-mod-manager",
     );
   });
 
@@ -38,7 +40,7 @@ describe("About view", () => {
     render(About);
 
     const kofiButton = screen.getByRole("button", {
-      name: /support on ko-fi/i,
+      name: /support original creator on ko-fi/i,
     });
     await fireEvent.click(kofiButton);
 

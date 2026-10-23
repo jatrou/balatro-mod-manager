@@ -2,8 +2,17 @@
   import { Activity, BookOpen, Coffee } from "lucide-svelte";
   import { Confetti } from "svelte-confetti";
   import { openExternal } from "$lib/opener";
+  import { invoke } from "@tauri-apps/api/core";
+  import { onMount } from "svelte";
 
-  let showConfetti = false;
+  let appVersion = $state("");
+  onMount(() => {
+    invoke<string>("get_app_version")
+      .then((version) => (appVersion = version))
+      .catch(() => {});
+  });
+
+  let showConfetti = $state(false);
 
   let buttonRect: DOMRect;
 
@@ -48,7 +57,7 @@
       <div class="button-container">
         <button
           class="wiki-button"
-          on:click={() =>
+          onclick={() =>
             openExternal("https://balatromods.miraheze.org/wiki/Main_Page")}
         >
           <BookOpen size={20} />
@@ -56,24 +65,26 @@
         </button>
         <button
           class="status-button"
-          on:click={() =>
-            openExternal("https://status.dasguney.com/status/bmm")}
+          onclick={() =>
+            openExternal("https://github.com/jatrou/balatro-mod-manager")}
         >
           <Activity size={20} />
-          <span>Status Page</span>
+          <span>Project on GitHub</span>
         </button>
-        <button class="kofi-button" on:click={handleKofiClick}>
+        <button class="kofi-button" onclick={handleKofiClick}>
           <div class="confetti-container">
             {#if showConfetti}
               <Confetti x={[0, 1]} y={[0, 1]} duration={4000} amount={50} />
             {/if}
           </div>
           <Coffee size={20} />
-          <span>Support on Ko-fi</span>
+          <span>Support original creator on Ko-fi</span>
         </button>
       </div>
 
-      <p id="versiontext">Current version: v0.4.1</p>
+      {#if appVersion}<p id="versiontext">
+          Current version: v{appVersion}
+        </p>{/if}
     </div>
 
     <div class="profile-section">

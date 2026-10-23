@@ -33,7 +33,9 @@
         <ol>
           <li>Read the submission rules.</li>
           <li>Fork the mod index repository on GitHub.</li>
-          <li>Add your mod's metadata and description under mods/Author@Mod.</li>
+          <li>
+            Add your mod's metadata and description under mods/Author@Mod.
+          </li>
           <li>Open a pull request with your changes.</li>
           <li>The maintainers review it, then your mod shows up in BMM.</li>
         </ol>
@@ -48,10 +50,10 @@
         </button>
         <button
           class="action-button submit-button"
-          on:click={() => open(`${INDEX_REPO_URL}/compare`)}
+          on:click={() => open(`${INDEX_REPO_URL}/pulls`)}
         >
           <ExternalLink size={20} />
-          <span>Submit a Pull Request</span>
+          <span>View Pull Requests</span>
         </button>
         <button
           class="action-button repo-button"

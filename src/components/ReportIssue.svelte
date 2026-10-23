@@ -2,6 +2,7 @@
   import { fade, scale } from "svelte/transition";
   import { Bug } from "lucide-svelte";
   import { addMessage } from "$lib/stores";
+  import { openExternal } from "$lib/opener";
   import { invoke } from "@tauri-apps/api/core";
   import DiscordFab from "./DiscordFab.svelte";
   import { reportIssueStore } from "../stores/modStore";
@@ -12,16 +13,15 @@
   const DESC_MAX = 1200;
   let submitting = $state(false);
 
-  // Error fallback modal
-  let showCopyPrompt = $state(false);
   let copying = $state(false);
-  let reportError = $state<string | null>(null);
   let logPreview = $state<string | null>(null);
   let logFilename = $state<string | null>(null);
 
   function resetForm() {
     title = "";
     description = "";
+    logPreview = null;
+    logFilename = null;
   }
 
   function close() {
@@ -41,33 +41,25 @@
     submitting = true;
     try {
       const mm_version = await invoke<string>("get_app_version");
-      await invoke("submit_report", {
+      const issueUrl = await invoke<string>("submit_report", {
         title,
         description,
         mmVersion: mm_version,
       });
-      addMessage("Issue reported!", "success");
+      await openExternal(issueUrl);
+      addMessage(
+        "GitHub issue draft opened. Review it before submitting.",
+        "success",
+      );
       resetForm();
       close();
     } catch (e) {
-      reportError = e instanceof Error ? e.message : String(e);
-      console.error("Error reporting the issue:", e);
-      addMessage("Error reporting the issue!", "error");
-      // Offer to copy logs to clipboard
-      showCopyPrompt = true;
-      close();
+      console.error("Failed to open GitHub issue draft:", e);
+      addMessage("Failed to open GitHub issue draft.", "error");
     } finally {
       submitting = false;
     }
   }
-
-  $effect(() => {
-    if (!showCopyPrompt) {
-      reportError = null;
-      logPreview = null;
-      logFilename = null;
-    }
-  });
 
   async function copyLogToClipboard() {
     copying = true;
@@ -78,11 +70,13 @@
       try {
         await navigator.clipboard.writeText(text);
         addMessage(`Copied ${filename} to clipboard.`, "success");
-        showCopyPrompt = false;
       } catch (e) {
         console.error("Failed to copy log:", e);
         addMessage("Failed to copy log to clipboard.", "error");
       }
+    } catch (e) {
+      console.error("Failed to read latest log:", e);
+      addMessage("No local log was available to copy.", "error");
     } finally {
       copying = false;
     }
@@ -100,11 +94,6 @@
 
   function handleWindowKeydown(e: KeyboardEvent) {
     if (e.key === "Escape" || e.key === "Esc") {
-      if (showCopyPrompt) {
-        showCopyPrompt = false;
-        e.preventDefault();
-        return;
-      }
       if ($reportIssueStore.visible) {
         close();
         e.preventDefault();
@@ -134,8 +123,9 @@
         <h2>Report an issue</h2>
       </div>
       <p class="desc">
-        The report will contain logs from the mod manager and minimal hardware
-        information to assist with troubleshooting.
+        This opens a draft on GitHub for you to review and submit. The draft
+        includes only your text and the app version; no logs or hardware details
+        are attached automatically.
       </p>
 
       <label class="input-label" for="report-title">Title</label>
@@ -160,51 +150,34 @@
       ></textarea>
       <div class="counter">{description.length}/{DESC_MAX}</div>
 
-      <div class="buttons">
-        <button class="cancel" onclick={close} disabled={submitting}
-          >Cancel</button
-        >
-        <button class="submit" onclick={handleSubmit} disabled={submitting}>
-          {#if submitting}Submitting...{:else}Submit{/if}
-        </button>
-      </div>
-    </div>
-  </div>
-{/if}
-
-{#if showCopyPrompt}
-  <div class="modal-background" transition:fade={{ duration: 160 }}>
-    <div
-      class="modal"
-      transition:scale={{ duration: 160, start: 0.95, opacity: 1 }}
-    >
-      <h2>Reporting the issue failed.</h2>
-      <p class="desc">Would you like to copy the log to your clipboard?</p>
-      {#if reportError}
-        <p class="desc error">Reason: {reportError}</p>
-      {/if}
       {#if logPreview}
         <label class="input-label" for="report-log-preview">
-          {logFilename ?? "Latest log"}
+          {logFilename ?? "Latest log"} (copied to clipboard)
         </label>
         <textarea
           id="report-log-preview"
           class="text-area default-scrollbar"
-          rows={6}
+          rows={4}
           readonly>{logPreview}</textarea
         >
       {/if}
+
       <div class="buttons">
-        <button
-          class="cancel"
-          onclick={() => (showCopyPrompt = false)}
-          disabled={copying}>No</button
+        <button class="cancel" onclick={close} disabled={submitting}
+          >Cancel</button
         >
-        <button class="cancel" onclick={openLogsFolder} disabled={copying}
+        <button class="cancel" onclick={openLogsFolder} disabled={submitting}
           >Open Logs Folder</button
         >
-        <button class="submit" onclick={copyLogToClipboard} disabled={copying}>
-          {#if copying}Copying...{:else}Copy Log{/if}
+        <button
+          class="cancel"
+          onclick={copyLogToClipboard}
+          disabled={submitting || copying}
+        >
+          {#if copying}Copying...{:else}Copy Latest Log{/if}
+        </button>
+        <button class="submit" onclick={handleSubmit} disabled={submitting}>
+          {#if submitting}Opening...{:else}Review on GitHub{/if}
         </button>
       </div>
     </div>
@@ -280,10 +253,6 @@
     font-family: "M6X11", sans-serif;
     margin: 0.5rem 0 1.25rem;
   }
-  .desc.error {
-    color: #ffb3b3;
-  }
-
   .input-label {
     display: block;
     margin: 0.5rem 0 0.25rem;
@@ -335,6 +304,7 @@
     margin-top: 1.25rem;
     display: flex;
     justify-content: flex-end;
+    flex-wrap: wrap;
     gap: 0.75rem;
   }
   .cancel {

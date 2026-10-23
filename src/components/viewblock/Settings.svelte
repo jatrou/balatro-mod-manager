@@ -36,7 +36,6 @@
     cleanedEntries: 0,
   });
   let isDiscordRpcEnabled = $state(false);
-  let isAnalyticsEnabled = $state(true);
   let isLinux = $state(false);
   let linuxPrefix = $state("");
   let isCompatHelperEnabled = $state(false);
@@ -112,21 +111,6 @@
     } catch (error) {
       console.error("Failed to set Discord RPC status:", error);
       addMessage("Failed to update Discord Rich Presence status", "error");
-    }
-  }
-
-  async function handleAnalyticsChange() {
-    const newValue = !isAnalyticsEnabled;
-    try {
-      await invoke("set_analytics_status", { enabled: newValue });
-      isAnalyticsEnabled = newValue;
-      addMessage(
-        `Anonymous usage data ${newValue ? "enabled" : "disabled"}`,
-        "success",
-      );
-    } catch (error) {
-      console.error("Failed to set analytics status:", error);
-      addMessage("Failed to update analytics setting", "error");
     }
   }
 
@@ -210,7 +194,7 @@
   }
 
   async function copyLinuxLaunchOptions() {
-    const text = 'WINEDLLOVERRIDES="version=n,b" %command%';
+    const text = 'WINEDLLOVERRIDES="winmm=n,b" %command%';
     try {
       await navigator.clipboard.writeText(text);
       addMessage("Copied Steam launch options to clipboard", "success");
@@ -250,7 +234,6 @@
     compat_helper: boolean;
     linux_prefix: string;
     launch_mode: string;
-    analytics_enabled: boolean;
   }
 
   onMount(() => {
@@ -279,7 +262,6 @@
         isBackgroundAnimationEnabled = settings.background_enabled;
         backgroundEnabled.set(isBackgroundAnimationEnabled);
         isCompatHelperEnabled = settings.compat_helper;
-        isAnalyticsEnabled = settings.analytics_enabled;
         if (isLinux) {
           linuxPrefix = settings.linux_prefix;
           if (!linuxPrefix) {
@@ -396,7 +378,7 @@
             <div class="linux-note-content">
               <strong>Linux Steam launch:</strong>
               Set Steam launch options for Balatro to
-              <code>WINEDLLOVERRIDES="version=n,b" %command%</code> so Lovely
+              <code>WINEDLLOVERRIDES="winmm=n,b" %command%</code> so Lovely
               and mods load when using <code>steam -applaunch 2379780</code>.
               <div class="linux-note-actions">
                 <button
@@ -521,7 +503,7 @@
             Launch command for Linux (Proton/Wine/Steam). Leave blank to use
             native LOVE. Use `{"{exe}"}` to place the Balatro.exe path, or
             `steam -applaunch 2379780` to launch via Steam. Lovely requires
-            `WINEDLLOVERRIDES=version=n,b` and uses the Proton Mods folder
+            `WINEDLLOVERRIDES=winmm=n,b` and uses the Proton Mods folder
             (linked from your host Mods dir).
           </p>
         {/if}
@@ -599,21 +581,8 @@
       </p>
 
       <h3>Privacy</h3>
-      <div class="console-settings">
-        <span class="label-text">Send anonymous usage data</span>
-        <div class="switch-container">
-          <label class="switch">
-            <input
-              type="checkbox"
-              checked={isAnalyticsEnabled}
-              onchange={handleAnalyticsChange}
-            /> <span class="slider"></span>
-          </label>
-        </div>
-      </div>
       <p class="description-small">
-        Helps improve BMM. No personal data is collected. Self-hosted on our own
-        server. Can be turned off at any time.
+        This maintained fork does not collect or send analytics or usage data.
       </p>
 
       <h3>Developer Options</h3>

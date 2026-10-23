@@ -1,45 +1,31 @@
 use crate::state::AppState;
 use serde_json::Value;
 
-/// Toggle analytics opt-out from the frontend settings page.
+/// Compatibility command for clients that still query the former preference.
+/// Analytics are always disabled in this maintained fork.
 #[tauri::command]
-pub async fn get_analytics_status(state: tauri::State<'_, AppState>) -> Result<bool, String> {
-    let db = state.db.lock().unwrap_or_else(|e| e.into_inner());
-    db.is_analytics_enabled().map_err(|e| e.to_string())
+pub async fn get_analytics_status(_state: tauri::State<'_, AppState>) -> Result<bool, String> {
+    Ok(false)
 }
 
-/// Toggle analytics opt-out from the frontend settings page.
+/// Compatibility command for older clients. The requested value is ignored.
 #[tauri::command]
 pub async fn set_analytics_status(
-    state: tauri::State<'_, AppState>,
+    _state: tauri::State<'_, AppState>,
     enabled: bool,
 ) -> Result<(), String> {
-    let db = state.db.lock().unwrap_or_else(|e| e.into_inner());
-    db.set_analytics_enabled(enabled).map_err(|e| e.to_string())
+    let _ = enabled;
+    Ok(())
 }
 
-/// Fire-and-forget event tracking command. Called from the frontend.
-/// Silently does nothing if analytics is disabled.
+/// Compatibility command for existing event call sites. No data is collected
+/// or sent anywhere.
 #[tauri::command]
 pub async fn track_event(
-    state: tauri::State<'_, AppState>,
+    _state: tauri::State<'_, AppState>,
     name: String,
     props: Option<Value>,
 ) -> Result<(), String> {
-    let enabled = {
-        let db = state.db.lock().unwrap_or_else(|e| e.into_inner());
-        db.is_analytics_enabled().unwrap_or(true)
-    };
-    if !enabled {
-        return Ok(());
-    }
-
-    let version = env!("CARGO_PKG_VERSION").to_string();
-    let props = props.unwrap_or(serde_json::json!({}));
-
-    tauri::async_runtime::spawn(async move {
-        crate::analytics::send_event(&name, props, &version).await;
-    });
-
+    let _ = (name, props);
     Ok(())
 }

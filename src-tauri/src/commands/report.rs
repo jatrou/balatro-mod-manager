@@ -1,110 +1,33 @@
-use base64::{Engine as _, engine::general_purpose::STANDARD};
-use serde::Serialize;
 use std::fs;
-use std::time::Duration;
-use sysinfo::System;
 
-const REPORT_URL: &str = "https://balatro-mod-manager-reports.dasguney.com/report";
-const REPORT_TIMEOUT: Duration = Duration::from_secs(30);
-const REPORT_CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
+const ISSUE_URL: &str = "https://github.com/jatrou/balatro-mod-manager/issues/new";
 
-#[derive(Serialize)]
-struct ReportPayload<'a> {
-    title: &'a str,
-    description: &'a str,
-    mm_version: &'a str,
-    os: String,
-    arch: String,
-    cpu: String,
-    gpu: String,
-    ram: String,
-    log_b64: String,
-    log_filename: String,
-}
-
-/// Submit an issue report to the Jimbo bot server.
+/// Build a GitHub issue draft for the maintained fork.
+///
+/// This command intentionally performs no network request and does not collect
+/// logs or hardware details. The frontend opens the returned URL so the user
+/// can review and submit the issue in their browser.
 #[tauri::command]
 pub async fn submit_report(
     title: String,
     description: String,
     mm_version: String,
-) -> Result<(), String> {
-    // Collect system info
-    let (cpu, ram_str) = get_cpu_and_ram();
-    let os = std::env::consts::OS.to_string();
-    let os_version = detect_os_version().unwrap_or_else(|| "Unknown".to_string());
-    let os_combined = if os_version == "Unknown" {
-        os.clone()
-    } else {
-        format!("{} | {}", os, os_version)
-    };
-    let arch = std::env::consts::ARCH.to_string();
-    let gpu = detect_gpu().unwrap_or_else(|| "Unknown".to_string());
+) -> Result<String, String> {
+    Ok(build_issue_url(&title, &description, &mm_version))
+}
 
-    // Get latest log
-    let (log_filename, log_text) =
-        latest_log().unwrap_or_else(|| ("bmm.log".to_string(), String::from("No logs found.")));
-    let log_b64 = STANDARD.encode(log_text.as_bytes());
+fn build_issue_url(title: &str, description: &str, mm_version: &str) -> String {
+    let body = format!(
+        "{}\n\n---\nBalatro Mod Manager version: {}\n\nLogs and system information are not attached automatically. Add only the diagnostics you choose to share.",
+        description.trim(),
+        mm_version.trim()
+    );
 
-    let payload = ReportPayload {
-        title: &title,
-        description: &description,
-        mm_version: &mm_version,
-        os: os_combined,
-        arch,
-        cpu,
-        gpu,
-        ram: ram_str,
-        log_b64,
-        log_filename,
-    };
-
-    // Send with timeout to avoid hanging indefinitely
-    let client = reqwest::Client::builder()
-        .timeout(REPORT_TIMEOUT)
-        .connect_timeout(REPORT_CONNECT_TIMEOUT)
-        .build()
-        .map_err(|e| {
-            log::error!("Failed to build HTTP client for report: {}", e);
-            format!("Failed to initialize report client: {e}")
-        })?;
-
-    log::info!("Submitting issue report: {}", title);
-    let resp = client
-        .post(REPORT_URL)
-        .json(&payload)
-        .send()
-        .await
-        .map_err(|e| {
-            log::error!("Report request failed: {}", e);
-            if e.is_timeout() {
-                "Report request timed out. Please check your internet connection and try again."
-                    .to_string()
-            } else if e.is_connect() {
-                "Could not connect to report server. Please check your internet connection."
-                    .to_string()
-            } else {
-                format!("Report request failed: {e}")
-            }
-        })?;
-
-    if !resp.status().is_success() {
-        let status = resp.status();
-        let text = resp.text().await.unwrap_or_default();
-        let err_msg = format!(
-            "Report server error: HTTP {}{}",
-            status,
-            if text.is_empty() {
-                String::new()
-            } else {
-                format!(" - {}", text)
-            }
-        );
-        log::error!("{}", err_msg);
-        return Err(err_msg);
-    }
-    log::info!("Issue report submitted successfully");
-    Ok(())
+    format!(
+        "{ISSUE_URL}?title={}&body={}",
+        urlencoding::encode(title.trim()),
+        urlencoding::encode(&body)
+    )
 }
 
 /// Returns the latest log's filename and text, if any.
@@ -115,7 +38,7 @@ pub async fn get_latest_log() -> Result<(String, String), String> {
 
 #[tauri::command]
 pub async fn get_logs_folder() -> Result<String, String> {
-    let dir = dirs::config_dir()
+    let dir = bmm_lib::config_dir()
         .ok_or_else(|| "config directory not found".to_string())?
         .join("Balatro")
         .join("logs");
@@ -124,322 +47,29 @@ pub async fn get_logs_folder() -> Result<String, String> {
 }
 
 fn latest_log() -> Option<(String, String)> {
-    let dir = dirs::config_dir()?.join("Balatro").join("logs");
+    let dir = bmm_lib::config_dir()?.join("Balatro").join("logs");
     let entries = fs::read_dir(&dir).ok()?;
     let mut files: Vec<_> = entries
-        .filter_map(|e| e.ok())
-        .filter(|e| {
-            let p = e.path();
-            p.extension().is_some_and(|ext| ext == "log")
-                && p.file_name()
-                    .is_some_and(|n| n.to_string_lossy().starts_with("bmm_"))
+        .filter_map(|entry| entry.ok())
+        .filter(|entry| {
+            let path = entry.path();
+            path.extension().is_some_and(|extension| extension == "log")
+                && path
+                    .file_name()
+                    .is_some_and(|name| name.to_string_lossy().starts_with("bmm_"))
         })
         .collect();
 
-    files.sort_by_key(|e| e.metadata().and_then(|m| m.modified()).ok());
+    files.sort_by_key(|entry| {
+        entry
+            .metadata()
+            .and_then(|metadata| metadata.modified())
+            .ok()
+    });
     let path = files.last()?.path();
     let filename = path.file_name()?.to_string_lossy().to_string();
     let text = fs::read_to_string(&path).ok()?;
     Some((filename, text))
-}
-
-fn get_cpu_and_ram() -> (String, String) {
-    let mut sys = System::new_all();
-    sys.refresh_all();
-    let cpu = detect_cpu();
-
-    // Try to produce a sane GB value despite sysinfo changes over versions
-    let tm = sys.total_memory();
-    let gib_from_bytes = (tm as f64) / (1024.0 * 1024.0 * 1024.0);
-    let gib_from_kib = (tm as f64) / (1024.0 * 1024.0);
-
-    let gb = if (1.0..=1024.0).contains(&gib_from_bytes) {
-        gib_from_bytes
-    } else if (1.0..=1024.0).contains(&gib_from_kib) {
-        gib_from_kib
-    } else {
-        // Fallback: prefer bytes path
-        gib_from_bytes
-    };
-    let ram_str = format!("{}GB", (gb.round() as u64).max(1));
-    (cpu, ram_str)
-}
-
-/// Returns a human-friendly OS version string, if available.
-///
-/// Examples:
-/// - Windows: "Microsoft Windows 11 Pro 10.0.22631 (Build 3880)"
-/// - macOS:   "macOS 14.5 (23F79)"
-/// - Linux:   distro + kernel if available
-fn detect_os_version() -> Option<String> {
-    #[cfg(target_os = "windows")]
-    {
-        use std::os::windows::process::CommandExt;
-        use std::process::Command;
-        const CREATE_NO_WINDOW: u32 = 0x08000000;
-
-        // Prefer PowerShell CIM query (wmic deprecated on newer Windows)
-        let ps = r#"
-            $o = Get-CimInstance Win32_OperatingSystem; 
-            Write-Output ($o.Caption + ' ' + $o.Version + ' (Build ' + $o.BuildNumber + ')')
-        "#;
-        if let Ok(out) = Command::new("powershell")
-            .args(["-NoProfile", "-Command", ps])
-            .creation_flags(CREATE_NO_WINDOW)
-            .output()
-        {
-            if out.status.success() {
-                let s = String::from_utf8_lossy(&out.stdout).trim().to_string();
-                if !s.is_empty() {
-                    return Some(s);
-                }
-            }
-        }
-
-        // Fallback: wmic
-        if let Ok(out) = Command::new("wmic")
-            .args(["os", "get", "Caption,Version,BuildNumber", "/value"])
-            .creation_flags(CREATE_NO_WINDOW)
-            .output()
-        {
-            if out.status.success() {
-                let s = String::from_utf8_lossy(&out.stdout);
-                let mut caption = String::new();
-                let mut version = String::new();
-                let mut build = String::new();
-                for line in s.lines() {
-                    let l = line.trim();
-                    if let Some(v) = l.strip_prefix("Caption=") {
-                        caption = v.trim().to_string();
-                    } else if let Some(v) = l.strip_prefix("Version=") {
-                        version = v.trim().to_string();
-                    } else if let Some(v) = l.strip_prefix("BuildNumber=") {
-                        build = v.trim().to_string();
-                    }
-                }
-                if !caption.is_empty() && !version.is_empty() && !build.is_empty() {
-                    return Some(format!("{} {} (Build {})", caption, version, build));
-                }
-            }
-        }
-
-        // Last resort: sysinfo long_os_version + kernel
-        let mut sys = System::new_all();
-        sys.refresh_all();
-        let long = System::long_os_version().or_else(System::os_version);
-        let kernel = System::kernel_version();
-        if let Some(l) = long {
-            if let Some(k) = kernel {
-                return Some(format!("{} (Kernel {})", l, k));
-            }
-            return Some(l);
-        }
-        None
-    }
-
-    #[cfg(target_os = "macos")]
-    {
-        use std::process::Command;
-
-        let name = Command::new("sw_vers").arg("-productName").output().ok();
-        let version = Command::new("sw_vers").arg("-productVersion").output().ok();
-        let build = Command::new("sw_vers").arg("-buildVersion").output().ok();
-
-        let clean = |o: Option<std::process::Output>| -> Option<String> {
-            o.and_then(|out| {
-                if out.status.success() {
-                    Some(String::from_utf8_lossy(&out.stdout).trim().to_string())
-                } else {
-                    None
-                }
-            })
-        };
-
-        let name = clean(name).unwrap_or_else(|| "macOS".to_string());
-        let version = clean(version).unwrap_or_default();
-        let build = clean(build);
-        if !version.is_empty() {
-            return Some(match build {
-                Some(b) if !b.is_empty() => format!("{} {} ({})", name, version, b),
-                _ => format!("{} {}", name, version),
-            });
-        }
-
-        // Fallback: sysinfo long_os_version
-        let mut sys = System::new_all();
-        sys.refresh_all();
-        if let Some(l) = System::long_os_version().or_else(System::os_version) {
-            return Some(l);
-        }
-        Some(name)
-    }
-
-    #[cfg(target_os = "linux")]
-    {
-        use std::fs;
-
-        // Try /etc/os-release PRETTY_NAME
-        if let Ok(s) = fs::read_to_string("/etc/os-release") {
-            let mut pretty = None;
-            for line in s.lines() {
-                if let Some(v) = line.strip_prefix("PRETTY_NAME=") {
-                    let v = v.trim_matches('"').to_string();
-                    if !v.is_empty() {
-                        pretty = Some(v);
-                        break;
-                    }
-                }
-            }
-            if let Some(p) = pretty {
-                return Some(p);
-            }
-        }
-
-        // Fallback: sysinfo long_os_version + kernel
-        let mut sys = System::new_all();
-        sys.refresh_all();
-        let long = System::long_os_version().or_else(System::os_version);
-        let kernel = System::kernel_version();
-        match (long, kernel) {
-            (Some(l), Some(k)) => Some(format!("{} (Kernel {})", l, k)),
-            (Some(l), None) => Some(l),
-            (None, Some(k)) => Some(format!("Linux (Kernel {})", k)),
-            _ => None,
-        }
-    }
-
-    #[cfg(not(any(target_os = "linux", target_os = "windows", target_os = "macos")))]
-    {
-        let mut sys = System::new_all();
-        sys.refresh_all();
-        System::long_os_version()
-            .or_else(System::os_version)
-            .or_else(|| Some(std::env::consts::OS.to_string()))
-    }
-}
-
-// Best-effort GPU detection; returns None if not supported
-#[cfg(target_os = "macos")]
-fn detect_gpu() -> Option<String> {
-    use std::process::Command;
-    let out = Command::new("system_profiler")
-        .arg("SPDisplaysDataType")
-        .arg("-detailLevel")
-        .arg("mini")
-        .output()
-        .ok()?;
-    let s = String::from_utf8_lossy(&out.stdout);
-    for line in s.lines() {
-        let l = line.trim();
-        if l.starts_with("Chipset Model:") || l.starts_with("Chipset:") {
-            return Some(
-                l.replace("Chipset Model:", "")
-                    .replace("Chipset:", "")
-                    .trim()
-                    .to_string(),
-            );
-        }
-    }
-    None
-}
-
-#[cfg(target_os = "windows")]
-fn detect_gpu() -> Option<String> {
-    // Using wmic is deprecated on newer Windows; keep it best-effort
-    use std::os::windows::process::CommandExt;
-    use std::process::Command;
-    const CREATE_NO_WINDOW: u32 = 0x08000000;
-    let out = Command::new("wmic")
-        .args(["path", "win32_VideoController", "get", "name"])
-        .creation_flags(CREATE_NO_WINDOW)
-        .output()
-        .ok()?;
-    let s = String::from_utf8_lossy(&out.stdout);
-    let mut lines = s.lines().skip(1).filter(|l| !l.trim().is_empty());
-    lines.next().map(|l| l.trim().to_string())
-}
-
-#[cfg(target_os = "linux")]
-fn detect_gpu() -> Option<String> {
-    use std::process::Command;
-    let out = Command::new("sh")
-        .arg("-c")
-        .arg("lspci | grep -Ei 'vga|3d|display' | head -n1")
-        .output()
-        .ok()?;
-    if !out.status.success() {
-        return None;
-    }
-    let s = String::from_utf8_lossy(&out.stdout);
-    Some(s.trim().to_string())
-}
-
-#[cfg(not(any(target_os = "linux", target_os = "windows", target_os = "macos")))]
-fn detect_gpu() -> Option<String> {
-    None
-}
-
-// Platform-specific CPU detection (best effort)
-fn detect_cpu() -> String {
-    #[cfg(target_os = "macos")]
-    {
-        use std::process::Command;
-        if let Ok(out) = Command::new("sysctl")
-            .args(["-n", "machdep.cpu.brand_string"])
-            .output()
-            && out.status.success()
-        {
-            let s = String::from_utf8_lossy(&out.stdout).trim().to_string();
-            if !s.is_empty() {
-                return s;
-            }
-        }
-    }
-    #[cfg(target_os = "windows")]
-    {
-        use std::os::windows::process::CommandExt;
-        use std::process::Command;
-        const CREATE_NO_WINDOW: u32 = 0x08000000;
-        if let Ok(out) = Command::new("wmic")
-            .args(["cpu", "get", "name"])
-            .creation_flags(CREATE_NO_WINDOW)
-            .output()
-        {
-            if out.status.success() {
-                let s = String::from_utf8_lossy(&out.stdout);
-                if let Some(name) = s.lines().skip(1).find(|l| !l.trim().is_empty()) {
-                    return name.trim().to_string();
-                }
-            }
-        }
-    }
-    #[cfg(target_os = "linux")]
-    {
-        use std::process::Command;
-        if let Ok(out) = Command::new("sh")
-            .arg("-c")
-            .arg("lscpu | grep 'Model name' | cut -d: -f2")
-            .output()
-            && out.status.success()
-        {
-            let s = String::from_utf8_lossy(&out.stdout).trim().to_string();
-            if !s.is_empty() {
-                return s;
-            }
-        }
-        if let Ok(out) = Command::new("sh")
-            .arg("-c")
-            .arg("grep -m1 'model name' /proc/cpuinfo | cut -d: -f2")
-            .output()
-            && out.status.success()
-        {
-            let s = String::from_utf8_lossy(&out.stdout).trim().to_string();
-            if !s.is_empty() {
-                return s;
-            }
-        }
-    }
-    "Unknown".to_string()
 }
 
 #[cfg(test)]
@@ -447,107 +77,27 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_report_url_is_https() {
-        assert!(REPORT_URL.starts_with("https://"));
-    }
-
-    #[test]
-    fn test_report_timeout_is_reasonable() {
-        assert!(REPORT_TIMEOUT.as_secs() >= 10);
-        assert!(REPORT_TIMEOUT.as_secs() <= 120);
-    }
-
-    #[test]
-    fn test_report_connect_timeout_is_reasonable() {
-        assert!(REPORT_CONNECT_TIMEOUT.as_secs() >= 5);
-        assert!(REPORT_CONNECT_TIMEOUT.as_secs() <= 30);
-    }
-
-    #[test]
-    fn test_report_connect_timeout_less_than_total() {
-        assert!(REPORT_CONNECT_TIMEOUT < REPORT_TIMEOUT);
-    }
-
-    #[test]
-    fn test_report_payload_serialize() {
-        let payload = ReportPayload {
-            title: "Test Bug",
-            description: "A test description",
-            mm_version: "1.0.0",
-            os: "linux".to_string(),
-            arch: "x86_64".to_string(),
-            cpu: "Test CPU".to_string(),
-            gpu: "Test GPU".to_string(),
-            ram: "16GB".to_string(),
-            log_b64: "dGVzdA==".to_string(),
-            log_filename: "bmm_test.log".to_string(),
-        };
-        let json = serde_json::to_string(&payload).unwrap();
-        assert!(json.contains("Test Bug"));
-        assert!(json.contains("mm_version"));
-        assert!(json.contains("log_b64"));
-    }
-
-    #[test]
-    fn test_report_payload_all_fields_present() {
-        let payload = ReportPayload {
-            title: "t",
-            description: "d",
-            mm_version: "v",
-            os: "o".to_string(),
-            arch: "a".to_string(),
-            cpu: "c".to_string(),
-            gpu: "g".to_string(),
-            ram: "r".to_string(),
-            log_b64: "l".to_string(),
-            log_filename: "f".to_string(),
-        };
-        let json = serde_json::to_string(&payload).unwrap();
-        // All expected fields should be present
-        for field in [
-            "title",
-            "description",
-            "mm_version",
-            "os",
-            "arch",
-            "cpu",
-            "gpu",
-            "ram",
-            "log_b64",
-            "log_filename",
-        ] {
-            assert!(json.contains(field), "Missing field: {}", field);
-        }
-    }
-
-    #[test]
-    fn test_get_cpu_and_ram_returns_valid_format() {
-        let (cpu, ram) = get_cpu_and_ram();
-        // CPU should be non-empty (might be "Unknown")
-        assert!(!cpu.is_empty());
-        // RAM should end with "GB"
-        assert!(
-            ram.ends_with("GB"),
-            "RAM format should end with GB: {}",
-            ram
+    fn issue_draft_targets_maintained_fork_and_encodes_user_text() {
+        let url = build_issue_url(
+            "Lovely update & crash",
+            "Steps:\n1. Update Lovely\n2. Launch",
+            "0.5.0-beta+1",
         );
+
+        assert!(url.starts_with("https://github.com/jatrou/balatro-mod-manager/issues/new?"));
+        assert!(url.contains("title=Lovely%20update%20%26%20crash"));
+        assert!(url.contains("Steps%3A%0A1.%20Update%20Lovely%0A2.%20Launch"));
+        assert!(url.contains("0.5.0-beta%2B1"));
     }
 
     #[test]
-    fn test_detect_cpu_returns_string() {
-        let cpu = detect_cpu();
-        assert!(!cpu.is_empty());
-    }
+    fn issue_draft_explains_that_diagnostics_are_opt_in() {
+        let url = build_issue_url("Bug", "Details", "1.2.3");
+        let encoded_body = url.split("&body=").nth(1).unwrap();
+        let body = urlencoding::decode(encoded_body).unwrap();
 
-    #[test]
-    fn test_detect_os_version_returns_option() {
-        // Just verify it doesn't panic
-        let _version = detect_os_version();
-    }
-
-    #[test]
-    fn test_detect_gpu_returns_option() {
-        // Just verify it doesn't panic
-        let _gpu = detect_gpu();
+        assert!(body.contains("Logs and system information are not attached automatically"));
+        assert!(!body.contains("CPU:"));
+        assert!(!body.contains("GPU:"));
     }
 }

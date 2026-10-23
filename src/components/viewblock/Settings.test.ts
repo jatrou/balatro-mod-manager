@@ -83,7 +83,6 @@ describe("Settings view", () => {
           compat_helper: true,
           linux_prefix: "",
           launch_mode: "modded",
-          analytics_enabled: true,
         };
       }
       if (command === "get_balatro_path") {
@@ -122,6 +121,17 @@ describe("Settings view", () => {
         path: "/tmp/mods",
       });
     });
+  });
+
+  it("states that telemetry is disabled", () => {
+    render(Settings);
+
+    expect(
+      screen.getByText(
+        "This maintained fork does not collect or send analytics or usage data.",
+      ),
+    ).toBeTruthy();
+    expect(screen.queryByText("Send anonymous usage data")).toBeNull();
   });
 
   it("reindexes mod database and reports success", async () => {

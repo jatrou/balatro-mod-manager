@@ -35,26 +35,24 @@ use std::thread;
 use std::time::Duration;
 use tar::Archive;
 use tokio::io::AsyncWriteExt;
-use tokio::time::sleep;
 use zip::ZipArchive;
 
 /// Atomic counter to generate unique temp file names for concurrent downloads.
 static DOWNLOAD_COUNTER: AtomicU64 = AtomicU64::new(0);
+
+struct TempFileCleanup(PathBuf);
+
+impl Drop for TempFileCleanup {
+    fn drop(&mut self) {
+        let _ = fs::remove_file(&self.0);
+    }
+}
 
 /// Maximum total decompressed size allowed (2 GB)
 const MAX_DECOMPRESSED_SIZE: u64 = 2 * 1024 * 1024 * 1024;
 
 /// Maximum number of files allowed in an archive
 const MAX_ARCHIVE_FILES: usize = 10_000;
-
-/// Delay after uninstalling a mod before reinstalling (Windows).
-/// Windows file handles take longer to fully release.
-#[cfg(target_os = "windows")]
-const FILE_LOCK_RELEASE_DELAY_MS: u64 = 250;
-
-/// Delay after uninstalling a mod before reinstalling (Unix).
-#[cfg(not(target_os = "windows"))]
-const FILE_LOCK_RELEASE_DELAY_MS: u64 = 100;
 
 /// Base retry delay for directory removal (Windows).
 #[cfg(target_os = "windows")]
@@ -140,6 +138,10 @@ pub async fn install_mod(url: String, folder_name: Option<String>) -> Result<Pat
         std::process::id(),
         unique_id
     ));
+    // Keep cleanup armed for every return path, including interrupted streams
+    // and flush failures. The explicit extraction cleanup below remains a
+    // best-effort early removal; this guard is the final fallback.
+    let _temp_file_cleanup = TempFileCleanup(temp_file_path.clone());
 
     let mut temp_file = tokio::fs::File::create(&temp_file_path)
         .await
@@ -244,19 +246,10 @@ pub async fn install_mod(url: String, folder_name: Option<String>) -> Result<Pat
         mod_name = fallback_name();
     }
 
-    // Uninstall old mod folder if it exists
+    // Preserve the user's enabled/disabled choice. Steamodded can place the
+    // marker below the top-level mod directory, so inspect the whole tree.
     let target_dir = mod_dir.join(&mod_name);
-    let was_disabled = tokio::fs::try_exists(target_dir.join(".lovelyignore"))
-        .await
-        .unwrap_or(false);
-    if tokio::fs::try_exists(&target_dir).await.unwrap_or(false) {
-        log::info!("Uninstalling existing mod at: {target_dir:?}");
-        uninstall_mod(target_dir.clone()).await?;
-
-        // Give the filesystem time to fully release file handles.
-        // This is especially important on Windows where file locks can persist briefly.
-        sleep(Duration::from_millis(FILE_LOCK_RELEASE_DELAY_MS)).await;
-    }
+    let was_disabled = has_disabled_marker(&target_dir);
 
     log::info!("Installing mod: {url}");
 
@@ -268,9 +261,24 @@ pub async fn install_mod(url: String, folder_name: Option<String>) -> Result<Pat
     let temp_path_clone = temp_file_path.clone();
     let installed_path = tokio::task::spawn_blocking(move || {
         let result = match archive_kind {
-            ArchiveKind::Zip => handle_zip(&temp_path_clone, &mod_dir_clone, &mod_name_clone),
-            ArchiveKind::Tar => handle_tar(&temp_path_clone, &mod_dir_clone, &mod_name_clone),
-            ArchiveKind::TarGz => handle_tar_gz(&temp_path_clone, &mod_dir_clone, &mod_name_clone),
+            ArchiveKind::Zip => handle_zip_with_options(
+                &temp_path_clone,
+                &mod_dir_clone,
+                &mod_name_clone,
+                was_disabled,
+            ),
+            ArchiveKind::Tar => handle_tar_with_options(
+                &temp_path_clone,
+                &mod_dir_clone,
+                &mod_name_clone,
+                was_disabled,
+            ),
+            ArchiveKind::TarGz => handle_tar_gz_with_options(
+                &temp_path_clone,
+                &mod_dir_clone,
+                &mod_name_clone,
+                was_disabled,
+            ),
         };
         // Clean up temp file after extraction (regardless of success/failure)
         let _ = std::fs::remove_file(&temp_path_clone);
@@ -282,14 +290,6 @@ pub async fn install_mod(url: String, folder_name: Option<String>) -> Result<Pat
         let _ = std::fs::remove_file(&temp_file_path);
         AppError::InvalidState(format!("Archive extraction task failed: {e}"))
     })??;
-
-    if was_disabled {
-        log::info!("Restoring disabled state for {}", installed_path.display());
-        let path = installed_path.clone();
-        tokio::task::spawn_blocking(move || apply_disabled_marker(&path))
-            .await
-            .map_err(|e| AppError::InvalidState(format!("Apply disabled marker failed: {e}")))??;
-    }
 
     log::info!("Mod installed successfully at: {installed_path:?}");
     Ok(installed_path)
@@ -461,7 +461,17 @@ fn guess_archive_kind(
     None
 }
 
+#[cfg(test)]
 fn handle_zip(archive_path: &Path, mod_dir: &Path, mod_name: &str) -> Result<PathBuf, AppError> {
+    handle_zip_with_options(archive_path, mod_dir, mod_name, false)
+}
+
+fn handle_zip_with_options(
+    archive_path: &Path,
+    mod_dir: &Path,
+    mod_name: &str,
+    preserve_disabled: bool,
+) -> Result<PathBuf, AppError> {
     let file = File::open(archive_path).map_err(|e| {
         log::error!("Failed to open archive file: {}", e);
         AppError::FileRead {
@@ -524,18 +534,9 @@ fn handle_zip(archive_path: &Path, mod_dir: &Path, mod_name: &str) -> Result<Pat
     // The target directory where the mod will be installed
     let target_dir = mod_dir.join(mod_name);
 
-    // Remove target directory if it exists (with retry logic)
-    if target_dir.exists() {
-        remove_dir_with_retry(&target_dir, 5)?;
-    }
-
-    // Use staging directory for atomic extraction
-    // Extract to a temp location first, then rename to final destination
-    // This ensures partial extractions don't leave corrupted state
-    let staging_dir = mod_dir.join(format!(".staging_{}", mod_name));
-    if staging_dir.exists() {
-        remove_dir_with_retry(&staging_dir, 5)?;
-    }
+    // Extract beside the target so the final rename stays on one filesystem.
+    // The unique name also prevents simultaneous installs from sharing state.
+    let staging_dir = unique_work_dir(mod_dir, "staging", mod_name);
 
     // Helper to clean up staging on error
     let cleanup_staging = |staging: &Path| {
@@ -555,15 +556,6 @@ fn handle_zip(archive_path: &Path, mod_dir: &Path, mod_name: &str) -> Result<Pat
         if let Err(e) = extract_zip_root(&mut zip, &staging_dir) {
             cleanup_staging(&staging_dir);
             return Err(e);
-        }
-
-        // Atomic rename from staging to target
-        if let Err(e) = fs::rename(&staging_dir, &target_dir) {
-            cleanup_staging(&staging_dir);
-            return Err(AppError::FileWrite {
-                path: staging_dir.clone(),
-                source: format!("Failed to rename staging directory: {e}"),
-            });
         }
     } else {
         // Single wrapper directory - strip it and keep the inner contents.
@@ -588,20 +580,31 @@ fn handle_zip(archive_path: &Path, mod_dir: &Path, mod_name: &str) -> Result<Pat
         };
         let source_dir = staging_dir.join(root_dir);
 
-        // Move inner folder to target directory
-        if let Err(e) = fs::rename(&source_dir, &target_dir) {
+        // Lift the archive's wrapper directory into a second staging path so
+        // the common commit code below always swaps one complete directory.
+        let prepared_dir = unique_work_dir(mod_dir, "prepared", mod_name);
+        if let Err(e) = fs::rename(&source_dir, &prepared_dir) {
             cleanup_staging(&staging_dir);
             return Err(AppError::FileWrite {
                 path: source_dir.clone(),
-                source: format!("Failed to rename directory: {e}"),
+                source: format!("Failed to prepare extracted directory: {e}"),
             });
         }
-
-        // Clean up staging directory
         let _ = remove_dir_with_retry(&staging_dir, 5);
+
+        if preserve_disabled && let Err(e) = apply_disabled_marker(&prepared_dir) {
+            let _ = remove_dir_with_retry(&prepared_dir, 5);
+            return Err(e);
+        }
+        return commit_staged_directory(&prepared_dir, &target_dir);
     }
 
-    Ok(target_dir)
+    if preserve_disabled && let Err(e) = apply_disabled_marker(&staging_dir) {
+        cleanup_staging(&staging_dir);
+        return Err(e);
+    }
+
+    commit_staged_directory(&staging_dir, &target_dir)
 }
 
 fn extract_zip_root<R: Read + io::Seek>(
@@ -730,17 +733,27 @@ fn extract_zip<R: Read + io::Seek>(
     Ok(())
 }
 
-fn handle_tar(archive_path: &Path, mod_dir: &Path, mod_name: &str) -> Result<PathBuf, AppError> {
+fn handle_tar_with_options(
+    archive_path: &Path,
+    mod_dir: &Path,
+    mod_name: &str,
+    preserve_disabled: bool,
+) -> Result<PathBuf, AppError> {
     let file = File::open(archive_path).map_err(|e| AppError::FileRead {
         path: archive_path.to_path_buf(),
         source: e.to_string(),
     })?;
     let reader = BufReader::new(file);
     let mut tar = Archive::new(reader);
-    extract_tar_to_staging(&mut tar, mod_dir, mod_name)
+    extract_tar_to_staging(&mut tar, mod_dir, mod_name, preserve_disabled)
 }
 
-fn handle_tar_gz(archive_path: &Path, mod_dir: &Path, mod_name: &str) -> Result<PathBuf, AppError> {
+fn handle_tar_gz_with_options(
+    archive_path: &Path,
+    mod_dir: &Path,
+    mod_name: &str,
+    preserve_disabled: bool,
+) -> Result<PathBuf, AppError> {
     let file = File::open(archive_path).map_err(|e| AppError::FileRead {
         path: archive_path.to_path_buf(),
         source: e.to_string(),
@@ -748,7 +761,7 @@ fn handle_tar_gz(archive_path: &Path, mod_dir: &Path, mod_name: &str) -> Result<
     let reader = BufReader::new(file);
     let gz = GzDecoder::new(reader);
     let mut tar = Archive::new(gz);
-    extract_tar_to_staging(&mut tar, mod_dir, mod_name)
+    extract_tar_to_staging(&mut tar, mod_dir, mod_name, preserve_disabled)
 }
 
 /// Extract tar archive using staging directory for atomic installation.
@@ -757,19 +770,12 @@ fn extract_tar_to_staging(
     tar: &mut Archive<impl Read>,
     mod_dir: &Path,
     mod_name: &str,
+    preserve_disabled: bool,
 ) -> Result<PathBuf, AppError> {
     let target_dir = mod_dir.join(mod_name);
 
-    // Remove target directory if it exists
-    if target_dir.exists() {
-        remove_dir_with_retry(&target_dir, 5)?;
-    }
-
     // Use staging directory for atomic extraction
-    let staging_dir = mod_dir.join(format!(".staging_{}", mod_name));
-    if staging_dir.exists() {
-        remove_dir_with_retry(&staging_dir, 5)?;
-    }
+    let staging_dir = unique_work_dir(mod_dir, "staging", mod_name);
 
     fs::create_dir_all(&staging_dir).map_err(|e| AppError::DirCreate {
         path: staging_dir.clone(),
@@ -789,16 +795,12 @@ fn extract_tar_to_staging(
         return Err(e);
     }
 
-    // Atomic rename from staging to target
-    if let Err(e) = fs::rename(&staging_dir, &target_dir) {
+    if preserve_disabled && let Err(e) = apply_disabled_marker(&staging_dir) {
         cleanup_staging();
-        return Err(AppError::FileWrite {
-            path: staging_dir.clone(),
-            source: format!("Failed to rename staging directory: {e}"),
-        });
+        return Err(e);
     }
 
-    Ok(target_dir)
+    commit_staged_directory(&staging_dir, &target_dir)
 }
 
 /// Extract tar contents to the given directory.
@@ -925,7 +927,119 @@ fn ensure_safe_path(base: &Path, path: &Path) -> Result<(), AppError> {
     }
 }
 
-fn apply_disabled_marker(mod_path: &Path) -> Result<(), AppError> {
+fn unique_work_dir(parent: &Path, purpose: &str, mod_name: &str) -> PathBuf {
+    let unique_id = DOWNLOAD_COUNTER.fetch_add(1, Ordering::Relaxed);
+    parent.join(format!(
+        ".bmm-{purpose}-{mod_name}-{}-{unique_id}",
+        std::process::id()
+    ))
+}
+
+/// Commit a fully prepared directory while retaining the previous install
+/// until the replacement is in place. If the commit rename fails, the old
+/// directory is restored before the error is returned.
+pub(crate) fn commit_staged_directory(
+    staged_dir: &Path,
+    target_dir: &Path,
+) -> Result<PathBuf, AppError> {
+    if !staged_dir.is_dir() {
+        return Err(AppError::DirNotFound(staged_dir.to_path_buf()));
+    }
+
+    let parent = target_dir
+        .parent()
+        .ok_or_else(|| AppError::PathValidation {
+            path: target_dir.to_path_buf(),
+            reason: "Install target has no parent directory".into(),
+        })?;
+    let mod_name = target_dir
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("mod");
+    let backup_dir = unique_work_dir(parent, "backup", mod_name);
+    let had_existing = target_dir.exists();
+    let existing_had_root_marker = target_dir.join(".lovelyignore").exists();
+
+    if had_existing {
+        fs::rename(target_dir, &backup_dir).map_err(|e| AppError::FileWrite {
+            path: target_dir.to_path_buf(),
+            source: format!("Failed to move existing mod aside for update: {e}"),
+        })?;
+
+        // If cleanup is interrupted or blocked, the retained backup must not
+        // be loaded as a second copy of the mod.
+        if let Err(e) = fs::write(backup_dir.join(".lovelyignore"), "") {
+            let _ = fs::rename(&backup_dir, target_dir);
+            return Err(AppError::FileWrite {
+                path: backup_dir.join(".lovelyignore"),
+                source: format!("Failed to disable update backup: {e}"),
+            });
+        }
+    }
+
+    if let Err(commit_error) = fs::rename(staged_dir, target_dir) {
+        let restore_result = if had_existing {
+            if !existing_had_root_marker {
+                let _ = fs::remove_file(backup_dir.join(".lovelyignore"));
+            }
+            fs::rename(&backup_dir, target_dir)
+        } else {
+            Ok(())
+        };
+
+        let restore_note = restore_result
+            .err()
+            .map(|e| format!("; restoring the previous install also failed: {e}"))
+            .unwrap_or_else(|| "; previous install restored".to_string());
+        return Err(AppError::FileWrite {
+            path: staged_dir.to_path_buf(),
+            source: format!("Failed to commit staged mod: {commit_error}{restore_note}"),
+        });
+    }
+
+    if had_existing && let Err(e) = remove_dir_with_retry(&backup_dir, 5) {
+        // The new install is complete. The backup carries .lovelyignore, so
+        // leaving it for a later cleanup is safer than deleting the new copy.
+        log::warn!(
+            "Updated mod installed, but disabled backup cleanup failed at {}: {}",
+            backup_dir.display(),
+            e
+        );
+    }
+
+    Ok(target_dir.to_path_buf())
+}
+
+pub(crate) fn has_disabled_marker(mod_path: &Path) -> bool {
+    if !mod_path.is_dir() {
+        return false;
+    }
+
+    let mut pending = vec![mod_path.to_path_buf()];
+    while let Some(dir) = pending.pop() {
+        if dir.join(".lovelyignore").is_file() {
+            return true;
+        }
+
+        let Ok(entries) = fs::read_dir(&dir) else {
+            continue;
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if entry
+                .file_type()
+                .map(|kind| kind.is_dir() && !kind.is_symlink())
+                .unwrap_or(false)
+            {
+                pending.push(path);
+            }
+        }
+    }
+
+    false
+}
+
+pub(crate) fn apply_disabled_marker(mod_path: &Path) -> Result<(), AppError> {
     let entries = fs::read_dir(mod_path).map_err(|e| AppError::FileRead {
         path: mod_path.to_path_buf(),
         source: e.to_string(),
@@ -1208,6 +1322,89 @@ mod tests {
             "lovely/ was discarded"
         );
         assert!(out.join("src/main.lua").exists(), "src/ was discarded");
+    }
+
+    #[test]
+    fn handle_zip_update_preserves_nested_disabled_state() {
+        use std::io::Write;
+        use zip::ZipWriter;
+        use zip::write::FileOptions;
+
+        let td = tempdir().unwrap();
+        let mod_dir = td.path();
+        let existing = mod_dir.join("TestMod");
+        std::fs::create_dir_all(existing.join("nested")).unwrap();
+        std::fs::write(existing.join("old.lua"), b"old").unwrap();
+        std::fs::write(existing.join("nested/.lovelyignore"), b"").unwrap();
+
+        let mut buf = Vec::new();
+        {
+            let cursor = std::io::Cursor::new(&mut buf);
+            let mut zw = ZipWriter::new(cursor);
+            let opts: FileOptions<'_, ()> = FileOptions::default();
+            zw.add_directory("release/", opts).unwrap();
+            zw.start_file("release/new.lua", opts).unwrap();
+            zw.write_all(b"new").unwrap();
+            zw.finish().unwrap();
+        }
+        let archive_path = mod_dir.join("update.zip");
+        std::fs::write(&archive_path, buf).unwrap();
+
+        let was_disabled = has_disabled_marker(&existing);
+        let installed =
+            handle_zip_with_options(&archive_path, mod_dir, "TestMod", was_disabled).unwrap();
+
+        assert!(installed.join("new.lua").exists());
+        assert!(!installed.join("old.lua").exists());
+        assert!(installed.join(".lovelyignore").exists());
+        assert!(
+            std::fs::read_dir(mod_dir)
+                .unwrap()
+                .filter_map(Result::ok)
+                .all(|entry| !entry.file_name().to_string_lossy().starts_with(".bmm-"))
+        );
+    }
+
+    #[test]
+    fn commit_failure_keeps_existing_install() {
+        let td = tempdir().unwrap();
+        let target = td.path().join("TestMod");
+        std::fs::create_dir_all(&target).unwrap();
+        std::fs::write(target.join("working.lua"), b"working").unwrap();
+
+        let missing_staging = td.path().join("missing-staging");
+        assert!(commit_staged_directory(&missing_staging, &target).is_err());
+        assert_eq!(
+            std::fs::read(target.join("working.lua")).unwrap(),
+            b"working"
+        );
+    }
+
+    #[test]
+    fn commit_replaces_existing_install_and_removes_backup() {
+        let td = tempdir().unwrap();
+        let target = td.path().join("TestMod");
+        let staged = td.path().join("staged");
+        std::fs::create_dir_all(&target).unwrap();
+        std::fs::create_dir_all(&staged).unwrap();
+        std::fs::write(target.join("old.lua"), b"old").unwrap();
+        std::fs::write(staged.join("new.lua"), b"new").unwrap();
+
+        let installed = commit_staged_directory(&staged, &target).unwrap();
+
+        assert_eq!(installed, target);
+        assert!(target.join("new.lua").exists());
+        assert!(!target.join("old.lua").exists());
+        assert!(!staged.exists());
+        assert!(
+            std::fs::read_dir(td.path())
+                .unwrap()
+                .filter_map(Result::ok)
+                .all(|entry| !entry
+                    .file_name()
+                    .to_string_lossy()
+                    .starts_with(".bmm-backup-"))
+        );
     }
 
     #[test]

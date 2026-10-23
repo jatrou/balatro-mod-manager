@@ -91,23 +91,23 @@
     justify-content: center;
     background: rgba(16, 18, 45, 0.96);
     z-index: 2000;
-    font-family: "M6X11", sans-serif;
-    color: #f4eee0;
+    font-family: var(--ui-font);
+    color: var(--ui-text);
   }
 
   .panel {
     max-width: 520px;
     width: calc(100% - 2rem);
-    padding: 1.75rem 2rem;
-    background: #1a1e3c;
-    border: 2px solid rgba(244, 238, 224, 0.2);
+    padding: 16px 20px;
+    background: var(--ui-surface);
+    border: 1px solid rgba(244, 238, 224, 0.2);
     border-radius: 10px;
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
   }
 
   h2 {
     margin: 0 0 0.75rem;
-    font-size: 1.5rem;
+    font-size: 18px;
   }
 
   p {
@@ -144,7 +144,7 @@
     font-size: 1rem;
     padding: 0.55rem 1.1rem;
     border-radius: 6px;
-    border: 2px solid transparent;
+    border: 1px solid transparent;
     cursor: pointer;
     transition:
       transform 0.05s ease,
@@ -155,21 +155,21 @@
     cursor: not-allowed;
   }
   button:not(:disabled):hover {
-    transform: translateY(-1px);
+    transform: none;
   }
 
   .primary {
-    background: #fdcf51;
-    color: #10122d;
+    background: var(--ui-mod-chip-active-bg);
+    color: var(--ui-text);
   }
   .primary:not(:disabled):hover {
-    background: #ea9600;
+    background: var(--ui-surface);
   }
 
   .secondary {
     background: transparent;
-    color: #f4eee0;
-    border-color: rgba(244, 238, 224, 0.4);
+    color: var(--ui-text);
+    border-color: var(--ui-border);
   }
   .secondary:not(:disabled):hover {
     background: rgba(244, 238, 224, 0.1);
@@ -190,5 +190,9 @@
     margin-top: 1rem;
     font-size: 0.8rem;
     opacity: 0.7;
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

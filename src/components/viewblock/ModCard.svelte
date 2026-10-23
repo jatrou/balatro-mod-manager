@@ -1,6 +1,14 @@
 <script lang="ts">
   import type { Mod } from "../../stores/modStore";
-  import { Download, Trash2, RefreshCw, Layers, Check } from "lucide-svelte";
+  import {
+    Download,
+    Trash2,
+    RefreshCw,
+    Layers,
+    Check,
+    Star,
+    Info,
+  } from "lucide-svelte";
   import {
     installationStatus,
     loadingStates2 as loadingStates,
@@ -16,11 +24,17 @@
   import { lovelyPopupStore } from "../../stores/modStore";
   import { forceRefreshCache } from "../../stores/modCache";
   import LazyImage from "../common/LazyImage.svelte";
-  import { cardScale, darkMode } from "../../stores/ui";
+  import { cardScale, darkMode, showModPreviews } from "../../stores/ui";
   import { normalizeColorPair, pickDarkPalette } from "../../utils/cardPalette";
   import { observeResize } from "../../utils/resize-observer-pool";
   import { onMount, onDestroy } from "svelte";
   import { isLinuxPlatform } from "$lib/platform";
+
+  import {
+    getModRepository,
+    getRepositoryStars,
+  } from "$lib/repositoryMetadata";
+  import { openExternal } from "$lib/opener";
 
   interface Props {
     mod: Mod;
@@ -47,6 +61,9 @@
     disableInstall = false,
     showCheckbox = false,
   }: Props = $props();
+
+  let repository = $derived(getModRepository(mod));
+  let stars = $derived(getRepositoryStars(repository));
 
   let isEnabled = $state(true); // Default to enabled if not yet checked
   let isLinux = false;
@@ -207,7 +224,9 @@
   }
 
   function openModView() {
-    if (onmodclick) onmodclick(mod);
+    if (repository) {
+      void openExternal(repository);
+    } else if (onmodclick) onmodclick(mod);
   }
 
   function handleCheckboxClick(e: Event) {
@@ -343,11 +362,18 @@
   class="mod-card"
   class:compact={$cardScale <= 0.85}
   class:desc-hidden={hideDescription}
-  class:thumb-loading={!thumbLoaded}
+  class:thumb-loading={$showModPreviews && !thumbLoaded}
+  class:without-preview={!$showModPreviews}
   class:search-spacing={searchSpacing}
   class:selected={isSelected}
+  class:selectable={showCheckbox}
   onclick={openModView}
-  onkeydown={(e) => e.key === "Enter" && openModView()}
+  onkeydown={(e) => {
+    if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      openModView();
+    }
+  }}
   role="button"
   tabindex="0"
   style="--orig-color1: {cardColors.color1}; --orig-color2: {cardColors.color2};"
@@ -364,38 +390,62 @@
       {/if}
     </button>
   {/if}
-  <div class="mod-image">
-    <LazyImage
-      src={mod.image}
-      fallbackSrc={mod.imageFallback || "/images/cover.jpg"}
-      alt={mod.title}
-      cacheTitle={mod.title}
-      deferLoad={deferImages}
-      hasThumbnail={mod._hasThumbnail !== false}
-      on:load={handleThumbDone}
-      on:error={handleThumbDone}
-    />
+  {#if $showModPreviews}
+    <div class="mod-image">
+      <LazyImage
+        src={mod.image}
+        fallbackSrc={mod.imageFallback || "/images/cover.jpg"}
+        alt={mod.title}
+        cacheTitle={mod.title}
+        deferLoad={deferImages}
+        hasThumbnail={mod._hasThumbnail !== false}
+        on:load={handleThumbDone}
+        on:error={handleThumbDone}
+      />
 
-    <div class="tags">
-      {#if mod.orphaned}
-        <span
-          class="tag orphaned"
-          title="This mod was removed from the remote index. It is still installed locally and can be uninstalled at any time."
-        >
-          Removed from index
-        </span>
-      {/if}
-      <!-- <span class="tag updated"> -->
-      <!-- 	<Clock size={13} /> -->
-      <!-- 	{mod.lastUpdated} -->
-      <!-- </span> -->
+      <div class="tags">
+        {#if mod.orphaned}
+          <span
+            class="tag orphaned"
+            title="This mod was removed from the remote index. It is still installed locally and can be uninstalled at any time."
+          >
+            Removed from index
+          </span>
+        {/if}
+        <!-- <span class="tag updated"> -->
+        <!-- 	<Clock size={13} /> -->
+        <!-- 	{mod.lastUpdated} -->
+        <!-- </span> -->
+      </div>
     </div>
-  </div>
+  {/if}
 
   <div class="mod-info">
-    <h3 bind:this={titleEl} style={`--title-scale: ${titleScale}`}>
+    <h3
+      title={mod.title}
+      bind:this={titleEl}
+      style={`--title-scale: ${titleScale}`}
+    >
       {mod.title}
     </h3>
+    <div class="repository-meta">
+      <span class="publisher" title={mod.publisher}
+        >{mod.publisher || "Unknown author"}</span
+      >
+      {#if repository}
+        <span
+          class="stars"
+          title={stars === null
+            ? "GitHub stars unavailable"
+            : "GitHub stars (cached snapshot)"}
+          ><Star size={13} />
+          {stars === null ? "Unavailable" : stars.toLocaleString()}</span
+        >
+      {/if}
+    </div>
+    {#if mod.orphaned && !$showModPreviews}<span class="tag orphaned"
+        >Removed from index</span
+      >{/if}
     {#if !hideDescription && descriptionText && descriptionText.trim().length > 0}
       <p class="fade-in">
         {truncateDynamic(stripMarkdown(descriptionText), $cardScale)}
@@ -410,6 +460,14 @@
   </div>
 
   <div class="button-container">
+    <button
+      class="details-button"
+      title="Mod details"
+      onclick={(e) => {
+        e.stopPropagation();
+        onmodclick?.(mod);
+      }}><Info size={16} /></button
+    >
     {#if $installationStatus[mod.title]}
       <!-- Enable/Disable button (only shown when mod is installed) -->
       <button
@@ -560,7 +618,7 @@
   }
 
   .tag {
-    font-family: "M6X11", monospace;
+    font-family: var(--ui-font);
     font-size: calc(0.75rem * var(--card-scale, 1));
     padding: 0.2rem 0.45rem;
     border-radius: 4px;
@@ -712,7 +770,7 @@
       calc(0.5rem * var(--card-scale, 1));
     border: none;
     border-radius: 4px;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: calc(0.95rem * var(--card-scale, 1));
     cursor: pointer;
     transition: all 0.2s ease;
@@ -796,7 +854,7 @@
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: calc(1rem * var(--card-scale, 1));
     flex-shrink: 0;
   }
@@ -851,7 +909,7 @@
     color: white;
     border: none;
     flex-shrink: 0;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: calc(1rem * var(--card-scale, 1));
   }
 
@@ -948,5 +1006,141 @@
   .mod-card.selected {
     outline: 2px solid var(--ui-success);
     outline-offset: -2px;
+  }
+
+  .mod-card,
+  .mod-card.desc-hidden {
+    width: 100%;
+    max-width: none;
+    height: 274px;
+    min-width: 0;
+    padding: 10px;
+    border-width: 1px;
+    contain-intrinsic-size: 250px 274px;
+    background: var(--ui-surface-raised, var(--ui-panel));
+    box-shadow: 0 2px 6px #00000018;
+    transition: border-color 150ms ease;
+  }
+  .mod-card.without-preview,
+  .mod-card.desc-hidden.without-preview {
+    height: 170px;
+    contain-intrinsic-size: 250px 170px;
+  }
+  .mod-card:hover {
+    scale: 1;
+    animation: none;
+    border-color: var(--ui-mod-input-focus);
+  }
+  .mod-card.search-spacing {
+    margin: 0;
+  }
+  .mod-image,
+  .mod-card.desc-hidden .mod-image {
+    height: 104px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 5px;
+  }
+  .mod-info,
+  .mod-card.desc-hidden .mod-info {
+    bottom: auto;
+    padding: 8px 0 38px;
+  }
+  .mod-info h3,
+  .mod-card.desc-hidden .mod-info h3 {
+    margin: 0 0 5px;
+    font-size: 16px;
+    line-height: 1.25;
+  }
+  .mod-info > p {
+    font-size: 13px;
+    line-height: 1.35;
+    margin: 6px 0 0;
+    color: var(--ui-text);
+  }
+  .repository-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ui-text-muted, var(--ui-text));
+    font-size: 12px;
+  }
+  .publisher {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+  }
+  .stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+    color: var(--ui-text);
+  }
+  .button-container,
+  .mod-card.desc-hidden .button-container,
+  .mod-card.compact .button-container {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    gap: 5px;
+  }
+  .download-button,
+  .update-button,
+  .mod-card.compact .download-button,
+  .mod-card.compact .update-button {
+    min-height: 30px;
+    padding: 4px 7px;
+    font-size: 13px;
+    gap: 4px;
+  }
+  .toggle-button,
+  .delete-button,
+  .collection-button,
+  .mod-card.compact .toggle-button,
+  .mod-card.compact .delete-button,
+  .mod-card.compact .collection-button {
+    min-width: 30px;
+    height: 30px;
+    padding: 4px;
+    font-size: 12px;
+  }
+  .details-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 30px;
+    padding: 4px;
+    color: var(--ui-text);
+    border: 1px solid var(--ui-mod-chip-border);
+    border-radius: 5px;
+    background: var(--ui-mod-chip-bg);
+    cursor: pointer;
+  }
+  .button-container,
+  .mod-card.desc-hidden .button-container,
+  .mod-card.compact .button-container {
+    width: auto;
+  }
+  .tags {
+    top: 5px;
+    right: 5px;
+  }
+  .select-checkbox {
+    z-index: 3;
+  }
+
+  .button-container,
+  .mod-card.compact .button-container {
+    gap: 4px;
+  }
+  .details-button {
+    width: 26px;
+  }
+  .mod-card.selectable.without-preview .mod-info h3 {
+    padding-left: 28px;
   }
 </style>

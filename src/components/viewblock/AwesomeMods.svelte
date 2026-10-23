@@ -1,12 +1,11 @@
 <script lang="ts">
   import {
-    BookOpen,
     ExternalLink,
     PackageCheck,
     RefreshCw,
     Search,
     ShieldAlert,
-    Wrench,
+    Star,
   } from "lucide-svelte";
   import { onMount } from "svelte";
   import type { Mod } from "../../stores/modStore";
@@ -22,6 +21,12 @@
   } from "$lib/awesomeCatalog";
   import { openExternal } from "$lib/opener";
   import { getAwesomeInstallSource } from "$lib/awesomeInstall";
+  import { fuzzyFilter } from "../../utils/fuzzy";
+  import { modsPerPage, showModPreviews } from "../../stores/ui";
+  import {
+    getAwesomeRepository,
+    getRepositoryStars,
+  } from "$lib/repositoryMetadata";
   import AwesomeInstallDialog from "../AwesomeInstallDialog.svelte";
   import {
     installedModsCache,
@@ -31,8 +36,14 @@
 
   let {
     onViewCatalog = () => {},
+    category = "All",
+    categorySelection = 0,
+    onCategoriesChange = () => {},
   }: {
     onViewCatalog?: (mod: Mod) => void;
+    category?: string;
+    categorySelection?: number;
+    onCategoriesChange?: (categories: string[]) => void;
   } = $props();
 
   let catalog = $state<AwesomeCatalog>(bundledAwesomeCatalog);
@@ -41,7 +52,9 @@
   let refreshing = $state(false);
   let query = $state("");
   let loaderFilter = $state<AwesomeLoader | "All">("All");
-  let categoryFilter = $state("All");
+  let sort = $state<"relevance" | "name" | "stars">("relevance");
+  let page = $state(1);
+  let failedPreviews = $state<string[]>([]);
   let view = $state<"mods" | "loaders">("mods");
   let installing = $state<AwesomeEntry | null>(null);
   let installedMessage = $state("");
@@ -50,12 +63,6 @@
       ? catalog.source.revision.slice(0, 12)
       : catalog.source.revision,
   );
-
-  const normalize = (value: string) =>
-    value
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, " ")
-      .trim();
 
   let modEntries = $derived(
     catalog.entries.filter((entry) => entry.kind === "mod"),
@@ -71,63 +78,79 @@
       ]),
     ),
   );
-  let installedCount = $derived(
-    modEntries.filter((entry) => isInstalled(entry)).length,
-  );
-  let availableCount = $derived(
-    modEntries.filter(
-      (entry) => matches.has(entry.id) && !!matches.get(entry.id),
-    ).length,
-  );
-  let downloadCount = $derived(
-    modEntries.filter(
-      (entry) =>
-        getAwesomeInstallSource(entry, matches.get(entry.id)).kind ===
-        "download",
-    ).length,
-  );
   let categories = $derived(
-    Array.from(
-      new Set(
-        modEntries
-          .filter(
-            (entry) => loaderFilter === "All" || entry.loader === loaderFilter,
-          )
-          .flatMap((entry) => entry.categories),
-      ),
-    ).sort((left, right) => left.localeCompare(right)),
+    [...new Set(modEntries.flatMap((entry) => entry.categories))].sort(),
   );
   let filteredEntries = $derived.by(() => {
-    const source = view === "mods" ? modEntries : loaderEntries;
-    const needle = normalize(query);
-    return source.filter((entry) => {
-      if (
-        view === "mods" &&
-        loaderFilter !== "All" &&
-        entry.loader !== loaderFilter
-      ) {
-        return false;
-      }
-      if (
-        view === "mods" &&
-        categoryFilter !== "All" &&
-        !entry.categories.includes(categoryFilter)
-      ) {
-        return false;
-      }
-      if (!needle) return true;
-      return normalize(
-        [
-          entry.title,
-          entry.description,
-          entry.author,
-          entry.loader,
-          entry.categories.join(" "),
-          entry.parentTitle || "",
-        ].join(" "),
-      ).includes(needle);
-    });
+    const source = (view === "mods" ? modEntries : loaderEntries).filter(
+      (entry) =>
+        (view !== "mods" ||
+          loaderFilter === "All" ||
+          entry.loader === loaderFilter) &&
+        (view !== "mods" ||
+          category === "All" ||
+          entry.categories.includes(category)),
+    );
+    const found = fuzzyFilter(source, query, (entry) =>
+      [
+        entry.title,
+        entry.description,
+        entry.author,
+        entry.loader,
+        entry.categories.join(" "),
+        entry.parentTitle || "",
+      ].join(" "),
+    );
+    if (sort === "name")
+      return [...found].sort((a, b) => a.title.localeCompare(b.title));
+    if (sort === "stars")
+      return [...found].sort(
+        (a, b) =>
+          (getRepositoryStars(getAwesomeRepository(b) || "") ?? -1) -
+            (getRepositoryStars(getAwesomeRepository(a) || "") ?? -1) ||
+          a.title.localeCompare(b.title),
+      );
+    return found;
   });
+  let pageCount = $derived(
+    $modsPerPage === "all"
+      ? 1
+      : Math.max(1, Math.ceil(filteredEntries.length / $modsPerPage)),
+  );
+  let currentPage = $derived(Math.min(page, pageCount));
+  let pageStart = $derived(
+    $modsPerPage === "all" ? 0 : (currentPage - 1) * $modsPerPage,
+  );
+  let visibleEntries = $derived(
+    $modsPerPage === "all"
+      ? filteredEntries
+      : filteredEntries.slice(pageStart, pageStart + $modsPerPage),
+  );
+  let hasPreviews = $derived(
+    filteredEntries.some((entry) => !!previewFor(entry)),
+  );
+
+  $effect(() => {
+    onCategoriesChange(categories);
+  });
+  $effect(() => {
+    void [category, categorySelection];
+    view = "mods";
+  });
+  $effect(() => {
+    // Changing the result set or page size starts at the first page.
+    void [query, category, loaderFilter, view, sort, $modsPerPage];
+    page = 1;
+  });
+
+  function previewFor(entry: AwesomeEntry): string | null {
+    const match = matches.get(entry.id);
+    return match?.image &&
+      match._hasThumbnail !== false &&
+      !failedPreviews.includes(entry.id)
+      ? match.image
+      : null;
+  }
 
   onMount(() => {
     void fetchCachedMods();
@@ -150,7 +173,6 @@
 
   function switchView(next: "mods" | "loaders"): void {
     view = next;
-    categoryFilter = "All";
     loaderFilter = "All";
   }
 
@@ -196,13 +218,8 @@
   <div class="awesome-view">
     <header>
       <div>
-        <div class="eyebrow"><BookOpen size={16} /> Community directory</div>
-        <h2>Awesome Balatro</h2>
-        <p>
-          Browse every mod listed by the community-maintained Awesome Balatro
-          README. A catalog match means BMM currently lists that exact title and
-          GitHub repository; it is not a compatibility guarantee.
-        </p>
+        <h2>{category === "All" ? "Awesome Balatro" : category}</h2>
+        <p>Community mods and mod loaders</p>
       </div>
       <button
         class="refresh-button"
@@ -210,38 +227,20 @@
         disabled={refreshing}
         onclick={refreshFromGitHub}
       >
-        <span class:spinning={refreshing}><RefreshCw size={18} /></span>
-        {refreshing ? "Refreshing…" : "Refresh from GitHub"}
+        <span class:spinning={refreshing}><RefreshCw size={15} /></span>
+        {refreshing ? "Refreshing..." : "Refresh"}
       </button>
     </header>
 
-    <div class="summary" aria-label="Awesome Balatro summary">
-      <div><strong>{modEntries.length}</strong><span>Mods listed</span></div>
-      <div><strong>{availableCount}</strong><span>In BMM catalog</span></div>
-      <div><strong>{installedCount}</strong><span>Installed</span></div>
-      <div><strong>{downloadCount}</strong><span>Direct downloads</span></div>
-    </div>
-
-    <div class="notice">
-      <ShieldAlert size={20} />
-      <span>
-        Install archives and individual Lua mods directly, or import downloaded
-        files from Discord. BMM checks the package and warns about conflicts
-        before installation. Special loader and game-patching setups include
-        source instructions.
-      </span>
-    </div>
-
-    {#if installedMessage}<div class="notice" role="status">
-        {installedMessage}
-      </div>{/if}
-
-    {#if refreshWarning}
-      <div class="refresh-warning" role="status">
-        GitHub refresh failed ({refreshWarning}). Showing the
-        {origin === "cache" ? "last cached copy" : "bundled offline snapshot"}.
-      </div>
-    {/if}
+    <label class="search">
+      <Search size={17} />
+      <span class="sr-only">Search Awesome Balatro</span>
+      <input
+        type="search"
+        bind:value={query}
+        placeholder="Search mods, authors, descriptions..."
+      />
+    </label>
 
     <div class="toolbar">
       <div class="tabs" role="tablist" aria-label="Directory type">
@@ -250,599 +249,555 @@
           role="tab"
           class:active={view === "mods"}
           aria-selected={view === "mods"}
-          onclick={() => switchView("mods")}
+          onclick={() => switchView("mods")}>Mods</button
         >
-          Mods ({modEntries.length})
-        </button>
         <button
           type="button"
           role="tab"
           class:active={view === "loaders"}
           aria-selected={view === "loaders"}
-          onclick={() => switchView("loaders")}
+          onclick={() => switchView("loaders")}>Loaders</button
         >
-          Loaders ({loaderEntries.length})
-        </button>
       </div>
-
-      <label class="search">
-        <Search size={18} />
-        <span class="sr-only">Search Awesome Balatro</span>
-        <input
-          type="search"
-          bind:value={query}
-          placeholder="Search title, author, description…"
-        />
-      </label>
-
       {#if view === "mods"}
-        <label>
-          <span class="sr-only">Filter by loader</span>
-          <select bind:value={loaderFilter}>
-            <option value="All">All loaders</option>
-            <option value="Steamodded">Steamodded</option>
-            <option value="Lovely">Lovely</option>
-            <option value="Balamod">Balamod</option>
-            <option value="None">No listed loader</option>
-          </select>
-        </label>
-        <label>
-          <span class="sr-only">Filter by category</span>
-          <select bind:value={categoryFilter}>
-            <option value="All">All categories</option>
-            {#each categories as category}
-              <option value={category}>{category}</option>
-            {/each}
-          </select>
-        </label>
+        <label
+          ><span class="sr-only">Filter by loader</span><select
+            bind:value={loaderFilter}
+          >
+            <option value="All">All loaders</option><option>Steamodded</option
+            ><option>Lovely</option><option>Balamod</option><option value="None"
+              >No listed loader</option
+            >
+          </select></label
+        >
       {/if}
+      <label
+        ><span class="sr-only">Sort mods</span><select bind:value={sort}>
+          <option value="relevance"
+            >{query.trim() ? "Best match" : "Directory order"}</option
+          ><option value="name">Name</option><option value="stars"
+            >GitHub stars</option
+          >
+        </select></label
+      >
+      {#if hasPreviews}
+        <label class="preview-toggle"
+          ><input
+            type="checkbox"
+            bind:checked={$showModPreviews}
+          />Previews</label
+        >
+      {/if}
+      <label class="page-size"
+        >Per page<select aria-label="Mods per page" bind:value={$modsPerPage}>
+          <option value={10}>10</option><option value={25}>25</option><option
+            value={50}>50</option
+          ><option value={100}>100</option><option value="all">All</option>
+        </select></label
+      >
     </div>
+
+    {#if installedMessage}<div class="notice" role="status">
+        {installedMessage}
+      </div>{/if}
+    {#if refreshWarning}<div class="notice" role="status">
+        Refresh failed ({refreshWarning}). Showing the {origin === "cache"
+          ? "cached copy"
+          : "offline snapshot"}.
+      </div>{/if}
 
     <div class="results-line">
       <span
         >{filteredEntries.length} result{filteredEntries.length === 1
           ? ""
-          : "s"}</span
+          : "s"}{#if filteredEntries.length > 0}
+          {" | "}{pageStart + 1}-{pageStart + visibleEntries.length}{/if}</span
       >
       <button
         type="button"
         class="source-link"
         onclick={() => open(AWESOME_BALATRO_README_URL)}
+        >Upstream README <ExternalLink size={13} /></button
       >
-        Upstream README <ExternalLink size={14} />
-      </button>
     </div>
 
     {#if filteredEntries.length === 0}
       <div class="empty-state">No entries match these filters.</div>
     {:else}
       <div class="card-grid">
-        {#each filteredEntries as entry (entry.id)}
+        {#each visibleEntries as entry (entry.id)}
           {@const match = matches.get(entry.id)}
           {@const installed = isInstalled(entry)}
           {@const source = getAwesomeInstallSource(entry, match)}
+          {@const repository = getAwesomeRepository(entry)}
+          {@const stars = repository ? getRepositoryStars(repository) : null}
+          {@const preview = previewFor(entry)}
           <article class:safety={!!entry.safetyWarning}>
-            <div class="card-heading">
-              <div>
-                <h3>{entry.title}</h3>
-                {#if entry.parentTitle}
-                  <p class="parent">Part of {entry.parentTitle}</p>
+            {#if $showModPreviews && preview}
+              <img
+                class="preview"
+                src={preview}
+                alt="{entry.title} preview"
+                loading="lazy"
+                onerror={() => {
+                  failedPreviews = [...failedPreviews, entry.id];
+                }}
+              />
+            {/if}
+            <div class="card-content">
+              <div class="card-heading">
+                <div class="card-title">
+                  <h3>
+                    {#if repository}<a
+                        class="card-link"
+                        href={repository}
+                        onclick={(event) => {
+                          event.preventDefault();
+                          open(repository);
+                        }}>{entry.title}</a
+                      >{:else}{entry.title}{/if}
+                  </h3>
+                  {#if entry.author}<p class="author">by {entry.author}</p>{/if}
+                </div>
+                {#if repository}<span
+                    class="stars"
+                    title={stars === null
+                      ? "GitHub star count unavailable"
+                      : "GitHub stars"}
+                    ><Star size={13} />{stars === null
+                      ? "Unavailable"
+                      : stars.toLocaleString()}</span
+                  >{/if}
+                {#if installed}<span class="status installed"
+                    ><PackageCheck size={13} />Installed</span
+                  >{/if}
+              </div>
+              {#if entry.description}<p class="description">
+                  {entry.description}
+                </p>{/if}
+              <div class="metadata">
+                {entry.kind === "loader"
+                  ? "Mod loader"
+                  : entry.loader}{#if entry.categories.length}
+                  {" | "}{entry.categories.join(" / ")}{/if}
+              </div>
+              {#if entry.safetyWarning}<div class="safety-warning">
+                  <ShieldAlert size={15} /><span>{entry.safetyWarning}</span>
+                </div>{/if}
+              <div class="actions">
+                {#if source.kind !== "unsupported" && !installed}
+                  <button
+                    type="button"
+                    class="install-button"
+                    onclick={() => {
+                      installedMessage = "";
+                      installing = entry;
+                    }}
+                    >{source.kind === "download"
+                      ? "Install"
+                      : source.discordUrl
+                        ? "Download from Discord"
+                        : "Import download"}</button
+                  >
+                {/if}
+                {#if match}<button
+                    type="button"
+                    onclick={() => viewMatch(entry)}>View in catalog</button
+                  >{/if}
+                <button
+                  type="button"
+                  class="source-link"
+                  onclick={() => open(entry.sourceUrl)}
+                  >{source.kind === "unsupported"
+                    ? "Source instructions"
+                    : "Open source"}<ExternalLink size={13} /></button
+                >
+                {#if entry.parentTitle || entry.badges.length || entry.links.length > 1 || source.kind === "unsupported"}
+                  <details>
+                    <summary>Details</summary>
+                    {#if entry.parentTitle}<p>
+                        Part of {entry.parentTitle}
+                      </p>{/if}
+                    {#if source.kind === "unsupported" && !entry.safetyWarning}<p
+                      >
+                        {source.reason}
+                      </p>{/if}
+                    {#each entry.badges as badge}<span
+                        class="badge"
+                        title={badge.url}>{badge.label}</span
+                      >{/each}
+                    {#each entry.links.slice(1) as link}<button
+                        type="button"
+                        class="source-link"
+                        onclick={() => open(link.url)}
+                        >{link.label}<ExternalLink size={12} /></button
+                      >{/each}
+                  </details>
                 {/if}
               </div>
-              {#if installed}
-                <span class="status installed"
-                  ><PackageCheck size={14} /> Installed</span
-                >
-              {:else if match}
-                <span class="status available">In BMM catalog</span>
-              {:else}
-                <span class="status manual"
-                  >{entry.kind === "loader"
-                    ? "Reference"
-                    : source.kind === "download"
-                      ? "Direct download"
-                      : source.kind === "local"
-                        ? "Import download"
-                        : "Source instructions"}</span
-                >
-              {/if}
-            </div>
-
-            {#if entry.description}
-              <p class="description">{entry.description}</p>
-            {/if}
-            {#if entry.author}
-              <p class="author">by {entry.author}</p>
-            {/if}
-
-            <div class="chips">
-              {#if entry.kind === "loader"}
-                <span class="chip loader"><Wrench size={13} /> Mod loader</span>
-              {:else}
-                <span class="chip loader">{entry.loader}</span>
-              {/if}
-              {#each entry.categories as category}
-                <span class="chip">{category}</span>
-              {/each}
-              {#each entry.badges as badge}
-                <span class="chip badge" title={badge.url}>{badge.label}</span>
-              {/each}
-            </div>
-
-            {#if entry.safetyWarning}
-              <div class="safety-warning">
-                <ShieldAlert size={17} />
-                <span>{entry.safetyWarning}</span>
-              </div>
-            {/if}
-
-            {#if source.kind === "unsupported" && !entry.safetyWarning && entry.kind !== "loader"}
-              <p class="author">{source.reason}</p>
-            {/if}
-
-            <div class="actions">
-              {#if source.kind !== "unsupported" && !installed}
-                <button
-                  type="button"
-                  class="catalog-button"
-                  onclick={() => {
-                    installedMessage = "";
-                    installing = entry;
-                  }}
-                >
-                  {source.kind === "download"
-                    ? "Install"
-                    : source.discordUrl
-                      ? "Download from Discord"
-                      : "Import download"}
-                </button>
-              {/if}
-              {#if match}
-                <button
-                  type="button"
-                  class="catalog-button"
-                  onclick={() => viewMatch(entry)}
-                >
-                  View in catalog
-                </button>
-              {/if}
-              <button
-                type="button"
-                class="open-button"
-                onclick={() => open(entry.sourceUrl)}
-              >
-                {match ? "Open source" : "Open source / Manual installation"}
-                <ExternalLink size={15} />
-              </button>
-              {#each entry.links.slice(1) as link}
-                <button
-                  type="button"
-                  class="secondary-link"
-                  onclick={() => open(link.url)}
-                >
-                  {link.label}
-                  <ExternalLink size={13} />
-                </button>
-              {/each}
             </div>
           </article>
         {/each}
       </div>
+      {#if pageCount > 1}
+        <nav class="pagination" aria-label="Mod pages">
+          <button
+            type="button"
+            disabled={currentPage === 1}
+            onclick={() => {
+              page = currentPage - 1;
+            }}>Previous</button
+          >
+          <span>Page {currentPage} of {pageCount}</span>
+          <button
+            type="button"
+            disabled={currentPage === pageCount}
+            onclick={() => {
+              page = currentPage + 1;
+            }}>Next</button
+          >
+        </nav>
+      {/if}
     {/if}
-
-    <footer>
-      Source: {catalog.source.repository} · revision {displayRevision}
-      · {origin === "live"
-        ? "live refresh"
-        : origin === "cache"
-          ? "cached copy"
-          : "bundled snapshot"}
-    </footer>
+    <details class="directory-details">
+      <summary>About this directory</summary>
+      <p>
+        Install archives and individual Lua mods directly, or import downloaded
+        files from Discord. Packages are checked and conflicts are shown before
+        installation. A catalog match is not a compatibility guarantee.
+      </p>
+      <p>
+        Source: {catalog.source.repository} | revision {displayRevision} | {origin ===
+        "live"
+          ? "live refresh"
+          : origin === "cache"
+            ? "cached copy"
+            : "bundled snapshot"}. Stars are from the most recent repository
+        check; unavailable counts are shown as Unavailable.
+      </p>
+    </details>
   </div>
 </div>
 
 <style>
   .awesome-view {
-    padding: 1.5rem 2rem 2.5rem;
+    padding: 1.25rem 1.5rem 2rem;
     color: var(--ui-text);
+    font-size: 0.875rem;
   }
-
   header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 2rem;
+    gap: 1rem;
     margin-bottom: 1rem;
   }
-
-  header > div {
-    max-width: 780px;
-  }
-
   h2 {
-    color: var(--ui-heading);
-    font-size: 2.4rem;
-    margin: 0.15rem 0 0.45rem;
-  }
-
-  header p {
-    color: var(--ui-text-soft);
-    line-height: 1.45;
     margin: 0;
-  }
-
-  .eyebrow {
-    align-items: center;
+    font-size: 1.35rem;
+    font-weight: 600;
     color: var(--ui-heading);
-    display: flex;
-    font-size: 0.9rem;
-    gap: 0.4rem;
-    text-transform: uppercase;
   }
-
+  header p {
+    margin: 0.3rem 0 0;
+    color: var(--ui-text-muted);
+  }
   button,
   input,
   select {
     font: inherit;
   }
-
-  button {
+  button,
+  select,
+  summary {
     cursor: pointer;
   }
-
-  button:disabled {
-    cursor: wait;
-    opacity: 0.7;
-  }
-
-  .refresh-button,
-  .catalog-button,
-  .open-button {
-    align-items: center;
-    border: 2px solid var(--ui-glass-border);
-    border-radius: 7px;
-    color: var(--ui-text);
+  button {
     display: inline-flex;
-    gap: 0.45rem;
+    align-items: center;
     justify-content: center;
-    padding: 0.55rem 0.8rem;
+    gap: 0.35rem;
+    padding: 0.4rem 0.65rem;
+    border: 1px solid var(--ui-input-border);
+    border-radius: 5px;
+    background: var(--ui-panel-muted);
+    color: var(--ui-text);
   }
-
+  button:hover:not(:disabled) {
+    background: var(--ui-glass-hover);
+    border-color: var(--ui-text-muted);
+  }
+  button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  :is(button, a, select, input, summary):focus-visible {
+    outline: 2px solid var(--ui-heading);
+    outline-offset: 3px;
+  }
   .refresh-button {
-    background: var(--ui-button-blue);
     white-space: nowrap;
   }
-
-  .refresh-button:hover:not(:disabled) {
-    background: var(--ui-button-blue-hover);
-  }
-
-  .summary {
-    display: grid;
-    gap: 0.65rem;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    margin: 1rem 0;
-  }
-
-  .summary > div {
-    background: var(--ui-glass);
-    border: 1px solid var(--ui-glass-border);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    padding: 0.7rem 0.9rem;
-  }
-
-  .summary strong {
-    color: var(--ui-heading);
-    font-size: 1.45rem;
-  }
-
-  .summary span {
-    color: var(--ui-text-muted);
-    font-size: 0.82rem;
-  }
-
-  .notice,
-  .refresh-warning {
-    align-items: flex-start;
-    background: var(--ui-note-bg);
-    border: 1px solid var(--ui-note-border);
-    border-radius: 7px;
-    display: flex;
-    gap: 0.55rem;
-    line-height: 1.35;
-    margin: 0.75rem 0;
-    padding: 0.65rem 0.8rem;
-  }
-
-  .notice :global(svg) {
-    color: var(--ui-note-icon);
-    flex: 0 0 auto;
-  }
-
-  .refresh-warning {
-    display: block;
-  }
-
-  .toolbar {
-    align-items: center;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    margin-top: 1rem;
-  }
-
-  .tabs {
-    display: flex;
-    gap: 0.35rem;
-  }
-
-  .tabs button,
-  .source-link,
-  .secondary-link {
-    align-items: center;
-    background: var(--ui-glass);
-    border: 1px solid var(--ui-glass-border);
-    border-radius: 6px;
-    color: var(--ui-text);
-    display: inline-flex;
-    gap: 0.3rem;
-    padding: 0.5rem 0.65rem;
-  }
-
-  .tabs button.active {
-    background: var(--ui-mod-chip-active-bg);
-    color: var(--ui-mod-chip-active-text);
-  }
-
   .search {
-    align-items: center;
-    background: var(--ui-input-bg);
-    border: 2px solid var(--ui-input-border);
-    border-radius: 7px;
     display: flex;
-    flex: 1 1 260px;
-    gap: 0.5rem;
-    min-width: 210px;
+    align-items: center;
+    gap: 0.55rem;
+    border: 1px solid var(--ui-input-border);
+    border-radius: 5px;
     padding: 0 0.7rem;
+    background: var(--ui-input-bg);
   }
-
+  .search:focus-within {
+    border-color: var(--ui-text-muted);
+  }
   .search input {
     background: transparent;
     border: 0;
+    outline: 0;
     color: var(--ui-text);
     min-width: 0;
-    outline: 0;
-    padding: 0.62rem 0;
     width: 100%;
+    padding: 0.65rem 0;
   }
-
+  .toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+  }
+  .tabs {
+    display: flex;
+    gap: 0.25rem;
+  }
+  .tabs button.active {
+    background: var(--ui-glass-hover);
+    border-color: var(--ui-text-muted);
+  }
   select {
     background: var(--ui-input-bg);
-    border: 2px solid var(--ui-input-border);
-    border-radius: 7px;
+    border: 1px solid var(--ui-input-border);
+    border-radius: 5px;
+    padding: 0.4rem 0.6rem;
     color: var(--ui-text);
-    padding: 0.56rem 2rem 0.56rem 0.65rem;
   }
-
-  .results-line {
+  .preview-toggle,
+  .page-size {
+    display: inline-flex;
     align-items: center;
-    color: var(--ui-text-muted);
-    display: flex;
-    justify-content: space-between;
-    margin: 0.9rem 0 0.6rem;
+    gap: 0.4rem;
+    color: var(--ui-text-soft);
+    font-size: 0.8rem;
   }
-
-  .source-link {
+  .preview-toggle input {
+    accent-color: var(--ui-success);
+  }
+  .page-size {
+    margin-left: auto;
+  }
+  .notice,
+  .safety-warning {
+    background: var(--ui-note-bg);
+    border: 1px solid var(--ui-note-border);
+    border-radius: 5px;
+    padding: 0.6rem;
+    margin: 0.6rem 0;
+    line-height: 1.4;
+  }
+  .results-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0.5rem 0;
+    color: var(--ui-text-muted);
+    font-size: 0.8rem;
+  }
+  button.source-link {
     background: transparent;
     border: 0;
-    color: var(--ui-heading);
-    padding: 0.3rem;
+    padding: 0.3rem 0.2rem;
+    color: var(--ui-text-soft);
   }
-
   .card-grid {
     display: grid;
-    gap: 0.8rem;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.65rem;
   }
-
   article {
-    background: var(--ui-panel-muted);
-    border: 1px solid var(--ui-panel-muted-border);
-    border-radius: 9px;
-    box-shadow: 0 4px 12px var(--ui-glass-shadow);
+    position: relative;
     display: flex;
     flex-direction: column;
-    min-height: 210px;
-    padding: 0.9rem;
+    min-width: 0;
+    background: var(--ui-panel-muted);
+    border: 1px solid var(--ui-panel-muted-border);
+    border-radius: 6px;
   }
-
+  article:hover {
+    border-color: var(--ui-input-border);
+  }
   article.safety {
     border-color: var(--ui-warning-border);
   }
-
+  .preview {
+    width: 100%;
+    height: 130px;
+    object-fit: contain;
+    background: var(--ui-input-bg);
+    border-radius: 5px 5px 0 0;
+  }
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 0.8rem;
+  }
   .card-heading {
-    align-items: flex-start;
     display: flex;
-    gap: 0.65rem;
-    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.6rem;
   }
-
+  .card-title {
+    flex: 1;
+    min-width: 0;
+  }
   h3 {
-    color: var(--ui-heading);
-    font-size: 1.2rem;
-    line-height: 1.15;
     margin: 0;
-  }
-
-  .parent,
-  .author {
-    color: var(--ui-text-muted);
-    font-size: 0.8rem;
-    margin: 0.25rem 0 0;
-  }
-
-  .description {
-    color: var(--ui-text-soft);
-    font-size: 0.91rem;
-    line-height: 1.38;
-    margin: 0.7rem 0 0;
-  }
-
-  .status {
-    border-radius: 999px;
-    flex: 0 0 auto;
-    font-size: 0.72rem;
-    padding: 0.25rem 0.45rem;
-  }
-
-  .status.installed {
-    align-items: center;
-    background: var(--ui-success);
-    color: white;
-    display: inline-flex;
-    gap: 0.25rem;
-  }
-
-  .status.available {
-    background: var(--ui-info-strong);
-    color: white;
-  }
-
-  .status.manual {
-    background: var(--ui-neutral);
-    color: white;
-  }
-
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    margin: 0.75rem 0;
-  }
-
-  .chip {
-    background: var(--ui-glass);
-    border: 1px solid var(--ui-glass-border);
-    border-radius: 999px;
-    color: var(--ui-text-soft);
-    font-size: 0.72rem;
-    padding: 0.2rem 0.42rem;
-  }
-
-  .chip.loader {
-    align-items: center;
-    background: var(--ui-mod-chip-bg);
-    color: var(--ui-mod-chip-text);
-    display: inline-flex;
-    gap: 0.25rem;
-  }
-
-  .chip.badge {
-    background: var(--ui-note-bg);
-  }
-
-  .safety-warning {
-    align-items: flex-start;
-    background: var(--ui-danger-overlay);
-    border: 1px solid var(--ui-warning-border);
-    border-radius: 6px;
-    display: flex;
-    font-size: 0.82rem;
-    gap: 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
     line-height: 1.3;
-    margin-bottom: 0.7rem;
-    padding: 0.5rem;
+    overflow-wrap: anywhere;
   }
-
+  .card-link {
+    color: var(--ui-heading);
+    text-decoration: none;
+  }
+  .card-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+  }
+  .card-link:hover {
+    text-decoration: underline;
+  }
+  .author,
+  .metadata {
+    color: var(--ui-text-muted);
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+  .author {
+    margin: 0.2rem 0 0;
+  }
+  .stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--ui-text-muted);
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  .description {
+    margin: 0.6rem 0;
+    line-height: 1.45;
+    color: var(--ui-text-soft);
+    font-size: 0.82rem;
+  }
+  .metadata {
+    margin-bottom: 0.7rem;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--ui-success);
+    font-size: 0.7rem;
+  }
+  .safety-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.35rem;
+    border-color: var(--ui-warning-border);
+    background: var(--ui-danger-overlay);
+    font-size: 0.8rem;
+  }
   .safety-warning :global(svg) {
     flex: 0 0 auto;
   }
-
   .actions {
-    align-items: center;
+    position: relative;
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
     gap: 0.4rem;
     margin-top: auto;
+    font-size: 0.75rem;
   }
-
-  .catalog-button {
+  .install-button {
     background: var(--ui-success);
+    color: white;
+    border-color: transparent;
   }
-
-  .catalog-button:hover {
+  button.install-button:hover {
     background: var(--ui-success-hover);
   }
-
-  .open-button {
-    background: var(--ui-button-blue);
-  }
-
-  .open-button:hover {
-    background: var(--ui-button-blue-hover);
-  }
-
-  .secondary-link {
-    font-size: 0.8rem;
-    padding: 0.42rem 0.55rem;
-  }
-
-  .empty-state {
-    background: var(--ui-glass);
-    border: 1px solid var(--ui-glass-border);
-    border-radius: 8px;
+  details p {
+    margin: 0.5rem 0;
+    line-height: 1.45;
     color: var(--ui-text-muted);
+  }
+  .badge {
+    display: inline-block;
+    padding: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--ui-text-muted);
+  }
+  .directory-details {
+    margin-top: 1rem;
+    color: var(--ui-text-muted);
+    font-size: 0.75rem;
+  }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--ui-text-muted);
+  }
+  .empty-state {
     padding: 2rem;
     text-align: center;
-  }
-
-  footer {
     color: var(--ui-text-muted);
-    font-size: 0.78rem;
-    margin-top: 1.2rem;
-    text-align: right;
   }
-
   .spinning {
+    display: flex;
     animation: spin 0.9s linear infinite;
   }
-
   .sr-only {
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
     position: absolute;
     width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
     clip: rect(0, 0, 0, 0);
   }
-
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
   }
-
-  @media (max-width: 780px) {
+  @media (max-width: 650px) {
     .awesome-view {
       padding: 1rem;
     }
-
-    header {
-      align-items: stretch;
-      flex-direction: column;
-      gap: 0.8rem;
+    .card-grid {
+      grid-template-columns: 1fr;
     }
-
-    .summary {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .toolbar > label,
-    .toolbar select {
-      width: 100%;
+    .page-size {
+      margin-left: 0;
     }
   }
 </style>

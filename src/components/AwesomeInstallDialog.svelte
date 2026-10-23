@@ -277,10 +277,10 @@
 <style>
   dialog {
     color: var(--text-primary, #eee);
-    background: var(--bg-secondary, #242424);
-    border: 1px solid #555;
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
     border-radius: 14px;
-    padding: 26px;
+    padding: 20px;
     width: min(640px, calc(100vw - 48px));
     max-height: calc(100vh - 64px);
     overflow-y: auto;
@@ -291,7 +291,7 @@
   }
   h2 {
     margin: 0 0 18px;
-    font-size: 1.3rem;
+    font-size: 16px;
   }
   h3 {
     font-size: 1rem;
@@ -310,29 +310,29 @@
     width: 100%;
     padding: 12px;
     margin-top: 8px;
-    background: #141414;
+    background: var(--ui-input-bg);
     color: #eee;
-    border: 1px solid #666;
+    border: 1px solid var(--ui-border);
     border-radius: 6px;
   }
   button {
     cursor: pointer;
     padding: 10px 14px;
     color: #eee;
-    background: #383838;
-    border: 1px solid #666;
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
     border-radius: 6px;
   }
   button:hover:not(:disabled) {
-    background: #454545;
+    background: var(--ui-glass-strong);
   }
   button:disabled {
     opacity: 0.5;
     cursor: default;
   }
   button.primary {
-    background: #30634a;
-    border-color: #54896d;
+    background: var(--ui-success);
+    border-color: var(--ui-border);
   }
   .row {
     display: flex;
@@ -357,10 +357,10 @@
   .destination {
     padding: 12px;
     border-radius: 6px;
-    background: #161616;
+    background: var(--ui-input-bg);
   }
   .warnings {
-    border: 1px solid #a0783a;
+    border: 1px solid var(--ui-border);
     background: #71511c30;
     border-radius: 8px;
     padding: 16px;
@@ -387,5 +387,9 @@
   }
   .acknowledge input {
     margin-top: 5px;
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { blur } from "svelte/transition";
   import MessageStack from "../components/MessageStack.svelte";
-  import { backgroundEnabled, updatePopupStore } from "../stores/modStore";
+  import { updatePopupStore } from "../stores/modStore";
   import { darkMode } from "../stores/ui";
   import { onMount } from "svelte";
   import DragDropOverlay from "../components/DragDropOverlay.svelte";
@@ -19,7 +18,6 @@
 
   const { data, children } = $props();
 
-  let isWindows = $state(false);
   let detectedPlatform: string | null = null;
 
   function normalize(v: string): string {
@@ -72,11 +70,7 @@
   async function detectPlatform() {
     if (typeof navigator === "undefined") return;
 
-    // Use UA as an immediate hint while awaiting the plugin result to avoid UI jumps
     const ua = navigator.userAgent.toLowerCase();
-    if (ua.includes("windows")) {
-      isWindows = true;
-    }
 
     try {
       const { platform } = await import("@tauri-apps/plugin-os");
@@ -89,7 +83,6 @@
 
     if (detectedPlatform) {
       document.documentElement.dataset.platform = detectedPlatform;
-      isWindows = detectedPlatform === "windows";
     }
   }
 
@@ -168,18 +161,9 @@
 {#if $isPopupTransitioning}
   <div class="popup-transition-blocker"></div>
 {/if}
-<div
-  class="layout-container app-body"
-  style:--gradient-opacity={$backgroundEnabled ? 0 : 1}
-  style:--dot-size={isWindows ? "1.5px" : "0.45px"}
-  style:--dot-color={isWindows ? "var(--ui-bg-dot-win)" : "var(--ui-bg-dot)"}
->
+<div class="layout-container app-body">
   {#key data.url}
-    <div
-      in:blur={{ duration: 300, delay: 150 }}
-      out:blur={{ duration: 150 }}
-      class="page-content"
-    >
+    <div class="page-content">
       <svelte:boundary onerror={(e) => console.error("Page boundary:", e)}>
         {@render children()}
         {#snippet failed(error)}
@@ -194,40 +178,10 @@
 
 <style>
   .layout-container {
-    width: 100%;
-    height: 100%;
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
     overflow: hidden;
-    background-color: var(--ui-bg); /* Fallback background color */
-  }
-
-  .layout-container::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: var(--gradient-opacity, 1);
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background-color: var(--ui-bg);
-    background-image:
-      radial-gradient(
-        var(--dot-color, #d66060) var(--dot-size, 0.45px),
-        transparent var(--dot-size, 0.45px)
-      ),
-      radial-gradient(
-        var(--dot-color, #d66060) var(--dot-size, 0.45px),
-        var(--ui-bg) var(--dot-size, 0.45px)
-      );
-    background-size: 18px 18px;
-    background-position:
-      0 0,
-      9px 9px;
-    z-index: -2; /* Adjust z-index to ensure proper layering */
-    pointer-events: none; /* Ensure the background doesn't block interactions */
+    background: var(--ui-bg);
   }
 
   .page-content {
@@ -235,16 +189,6 @@
     height: 100%;
     position: relative;
     overflow: hidden;
-    z-index: 1; /* Ensure content sits above the background */
-  }
-
-  @media screen and (min-width: 1920px) {
-    .layout-container::before {
-      background-size: 24px 24px;
-      background-position:
-        0 0,
-        12px 12px;
-    }
   }
 
   .popup-transition-blocker {

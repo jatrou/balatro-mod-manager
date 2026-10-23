@@ -72,4 +72,38 @@ export const cardScale = createPersistentNumber("ui.cardScale", 1, {
   max: 1.4,
 });
 
-export const darkMode = createPersistentBoolean("ui.darkMode", false);
+// The interface now uses one consistent dark palette, including upgraded installs.
+export const darkMode = writable(true);
+
+export const showModPreviews = createPersistentBoolean("ui.showModPreviews", false);
+
+export const MODS_PER_PAGE_OPTIONS = [10, 25, 50, 100, "all"] as const;
+export type ModsPerPage = (typeof MODS_PER_PAGE_OPTIONS)[number];
+
+function createModsPerPage() {
+  let initial: ModsPerPage = 25;
+  if (typeof window !== "undefined") {
+    try {
+      const raw = localStorage.getItem("ui.modsPerPage");
+      const value = raw === "all" ? "all" : Number(raw);
+      if (MODS_PER_PAGE_OPTIONS.includes(value as ModsPerPage)) {
+        initial = value as ModsPerPage;
+      }
+    } catch {
+      // Storage is optional; browsing still works with the default page size.
+    }
+  }
+  const store = writable<ModsPerPage>(initial);
+  if (typeof window !== "undefined") {
+    store.subscribe((value) => {
+      try {
+        localStorage.setItem("ui.modsPerPage", String(value));
+      } catch {
+        // Keep the current session preference if storage is unavailable.
+      }
+    });
+  }
+  return store;
+}
+
+export const modsPerPage = createModsPerPage();

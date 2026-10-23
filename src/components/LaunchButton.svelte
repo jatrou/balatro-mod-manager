@@ -291,159 +291,88 @@
 
 <style>
   .launch-container {
-    position: absolute;
-    top: 2.5rem;
-    right: 0rem;
+    position: relative;
   }
-
   .launch-wrapper {
     position: relative;
     display: inline-flex;
   }
-
   .launch-button {
     background: var(--ui-launch-bg);
     color: var(--ui-launch-text);
-    font-family: "M6X11", sans-serif;
-    font-size: 3.2rem;
-    border: none;
+    border: 1px solid var(--ui-launch-outline);
+    min-height: 33px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    text-shadow:
-      -2px -2px 0 #000,
-      2px -2px 0 #000,
-      -2px 2px 0 #000,
-      2px 2px 0 #000;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+    font-size: 12px;
+    font-weight: 600;
+    transition: background 0.15s ease;
   }
-
   .launch-main {
-    padding: 0.5rem 1.6rem 0.5rem 2.2rem;
-    border-radius: 8px 0 0 8px;
-    outline: 3px solid var(--ui-launch-outline);
-    outline-offset: -3px;
+    padding: 7px 16px;
+    border-radius: 5px 0 0 5px;
   }
-
   .launch-dropdown-toggle {
-    padding: 0.5rem 0.6rem;
-    border-radius: 0 8px 8px 0;
-    outline: 3px solid var(--ui-launch-outline);
-    outline-offset: -3px;
-    border-left: 1px solid rgba(0, 0, 0, 0.25);
+    padding: 7px 10px;
+    border-radius: 0 5px 5px 0;
+    border-left: 0;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-
   .dropdown-arrow {
     display: block;
     width: 0;
     height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid currentColor;
-    filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.5));
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid currentColor;
   }
-
-  .launch-button:hover {
+  .launch-button:hover:not(:disabled) {
     background: var(--ui-launch-hover);
-    transform: translateY(-2px);
   }
-
-  .launch-wrapper:hover .launch-button {
-    transform: translateY(-2px);
-  }
-
-  .launch-wrapper:hover .launch-button:active {
-    transform: translateY(0);
-  }
-
-  .launch-button:active {
-    transform: translateY(0);
-  }
-
   .launch-button:disabled {
-    opacity: 0.8;
+    opacity: 0.5;
     cursor: not-allowed;
-    transform: none;
   }
-
-  .launch-wrapper:hover .launch-button:disabled {
-    transform: none;
-  }
-
   .dropdown-menu {
     position: absolute;
     top: 100%;
     right: 0;
-    margin-top: 0.5rem;
-    background: var(--ui-launch-bg);
-    border-radius: 8px;
-    outline: 3px solid var(--ui-launch-outline);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    z-index: 100;
-    min-width: 140px;
-    overflow: hidden;
+    margin-top: 6px;
+    padding: 4px;
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
+    border-radius: 6px;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
+    z-index: 1500;
+    min-width: 145px;
   }
-
   .dropdown-item {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 7px;
     width: 100%;
-    padding: 0.6rem 1rem;
+    padding: 7px 9px;
     background: transparent;
-    border: none;
-    color: var(--ui-launch-text);
-    font-family: "M6X11", sans-serif;
-    font-size: 1.4rem;
+    border: 0;
+    border-radius: 3px;
+    color: var(--ui-text);
+    font-size: 12px;
     cursor: pointer;
     text-align: left;
-    text-shadow:
-      -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-      1px 1px 0 #000;
-    transition: background 0.15s ease;
   }
-
   .dropdown-item:hover {
-    background: var(--ui-launch-hover);
+    background: var(--ui-glass);
   }
-
   .dropdown-item.active {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--ui-mod-chip-active-bg);
   }
-
   .dropdown-item .check {
-    width: 1.2rem;
+    width: 16px;
     height: 16px;
-    font-size: 1rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-right: 0.3rem;
-  }
-
-  @media (max-width: 1160px) {
-    .launch-button {
-      font-size: 2.8rem;
-      text-shadow:
-        -1.8px -1.8px 0 #000,
-        1.8px -1.8px 0 #000,
-        -1.8px 1.8px 0 #000,
-        1.8px 1.8px 0 #000;
-    }
-    .launch-container {
-      top: 2.4rem;
-    }
-    .dropdown-arrow {
-      border-left-width: 4px;
-      border-right-width: 4px;
-      border-top-width: 4px;
-    }
-    .dropdown-item {
-      font-size: 1.2rem;
-    }
+    color: var(--ui-accent);
   }
 </style>

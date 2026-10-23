@@ -173,9 +173,9 @@
     z-index: 2000;
   }
   .modal {
-    background: #2d2d2d;
-    outline: 2px solid #fdcf51;
-    padding: 2rem;
+    background: var(--ui-surface);
+    outline: 1px solid var(--ui-border);
+    padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
     max-width: 560px;
@@ -183,16 +183,16 @@
     text-align: left;
   }
   h2 {
-    color: #fdcf51;
+    color: var(--ui-accent);
     margin-bottom: 0.75rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
   }
   p,
   li,
   .path {
-    color: #f4eee0;
-    font-size: 1.05rem;
-    font-family: "M6X11", sans-serif;
+    color: var(--ui-text);
+    font-size: 14px;
+    font-family: var(--ui-font);
   }
   ol {
     padding-left: 1.2rem;
@@ -206,27 +206,27 @@
     flex-wrap: wrap;
   }
   .copy-button {
-    background: #4f5a9c;
-    outline: #3a4275 solid 2px;
-    color: #f4eee0;
+    background: var(--ui-surface);
+    outline: var(--ui-border) solid 1px;
+    color: var(--ui-text);
     padding: 0.6rem 1rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.15rem;
+    font-family: var(--ui-font);
+    font-size: 14px;
     transition:
       transform 0.15s ease,
       box-shadow 0.15s ease,
       background 0.15s ease;
   }
   .copy-button:hover {
-    transform: translateY(-2px);
-    background: #5a68b0;
+    transform: none;
+    background: var(--ui-glass-strong);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
   .copy-button:active {
-    transform: translateY(1px);
+    transform: none;
     box-shadow: none;
   }
   .buttons {
@@ -239,51 +239,51 @@
     flex-wrap: wrap;
   }
   .close-button {
-    background: #56a786;
-    outline: #74cca8 solid 2px;
-    color: #fff;
+    background: var(--ui-success);
+    outline: var(--ui-border) solid 1px;
+    color: var(--ui-text);
     padding: 0.6rem 1.2rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.15rem;
+    font-family: var(--ui-font);
+    font-size: 14px;
     transition:
       transform 0.15s ease,
       box-shadow 0.15s ease,
       background 0.15s ease;
   }
   .close-button:hover {
-    transform: translateY(-2px);
-    background: #62b894;
+    transform: none;
+    background: var(--ui-success-hover);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
   .close-button:active {
-    transform: translateY(1px);
+    transform: none;
     box-shadow: none;
   }
   .install-button {
-    background: #3498db;
-    outline: #2980b9 solid 2px;
-    color: #f4eee0;
+    background: var(--ui-info);
+    outline: var(--ui-border) solid 1px;
+    color: var(--ui-text);
     padding: 0.6rem 1.2rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.15rem;
+    font-family: var(--ui-font);
+    font-size: 14px;
     transition:
       transform 0.15s ease,
       box-shadow 0.15s ease,
       background 0.15s ease;
   }
   .install-button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    background: #4aa3e0;
+    transform: none;
+    background: var(--ui-info);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
   .install-button:active:not(:disabled) {
-    transform: translateY(1px);
+    transform: none;
     box-shadow: none;
   }
   .install-button:disabled {
@@ -291,38 +291,42 @@
     cursor: not-allowed;
   }
   .launch-anyway {
-    background: #c14139;
-    outline: #a13029 solid 2px;
-    color: #f4eee0;
+    background: var(--ui-danger);
+    outline: var(--ui-border) solid 1px;
+    color: var(--ui-text);
     padding: 0.6rem 1.2rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.15rem;
+    font-family: var(--ui-font);
+    font-size: 14px;
     transition:
       transform 0.15s ease,
       box-shadow 0.15s ease,
       background 0.15s ease;
   }
   .launch-anyway:hover {
-    transform: translateY(-2px);
-    background: #d04a42;
+    transform: none;
+    background: var(--ui-danger-hover);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
   .launch-anyway:active {
-    transform: translateY(1px);
+    transform: none;
     box-shadow: none;
   }
   .error {
-    color: #f87171;
-    font-family: "M6X11", sans-serif;
+    color: #e1a3a8;
+    font-family: var(--ui-font);
     margin-top: 0.5rem;
   }
   @media (max-width: 1160px) {
     .modal {
       max-width: 90%;
-      padding: 1.5rem;
+      padding: 16px;
     }
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

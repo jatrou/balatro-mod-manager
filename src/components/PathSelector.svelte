@@ -94,9 +94,7 @@
 
       if (isValid) {
         const storedPath = (await invoke("get_balatro_path")) as
-          | string
-          | null
-          | void;
+          string | null | void;
         const normalizedPath =
           typeof storedPath === "string" && storedPath.length > 0
             ? storedPath
@@ -196,151 +194,83 @@
   .path-selector {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    margin: 1rem 0;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 12px 0;
   }
-
   .toggle-buttons {
     display: flex;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+    gap: 6px;
   }
-
-  .path-type-button {
-    background: #4dabf7; /* Bright blue */
-    outline: #3b8fd2 solid 2px;
-    color: #ffffff;
-    border: none;
-    border-radius: 4px;
-    padding: 0.6rem 1rem;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .path-type-button:hover:not(.active) {
-    background: #6cbbf7; /* Lighter blue on hover */
-    transform: translateY(-2px);
-  }
-
-  .path-type-button.active {
-    background: #1864ab; /* Dark blue when active */
-    outline: #134c7e solid 2px;
-  }
-
-  .description-small {
-    color: #c4c2c2;
-    font-size: 1.1rem;
-    margin-top: 0.25rem;
-    margin-bottom: 0.5rem;
-    opacity: 0.9;
-    line-height: 1.4;
-    max-width: 600px;
-  }
-
-  /* Rest of the styles remain unchanged */
-  .input-container {
-    width: 20rem;
-  }
-
-  input[type="text"] {
-    width: 100%;
-    padding: 0.75rem;
-    border: 2px solid #fda200;
-    border-radius: 8px;
-    background-color: #c88000;
-    font-family: "M6X11", sans-serif;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-
-  input[type="text"]:hover:not(:disabled) {
-    border-color: #f4eee0;
-  }
-
-  input[type="text"]::placeholder {
-    color: white;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-
-  .steam-button {
-    padding: 0.5rem 1rem;
-    border: 2px solid #2e6b9a;
-    border-radius: 8px;
-    background-color: #1a9fff;
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 1.1rem;
-    cursor: pointer;
-    width: 13rem;
-    height: 40px;
-    display: flex;
+  button {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    transition: all 0.2s ease;
-    overflow: hidden;
+    gap: 6px;
+    padding: 7px 10px;
+    border: 1px solid var(--ui-border);
+    border-radius: 5px;
+    background: var(--ui-button-blue);
+    color: var(--ui-text);
+    font: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
   }
-
-  .steam-button:hover {
-    background-color: #3daeff;
-    border: 2px solid #8fc8ff;
+  button:hover:not(:disabled) {
+    background: var(--ui-button-blue-hover);
   }
-
-  .steam-button:active {
-    transform: scale(0.98);
+  .path-type-button.active {
+    border-color: var(--ui-accent);
+    background: var(--ui-button-blue-active);
   }
-
-  .steam-button:disabled {
+  button:disabled {
     cursor: not-allowed;
-    opacity: 0.8;
-    background-color: #7fc8ff;
-    transform: none;
+    opacity: 0.5;
+  }
+  button:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
+  }
+  .description-small {
+    color: var(--ui-text-muted);
+    font-size: 0.875rem;
+    margin: 0;
+    line-height: 1.55;
+    max-width: 650px;
+  }
+  .input-container {
+    width: min(100%, 500px);
+  }
+  input[type="text"] {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--ui-input-border);
+    border-radius: 5px;
+    background: var(--ui-input-bg);
+    color: var(--ui-text);
+    font: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
+    text-overflow: ellipsis;
+  }
+  input[type="text"]::placeholder {
+    color: var(--ui-input-placeholder);
   }
   .throbber {
-    width: 20px;
-    height: 20px;
-    border: 3px solid #f4eee0;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--ui-spinner);
     border-radius: 50%;
     border-top-color: transparent;
     animation: spin 1s linear infinite;
   }
-
-  @media (max-width: 1160px) {
-    .steam-button {
-      width: 12rem;
-      font-size: 1rem;
-    }
-    .steam-button :global(svg) {
-      scale: 0.8;
-    }
-    .steam-button .throbber {
-      width: 15px;
-      height: 15px;
-    }
-
-    .path-type-button {
-      font-size: 1rem;
-      padding: 0.5rem 0.75rem;
-    }
-
-    .description-small {
-      font-size: 1rem;
-    }
+  .steam-button :global(svg) {
+    width: 16px;
+    height: 16px;
   }
-
   @keyframes spin {
     to {
       transform: rotate(360deg);

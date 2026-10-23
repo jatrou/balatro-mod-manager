@@ -130,8 +130,8 @@
   }
 
   .dependency.clickable:hover {
-    color: #ffffff;
-    transform: translateY(-1px);
+    color: var(--ui-text);
+    transform: none;
     text-decoration-thickness: 2px; /* Make underline thicker on hover */
   }
 
@@ -141,7 +141,7 @@
     bottom: -25px;
     left: 0;
     background: rgba(0, 0, 0, 0.8);
-    color: #f4eee0;
+    color: var(--ui-text);
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.8rem;
@@ -164,10 +164,10 @@
   }
 
   .popup-content {
-    background: #393646;
-    border: 2px solid #f4eee0;
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
     border-radius: 10px;
-    padding: 1.5rem;
+    padding: 16px;
     width: 420px;
     max-width: 90%;
   }
@@ -180,14 +180,14 @@
   }
 
   .popup-header h2 {
-    color: #fdcf51;
-    font-size: 1.5rem;
+    color: var(--ui-accent);
+    font-size: 18px;
     margin: 0;
   }
 
   .popup-body {
-    color: #f4eee0;
-    font-size: 1.05rem;
+    color: var(--ui-text);
+    font-size: 14px;
   }
 
   .popup-body p {
@@ -205,13 +205,13 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 1.05rem;
+    font-size: 14px;
   }
 
   .dependency {
-    color: #fdcf51;
+    color: var(--ui-accent);
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 14px;
   }
 
   .button-container {
@@ -223,43 +223,43 @@
   .cancel-button,
   .proceed-button {
     padding: 0.6rem 1.2rem;
-    color: #f4eee0;
+    color: var(--ui-text);
     border: none;
     border-radius: 5px;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .cancel-button {
-    background: #c14139;
-    outline: #a13029 solid 2px;
+    background: var(--ui-danger);
+    outline: var(--ui-border) solid 1px;
   }
 
   .cancel-button:hover {
-    background: #d4524a;
-    transform: translateY(-2px);
+    background: var(--ui-danger-hover);
+    transform: none;
   }
 
   .proceed-button {
-    background: #4f5a9c;
-    outline: #3a4275 solid 2px;
+    background: var(--ui-surface);
+    outline: var(--ui-border) solid 1px;
   }
 
   .proceed-button:hover {
-    background: #606db7;
-    transform: translateY(-2px);
+    background: var(--ui-glass-strong);
+    transform: none;
   }
 
   @media (max-width: 1160px) {
     .popup-content {
-      padding: 1.5rem;
+      padding: 16px;
       width: 90%;
       max-width: 400px;
     }
     .popup-header h2 {
-      font-size: 1.5rem;
+      font-size: 18px;
     }
     .popup-body {
       font-size: 1rem;
@@ -269,7 +269,7 @@
       margin-bottom: 0.75rem;
     }
     .dependency {
-      font-size: 1.1rem;
+      font-size: 14px;
     }
     .cancel-button,
     .proceed-button {
@@ -281,5 +281,9 @@
       gap: 0.5rem;
       margin-bottom: 1rem;
     }
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

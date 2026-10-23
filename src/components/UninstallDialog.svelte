@@ -239,9 +239,9 @@
   }
 
   .dependency-list h3 {
-    color: #fdcf51;
+    color: var(--ui-accent);
     margin-bottom: 0.5rem;
-    font-size: 1.5rem;
+    font-size: 18px;
   }
 
   .dependency-list ul {
@@ -250,7 +250,7 @@
   }
 
   .dependency-list li {
-    color: #f4eee0;
+    color: var(--ui-text);
     margin-bottom: 0.25rem;
   }
 
@@ -270,8 +270,8 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #f4eee0;
-      border: 2px solid rgba(193, 65, 57, 0.8);
+      background: var(--ui-mod-chip-active-bg);
+      border: 1px solid rgba(193, 65, 57, 0.8);
       border-radius: 15px;
     }
   }
@@ -296,10 +296,10 @@
   }
 
   .dialog-content {
-    background: #393646;
-    border: 2px solid #f4eee0;
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
     border-radius: 12px;
-    padding: 2rem;
+    padding: 20px;
     width: 560px;
     max-width: 90%;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -310,10 +310,10 @@
   }
 
   h2 {
-    color: #fdcf51;
-    font-size: 1.8rem;
+    color: var(--ui-accent);
+    font-size: 18px;
     margin: 0 0 1.5rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
   }
 
   ul {
@@ -323,12 +323,12 @@
   }
 
   li {
-    color: #c14139;
+    color: #e1a3a8;
     padding: 0.5rem 0;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 1.2rem;
+    font-size: 14px;
   }
 
   li::before {
@@ -340,15 +340,15 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem;
-    margin-top: 2rem;
+    margin-top: 20px;
   }
 
   button {
-    padding: 1rem 1.5rem;
+    padding: 1rem 16px;
     border: none;
     border-radius: 6px;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.1rem;
+    font-family: var(--ui-font);
+    font-size: 14px;
     cursor: pointer;
     transition:
       transform 0.2s ease,
@@ -356,36 +356,36 @@
   }
 
   .confirm-button {
-    background: #56a786; /* Green from your download button */
-    color: #f4eee0;
-    border: 2px solid #459373;
+    background: var(--ui-success); /* Green from your download button */
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
   }
 
   .confirm-button:hover {
-    background: #67b897;
-    transform: translateY(-2px);
+    background: var(--ui-success-hover);
+    transform: none;
   }
 
   .force-button {
-    background: #c14139; /* Red from delete button */
-    color: #f4eee0;
-    border: 2px solid #a13029;
+    background: var(--ui-danger); /* Red from delete button */
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
   }
 
   .force-button:hover {
-    background: #d2524a;
-    transform: translateY(-2px);
+    background: var(--ui-danger-hover);
+    transform: none;
   }
 
   .cancel-button {
-    background: #ea9600; /* Orange from categories button */
-    color: #f4eee0;
-    border: 2px solid #cc8400;
+    background: var(--ui-surface); /* Orange from categories button */
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
   }
 
   .cancel-button:hover {
-    background: #fca800;
-    transform: translateY(-2px);
+    background: var(--ui-glass-strong);
+    transform: none;
   }
   .cancel-button:active,
   .force-button:active,
@@ -398,12 +398,12 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 1rem;
-    margin-top: 2rem;
+    margin-top: 20px;
   }
 
   @media (max-width: 768px) {
     .dialog-content {
-      padding: 1.5rem;
+      padding: 16px;
       width: 90%;
       margin: 1rem;
     }
@@ -413,7 +413,7 @@
     }
 
     h2 {
-      font-size: 1.5rem;
+      font-size: 18px;
       margin-bottom: 1rem;
     }
 
@@ -423,7 +423,7 @@
     }
 
     .dependency-list h3 {
-      font-size: 1.2rem;
+      font-size: 14px;
     }
 
     .dependency-list li {
@@ -439,7 +439,7 @@
     .actions {
       grid-template-columns: 1fr;
       gap: 0.75rem;
-      margin-top: 1.5rem;
+      margin-top: 16px;
     }
   }
 
@@ -454,12 +454,12 @@
     }
 
     h2 {
-      font-size: 1.3rem;
+      font-size: 16px;
       margin-bottom: 0.75rem;
     }
 
     .dependency-list h3 {
-      font-size: 1.1rem;
+      font-size: 14px;
     }
 
     .dependency-list li {
@@ -484,12 +484,16 @@
     }
 
     h2 {
-      font-size: 1.2rem;
+      font-size: 14px;
     }
 
     button {
       font-size: 0.85rem;
       padding: 0.5rem 0.7rem;
     }
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

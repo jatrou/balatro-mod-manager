@@ -88,9 +88,9 @@
     z-index: 2000;
   }
   .modal {
-    background: #2d2d2d;
-    outline: 2px solid #f87171;
-    padding: 2rem;
+    background: var(--ui-surface);
+    outline: 1px solid var(--ui-border);
+    padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
     max-width: 500px;
@@ -98,21 +98,21 @@
     text-align: center;
   }
   h2 {
-    color: #f87171;
+    color: #e1a3a8;
     margin-bottom: 1rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
   }
   p {
-    color: #f4eee0;
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-    font-family: "M6X11", sans-serif;
+    color: var(--ui-text);
+    font-size: 14px;
+    margin-bottom: 16px;
+    font-family: var(--ui-font);
   }
   .error-message {
-    color: #f87171;
+    color: #e1a3a8;
     font-size: 0.9rem;
     margin-bottom: 1rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
   }
   .buttons {
     display: flex;
@@ -120,31 +120,35 @@
     gap: 1rem;
   }
   button {
-    padding: 0.8rem 1.5rem;
+    padding: 0.8rem 16px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 1rem;
     transition: all 0.2s ease;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
   }
   button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
   .cancel-button {
-    background: #f87171;
-    outline: #f0a7a7 solid 2px;
-    color: #fff;
+    background: var(--ui-danger);
+    outline: var(--ui-border) solid 1px;
+    color: var(--ui-text);
   }
   .confirm-button {
-    background: #56a786;
-    outline: #74cca8 solid 2px;
-    color: #fff;
+    background: var(--ui-success);
+    outline: var(--ui-border) solid 1px;
+    color: var(--ui-text);
   }
   button:hover:not(:disabled) {
     opacity: 0.9;
-    scale: 1.05;
+    scale: 1;
     transition: all 0.2s ease;
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

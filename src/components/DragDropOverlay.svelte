@@ -131,28 +131,28 @@
 
   .drop-zone {
     background-color: rgba(253, 207, 81, 0.1);
-    border: 3px dashed #fdcf51;
+    border: 3px dashed var(--ui-border);
     border-radius: 16px;
-    padding: 3rem;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: #f4eee0;
+    color: var(--ui-text);
     width: 80%;
     max-width: 500px;
     height: 300px;
   }
 
   h2 {
-    font-size: 2rem;
+    font-size: 22px;
     margin: 1rem 0;
-    color: #fdcf51;
+    color: var(--ui-accent);
   }
 
   p {
-    font-size: 1.2rem;
+    font-size: 14px;
     opacity: 0.8;
   }
 
@@ -173,7 +173,7 @@
   .spinner {
     width: 50px;
     height: 50px;
-    border: 5px solid #fdcf51;
+    border: 5px solid var(--ui-border);
     border-radius: 50%;
     border-top-color: transparent;
     animation: spin 1s linear infinite;
@@ -181,8 +181,8 @@
   }
 
   .processing-overlay p {
-    color: #f4eee0;
-    font-size: 1.5rem;
+    color: var(--ui-text);
+    font-size: 18px;
   }
 
   @keyframes fadeIn {

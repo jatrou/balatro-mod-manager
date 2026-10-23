@@ -19,7 +19,6 @@
   import { fly } from "svelte/transition";
   import {
     SortOption,
-    backgroundEnabled,
     currentSort,
     loadingStates2,
   } from "../../stores/modStore";
@@ -103,6 +102,20 @@
   import { mapWithConcurrency } from "../../utils/concurrency";
   import { fuzzyFilter } from "../../utils/fuzzy";
 
+  import { showModPreviews } from "../../stores/ui";
+  import {
+    getModRepository,
+    getRepositoryStars,
+  } from "$lib/repositoryMetadata";
+  import { pageCount, pageItems } from "./browseList";
+
+  let listSearch = $state("");
+  let activeSearch = $derived(
+    $currentCategory === "Installed Mods"
+      ? $installedModsSearchStore
+      : listSearch,
+  );
+
   /** Max parallel mod-update invocations to keep the Tauri IPC queue healthy. */
   const UPDATE_ALL_CONCURRENCY = 6;
 
@@ -139,6 +152,7 @@
   let visibleHydrateTimer: number | null = null;
 
   // Add these variables to track enabled/disabled mods
+  let localMods: LocalMod[] = $state([]);
   let enabledMods: Mod[] = $state([]);
   let disabledMods: Mod[] = $state([]);
   let enabledLocalMods: LocalMod[] = $state([]);
@@ -148,9 +162,10 @@
   let installedSearchInputRef: HTMLInputElement | null = $state(null);
 
   // Build the searchable text for a catalog / local mod.
-  const catalogModText = (m: Mod) => `${m.title} ${m.publisher ?? ""}`;
+  const catalogModText = (m: Mod) =>
+    `${m.title} ${m.publisher ?? ""} ${m.description ?? ""}`;
   const localModText = (m: LocalMod) =>
-    `${m.name} ${(m.author ?? []).join(" ")}`;
+    `${m.name} ${(m.author ?? []).join(" ")} ${m.description ?? ""}`;
 
   // Filtered versions of enabled/disabled lists based on fuzzy search.
   let filteredEnabledMods = $derived(
@@ -191,28 +206,20 @@
     ]),
   );
 
+  // Selection can span pages. Keep path/name lookups for the full local inventory.
   let localModPathsMap = $derived(
-    new Map([
-      ...filteredEnabledLocalMods.map(
-        (m) => [m.path, m.path] as [string, string],
-      ),
-      ...filteredDisabledLocalMods.map(
-        (m) => [m.path, m.path] as [string, string],
-      ),
-    ]),
+    new Map(localMods.map((mod) => [mod.path, mod.path] as [string, string])),
   );
-
   let localModNamesMap = $derived(
-    new Map([
-      ...filteredEnabledLocalMods.map(
-        (m) =>
-          [m.path, m.path.split(/[\\/]/).pop() || m.name] as [string, string],
+    new Map(
+      localMods.map(
+        (mod) =>
+          [mod.path, mod.path.split(/[\\/]/).pop() || mod.name] as [
+            string,
+            string,
+          ],
       ),
-      ...filteredDisabledLocalMods.map(
-        (m) =>
-          [m.path, m.path.split(/[\\/]/).pop() || m.name] as [string, string],
-      ),
-    ]),
+    ),
   );
 
   async function handleBulkUninstall(ids: string[]) {
@@ -283,15 +290,6 @@
   let isUserScrolling = $state(false);
   let sortDropdownOpen = $state(false);
   let sortDropdownRef: HTMLDivElement | null = $state(null);
-  let renderLimitLocal = $state(60);
-  const renderChunkLocal = 24;
-  let localSentinel: HTMLDivElement | null = $state(null);
-
-  // Virtual scrolling for catalog mods in Installed Mods view
-  let renderLimitCatalog = $state(36); // Start with 36 cards (3 rows of 12 or 6 rows of 6)
-  const renderChunkCatalog = 24;
-  let catalogSentinel: HTMLDivElement | null = $state(null);
-  let observerCatalog: IntersectionObserver | null = null;
   let thumbRefreshTimer: number | null = null;
   let thumbRefreshAttempts = 0;
   let selectedCollectionId = $state<string | null>(null);
@@ -299,9 +297,6 @@
   let renamingId = $state<string | null>(null);
   let renameValue = $state("");
   let collectionBusy = $state<string | null>(null);
-
-  // Animation nonce - increments on mount to trigger entrance animation
-  let animationNonce = $state(0);
 
   const normalizeCollectionTitle = (name: string) =>
     name
@@ -409,7 +404,6 @@
     talisman: boolean;
   }
 
-  let localMods: LocalMod[] = $state([]);
   let isLoadingLocalMods = $state(false);
   // Delayed loading indicator - only shows after 150ms to prevent flash for quick loads
   let showLoadingLocalMods = $state(false);
@@ -510,7 +504,7 @@
     if (downloadsRefreshing) return;
     downloadsRefreshing = true;
     try {
-      const sort = get(currentSort);
+      const sort = serverSort(get(currentSort));
       const downloads = await invoke<
         Record<string, { total: number; today?: number }>
       >("fetch_repo_downloads", { sort });
@@ -586,7 +580,7 @@
     // Filter local mods - check by folder name first since backend uses folder name for local mods
     const enabled: LocalMod[] = [];
     const disabled: LocalMod[] = [];
-    for (const mod of localMods) {
+    for (const mod of paginatedLocalMods) {
       const folderName = mod.path.split(/[\\/]/).pop();
       const byPath =
         folderName && folderName in $modEnabledStore
@@ -731,29 +725,10 @@
         }
       } finally {
         isLoading = false;
-        // Trigger entrance animation after a brief delay
-        requestAnimationFrame(() => {
-          animationNonce += 1;
-        });
       }
     };
 
-    // Separate async function for background state
-    const initBackgroundState = async () => {
-      try {
-        const isBackgroundAnimationEnabled: boolean = await invoke(
-          "get_background_state",
-        );
-        backgroundEnabled.set(isBackgroundAnimationEnabled);
-      } catch (error) {
-        console.error("Failed to get background status:", error);
-        addMessage("Error fetching background animation status", "error");
-      }
-    };
-
-    // Call async functions without awaiting them directly in onMount
     initialize();
-    initBackgroundState();
 
     let installedModsRefresh: Promise<void> | null = null;
     const scheduleInstalledModsRefresh = () => {
@@ -768,49 +743,6 @@
       }
       return installedModsRefresh;
     };
-    // Intersection observers to extend render window for local mods and catalog mods
-    onMount(() => {
-      if (typeof IntersectionObserver !== "undefined") {
-        // Local mods observer
-        if (localSentinel) {
-          observerLocal = new IntersectionObserver(
-            (entries) => {
-              for (const entry of entries) {
-                if (entry.isIntersecting) {
-                  const localMax = Math.max(
-                    enabledLocalMods.length,
-                    disabledLocalMods.length,
-                  );
-                  renderLimitLocal = Math.min(
-                    renderLimitLocal + renderChunkLocal,
-                    localMax,
-                  );
-                }
-              }
-            },
-            { root: modsScrollContainer, rootMargin: "200px" },
-          );
-          observerLocal.observe(localSentinel);
-        }
-
-        // Catalog mods observer for Installed Mods view
-        observerCatalog = new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              if (entry.isIntersecting) {
-                const catalogMax = paginatedMods.length;
-                renderLimitCatalog = Math.min(
-                  renderLimitCatalog + renderChunkCatalog,
-                  catalogMax,
-                );
-              }
-            }
-          },
-          { root: modsScrollContainer, rootMargin: "200px" },
-        );
-      }
-    });
-
     // Lazy-load SearchView when needed
     $effect(() => {
       if (showSearch && !SearchViewComp) {
@@ -863,16 +795,6 @@
       if (catalogRetryTimer !== null) {
         clearTimeout(catalogRetryTimer);
         catalogRetryTimer = null;
-      }
-      try {
-        observerLocal?.disconnect();
-      } catch (_) {
-        /* ignore */
-      }
-      try {
-        observerCatalog?.disconnect();
-      } catch (_) {
-        /* ignore */
       }
       try {
         if (typeof unlistenModsChanged === "function") unlistenModsChanged();
@@ -1445,7 +1367,7 @@
     const { showMessages, isForeground } = options;
 
     const items = await invoke<ArchiveModItem[]>("fetch_repo_mods", {
-      sort: $currentSort,
+      sort: serverSort($currentSort),
     });
     clearCatalogRetry();
 
@@ -1580,7 +1502,7 @@
   }
 
   async function refreshCatalogInBackground(
-    showMessages: boolean = true,
+    showMessages: boolean = false,
   ): Promise<void> {
     if ($catalogLoading) return;
     catalogLoading.set(true);
@@ -2008,20 +1930,6 @@
 
   // No local clone or pull; we lazy-load from the repo instead.
 
-  const categories = [
-    { name: "Installed Mods", icon: Download },
-    { name: "Search", icon: Search },
-    { name: "Collections", icon: Layers },
-    { name: "All Mods", icon: LayoutDashboard },
-    { name: "Content", icon: FolderHeart },
-    { name: "Miscellaneous", icon: BookOpen },
-    { name: "Joker", icon: Flame },
-    { name: "Quality of Life", icon: Star },
-    { name: "Technical", icon: Spade },
-    { name: "Resource Packs", icon: FolderHeart },
-    { name: "API", icon: Gamepad2 },
-  ];
-
   const colorPairs = [
     { color1: "#4f6367", color2: "#425556" },
     { color1: "#AA778D", color2: "#906577" },
@@ -2068,7 +1976,6 @@
   }
 
   let showSearch = $derived($currentCategory === "Search");
-  $currentCategory = "All Mods";
 
   let filteredMods = $derived(
     $modsStore.filter((mod) => {
@@ -2126,7 +2033,7 @@
       ? ($collectionsStore.find((c) => c.id === selectedCollectionId) ?? null)
       : null,
   );
-  let selectedCollectionMods = $derived(
+  let unfilteredCollectionMods = $derived(
     selectedCollection
       ? (() => {
           const wantedIds = new Set(selectedCollection.modIds ?? []);
@@ -2164,19 +2071,6 @@
     selectedCollectionId = preferred;
   });
 
-  function handleCategoryClick(category: string) {
-    currentPage.set(1);
-    startPage = 1; // Reset sliding window
-    currentCategory.set(category);
-    scrollToTop();
-    markPaginating();
-    updateVirtualWindow();
-    // Clear selection when leaving Installed Mods view
-    if (category !== "Installed Mods") {
-      clearSelection();
-    }
-  }
-
   function handleModsScroll() {
     isUserScrolling = true;
     if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
@@ -2211,13 +2105,82 @@
     }
   });
 
-  function sortMods(mods: Mod[], _sortOption: SortOption): Mod[] {
-    // Sorting is provided by the server; preserve incoming order.
-    return mods;
+  // Star counts are a client-side snapshot; the catalog API supports its existing sort keys.
+  function serverSort(sort: SortOption): SortOption {
+    return sort === SortOption.StarsAsc || sort === SortOption.StarsDesc
+      ? SortOption.NameAsc
+      : sort;
   }
+
+  function sortMods(mods: Mod[], sortOption: SortOption): Mod[] {
+    const sorted = [...mods];
+    if (
+      sortOption === SortOption.NameAsc ||
+      sortOption === SortOption.NameDesc
+    ) {
+      return sorted.sort(
+        (a, b) =>
+          (sortOption === SortOption.NameAsc ? 1 : -1) *
+          a.title.localeCompare(b.title),
+      );
+    }
+    if (
+      sortOption === SortOption.StarsAsc ||
+      sortOption === SortOption.StarsDesc
+    ) {
+      return sorted.sort((a, b) => {
+        const left = getRepositoryStars(getModRepository(a));
+        const right = getRepositoryStars(getModRepository(b));
+        if (left === null)
+          return right === null ? a.title.localeCompare(b.title) : 1;
+        if (right === null) return -1;
+        return (
+          (sortOption === SortOption.StarsAsc ? left - right : right - left) ||
+          a.title.localeCompare(b.title)
+        );
+      });
+    }
+    if (
+      sortOption === SortOption.LastUpdatedAsc ||
+      sortOption === SortOption.LastUpdatedDesc
+    ) {
+      return sorted.sort(
+        (a, b) =>
+          (sortOption === SortOption.LastUpdatedAsc ? 1 : -1) *
+          ((a.last_updated || 0) - (b.last_updated || 0)),
+      );
+    }
+    return sorted;
+  }
+
+  let collectionPage = $state(1);
+  let selectedCollectionMods = $derived(
+    sortMods(
+      fuzzyFilter(unfilteredCollectionMods, listSearch, catalogModText),
+      $currentSort,
+    ),
+  );
+  let collectionPages = $derived(
+    pageCount(selectedCollectionMods.length, $itemsPerPage),
+  );
+  let visibleCollectionMods = $derived(
+    pageItems(selectedCollectionMods, collectionPage, $itemsPerPage),
+  );
+  $effect(() => {
+    listSearch;
+    selectedCollectionId;
+    $itemsPerPage;
+    $currentSort;
+    collectionPage = 1;
+  });
+  $effect(() => {
+    if (collectionPage > collectionPages) collectionPage = collectionPages;
+  });
 
   // Add sort handler
   const sortOptions = [
+    { value: SortOption.StarsDesc, label: "Stars (most first)" },
+    { value: SortOption.StarsAsc, label: "Stars (fewest first)" },
     { value: SortOption.NameAsc, label: "Name (A-Z)" },
     { value: SortOption.NameDesc, label: "Name (Z-A)" },
     { value: SortOption.LastUpdatedDesc, label: "Last Updated" },
@@ -2240,7 +2203,9 @@
       currentPage.set(1);
       startPage = 1;
     }
-    refreshCatalogInBackground(false).catch(() => {});
+    if (value !== SortOption.StarsAsc && value !== SortOption.StarsDesc) {
+      refreshCatalogInBackground(false).catch(() => {});
+    }
   }
 
   function handleClickOutsideSort(event: MouseEvent) {
@@ -2420,7 +2385,7 @@
       const ensureRepoMods = async () => {
         if (repoModsLoaded) return;
         const items = await invoke<ArchiveModItem[]>("fetch_repo_mods", {
-          sort: get(currentSort),
+          sort: serverSort(get(currentSort)),
         });
         const mapped = mapArchiveItems(items);
         repoModsByNormalized.clear();
@@ -2784,7 +2749,93 @@
     }
   }
 
-  let sortedAndFilteredMods = $derived(sortMods(filteredMods, $currentSort));
+  let sortedAndFilteredMods = $derived(
+    sortMods(
+      fuzzyFilter(filteredMods, activeSearch, catalogModText),
+      $currentSort,
+    ),
+  );
+  let matchingLocalMods = $derived(
+    fuzzyFilter(localMods, $installedModsSearchStore, localModText),
+  );
+  type InstalledListItem =
+    { kind: "local"; mod: LocalMod } | { kind: "catalog"; mod: Mod };
+  function localCatalogMod(mod: LocalMod): Mod | null {
+    const match = (mod as LocalMod & { catalog_match?: { title: string } })
+      .catalog_match;
+    return (
+      $modsStore.find((item) =>
+        match
+          ? item.title === match.title
+          : normalizeModName(item.title) === normalizeModName(mod.name),
+      ) ?? null
+    );
+  }
+  let installedList = $derived.by(() => {
+    const items: InstalledListItem[] = [
+      ...matchingLocalMods.map((mod) => ({ kind: "local" as const, mod })),
+      ...sortedAndFilteredMods.map((mod) => ({
+        kind: "catalog" as const,
+        mod,
+      })),
+    ];
+    const title = (item: InstalledListItem) =>
+      item.kind === "local" ? item.mod.name : item.mod.title;
+    const catalogMod = (item: InstalledListItem) =>
+      item.kind === "catalog" ? item.mod : localCatalogMod(item.mod);
+    return items.sort((a, b) => {
+      if (
+        $currentSort === SortOption.StarsAsc ||
+        $currentSort === SortOption.StarsDesc
+      ) {
+        const leftMod = catalogMod(a);
+        const rightMod = catalogMod(b);
+        const left = leftMod
+          ? getRepositoryStars(getModRepository(leftMod))
+          : null;
+        const right = rightMod
+          ? getRepositoryStars(getModRepository(rightMod))
+          : null;
+        if (left === null)
+          return right === null ? title(a).localeCompare(title(b)) : 1;
+        if (right === null) return -1;
+        return (
+          ($currentSort === SortOption.StarsAsc
+            ? left - right
+            : right - left) || title(a).localeCompare(title(b))
+        );
+      }
+      if (
+        $currentSort === SortOption.LastUpdatedAsc ||
+        $currentSort === SortOption.LastUpdatedDesc
+      ) {
+        const left = catalogMod(a)?.last_updated || 0;
+        const right = catalogMod(b)?.last_updated || 0;
+        return (
+          ($currentSort === SortOption.LastUpdatedAsc
+            ? left - right
+            : right - left) || title(a).localeCompare(title(b))
+        );
+      }
+      return (
+        ($currentSort === SortOption.NameDesc ? -1 : 1) *
+        title(a).localeCompare(title(b))
+      );
+    });
+  });
+  let installedPage = $derived(
+    pageItems(installedList, $currentPage, $itemsPerPage),
+  );
+  let paginatedLocalMods = $derived(
+    installedPage.flatMap((item) => (item.kind === "local" ? [item.mod] : [])),
+  );
+
+  $effect(() => {
+    activeSearch;
+    $itemsPerPage;
+    currentPage.set(1);
+    startPage = 1;
+  });
 
   $effect(() => {
     // track these dependencies explicitly
@@ -2793,58 +2844,34 @@
     $currentCategory;
     $modEnabledStore;
     $installationStatus;
+    paginatedLocalMods;
     if ($currentCategory === "Installed Mods") {
       untrack(() => updateEnabledDisabledLists());
     }
   });
 
-  let totalPages = $derived(
-    Math.ceil(sortedAndFilteredMods.length / $itemsPerPage),
-  );
-
-  // For Installed Mods, show all mods (bypass pagination)
   let isInstalledMods = $derived($currentCategory === "Installed Mods");
-
+  let totalPages = $derived(
+    pageCount(
+      isInstalledMods ? installedList.length : sortedAndFilteredMods.length,
+      $itemsPerPage,
+    ),
+  );
   let paginatedMods = $derived(
     isInstalledMods
-      ? sortedAndFilteredMods
-      : sortedAndFilteredMods.slice(
-          ($currentPage - 1) * $itemsPerPage,
-          $currentPage * $itemsPerPage,
-        ),
+      ? installedPage.flatMap((item) =>
+          item.kind === "catalog" ? [item.mod] : [],
+        )
+      : pageItems(sortedAndFilteredMods, $currentPage, $itemsPerPage),
   );
 
-  let visiblePaginatedMods: Mod[] = $state([]);
-
-  function updateVirtualWindow() {
-    // For Installed Mods view, apply renderLimitCatalog for virtual scrolling
-    if (isInstalledMods) {
-      visiblePaginatedMods = paginatedMods.slice(0, renderLimitCatalog);
-    } else {
-      visiblePaginatedMods = paginatedMods;
-    }
-  }
-
-  // Whenever the visible page changes, try to quickly hydrate from cache and recalc window
   $effect(() => {
-    // touch dependency
+    if ($currentPage > totalPages) currentPage.set(totalPages);
+  });
+
+  // Page size is the only render limit; All exposes the complete installed list.
+  $effect(() => {
     paginatedMods;
-    const localMax = Math.max(
-      enabledLocalMods.length,
-      disabledLocalMods.length,
-    );
-    renderLimitLocal = Math.min(60, localMax || 60);
-    if (observerLocal && localSentinel) observerLocal.observe(localSentinel);
-
-    // Reset catalog render limit and attach observer for Installed Mods
-    if (isInstalledMods) {
-      renderLimitCatalog = Math.min(36, paginatedMods.length || 36);
-      if (observerCatalog && catalogSentinel) {
-        observerCatalog.observe(catalogSentinel);
-      }
-    }
-
-    updateVirtualWindow();
     scheduleHydration();
   });
 
@@ -2857,26 +2884,6 @@
 
   const maxVisiblePages = 5;
   let startPage = $state(1);
-
-  let visibleEnabledLocal = $derived(
-    filteredEnabledLocalMods.slice(0, renderLimitLocal),
-  );
-  let visibleDisabledLocal = $derived(
-    filteredDisabledLocalMods.slice(0, renderLimitLocal),
-  );
-
-  // Windowed views of the installed enabled/disabled catalog mods. These are
-  // sliced AFTER splitting by enabled state, so the render limit applies to
-  // each section independently. (Slicing the combined catalog first and then
-  // filtering would only ever surface whichever enabled mods happened to land
-  // in the top `renderLimitCatalog` of the full sorted list.)
-  let visibleEnabledCatalog = $derived(
-    filteredEnabledMods.slice(0, renderLimitCatalog),
-  );
-  let visibleDisabledCatalog = $derived(
-    filteredDisabledMods.slice(0, renderLimitCatalog),
-  );
-  let observerLocal: IntersectionObserver | null = null;
 
   function scheduleHydration() {
     hydrationPending = true;
@@ -3025,8 +3032,6 @@
       cat === "Installed Mods" &&
       prevCategory !== "Installed Mods"
     ) {
-      // Category just switched to Installed Mods - reset virtual scroll limit
-      renderLimitCatalog = 36;
       refreshInstalledMods();
       if (sortedAndFilteredMods.length === 0) {
         seedInstalledPlaceholders();
@@ -3048,21 +3053,6 @@
 
 <div class="container default-scrollbar">
   <div class="mods-container">
-    <div class="categories">
-      {#each categories as category}
-        {@const Icon = category.icon}
-        <button
-          class:active={$currentCategory === category.name}
-          onclick={() => handleCategoryClick(category.name)}
-        >
-          <Icon size={16} />
-          {category.name}
-        </button>
-      {/each}
-    </div>
-
-    <div class="separator"></div>
-
     {#if $modsStore.length === 0 && (isLoading || $catalogLoading || catalogRetryPending) && $currentCategory !== "Installed Mods"}
       <div class="loading-container">
         <p class="loading-text">
@@ -3198,13 +3188,52 @@
           <div class="collections-right default-scrollbar">
             {#if selectedCollection}
               <div class="collections-mods">
+                <div class="collection-list-controls">
+                  <input
+                    class="text-input"
+                    aria-label="Search collection mods"
+                    placeholder="Search collection mods..."
+                    bind:value={listSearch}
+                  /><label class="preview-control"
+                    ><input type="checkbox" bind:checked={$showModPreviews} /> Previews</label
+                  ><label class="page-size-control"
+                    >Per page <select
+                      aria-label="Collection mods per page"
+                      bind:value={$itemsPerPage}
+                      ><option value={10}>10</option><option value={25}
+                        >25</option
+                      ><option value={50}>50</option><option value={100}
+                        >100</option
+                      ><option value="all">All</option></select
+                    ></label
+                  >
+                  <select
+                    class="collection-sort"
+                    aria-label="Sort collection mods"
+                    bind:value={$currentSort}
+                    >{#each sortOptions as option}<option value={option.value}
+                        >{option.label}</option
+                      >{/each}</select
+                  >
+                </div>
+                {#if collectionPages > 1}<div class="collection-pagination">
+                    <button
+                      disabled={collectionPage === 1}
+                      onclick={() => (collectionPage -= 1)}>Previous</button
+                    ><span>{collectionPage} / {collectionPages}</span><button
+                      disabled={collectionPage === collectionPages}
+                      onclick={() => (collectionPage += 1)}>Next</button
+                    >
+                  </div>{/if}
                 {#if selectedCollectionMods.length === 0}
                   <div class="collections-empty">
-                    This collection has no mods yet.
+                    {listSearch
+                      ? `No mods match '${listSearch}'.`
+                      : "This collection has no mods yet."}
                   </div>
                 {:else}
                   <div class="mods-grid collections-mods-grid">
-                    {#each selectedCollectionMods as mod, index (mod.downloadURL || mod.repo || mod.title)}
+                    {#each visibleCollectionMods as mod, index (mod.id || mod._dirName || mod.title)}
                       <div class="virtual-cell" style="--card-index: {index}">
                         <ModCard
                           {mod}
@@ -3248,10 +3277,7 @@
         {:else}
           <div class="controls-container">
             {#if $currentCategory === "Installed Mods" && !$currentModView}
-              <div
-                class="controls-left"
-                in:fly={{ duration: 400, y: 10, opacity: 0.2 }}
-              >
+              <div class="controls-left">
                 <button
                   class="folder-icon-button"
                   onclick={openModsFolder}
@@ -3280,31 +3306,36 @@
               </div>
             {/if}
 
-            <div
-              class="sort-controls"
-              in:fly={{ duration: 400, y: 10, opacity: 0.2 }}
-            >
-              {#if $currentCategory === "Installed Mods" && !$currentModView}
+            <div class="sort-controls">
+              {#if !$currentModView}
                 <div class="installed-search-wrapper">
                   <Search size={16} class="installed-search-icon" />
                   <input
                     type="text"
                     class="installed-search-input"
-                    placeholder="Filter..."
-                    bind:value={$installedModsSearchStore}
+                    placeholder="Search mods, authors, descriptions..."
+                    aria-label="Search this mod list"
+                    value={activeSearch}
+                    oninput={(e) => {
+                      if (isInstalledMods)
+                        installedModsSearchStore.set(e.currentTarget.value);
+                      else listSearch = e.currentTarget.value;
+                    }}
                     bind:this={installedSearchInputRef}
                     onkeydown={(e) => {
                       if (e.key === "Escape") {
-                        installedModsSearchStore.set("");
+                        if (isInstalledMods) installedModsSearchStore.set("");
+                        else listSearch = "";
                         installedSearchInputRef?.blur();
                       }
                     }}
                   />
-                  {#if $installedModsSearchStore}
+                  {#if activeSearch}
                     <button
                       class="installed-search-clear"
                       onclick={() => {
-                        installedModsSearchStore.set("");
+                        if (isInstalledMods) installedModsSearchStore.set("");
+                        else listSearch = "";
                       }}
                       title="Clear search"
                     >
@@ -3313,6 +3344,18 @@
                   {/if}
                 </div>
               {/if}
+              <label class="preview-control"
+                ><input type="checkbox" bind:checked={$showModPreviews} /> Previews</label
+              >
+              <label class="page-size-control"
+                >Per page <select
+                  aria-label="Mods per page"
+                  bind:value={$itemsPerPage}
+                  ><option value={10}>10</option><option value={25}>25</option
+                  ><option value={50}>50</option><option value={100}>100</option
+                  ><option value="all">All</option></select
+                ></label
+              >
               <div class="sort-dropdown" bind:this={sortDropdownRef}>
                 <button
                   class="sort-dropdown-trigger"
@@ -3386,6 +3429,11 @@
           onscroll={handleModsScroll}
         >
           {#if $currentCategory === "Installed Mods"}
+            {#if activeSearch && installedList.length === 0}<div
+                class="collections-empty"
+              >
+                No installed mods match '{activeSearch}'.
+              </div>{/if}
             {#if showLoadingLocalMods}
               <div class="section-divider">
                 <span class="section-label">Local Mods</span>
@@ -3393,7 +3441,7 @@
                   >Loading{".".repeat($loadingDots)}</span
                 >
               </div>
-            {:else if localMods.length > 0}
+            {:else if paginatedLocalMods.length > 0}
               <div class="section-divider">
                 <span class="section-label">Local Mods</span>
                 <span class="section-count">{localMods.length}</span>
@@ -3409,7 +3457,7 @@
                   >
                 </div>
                 <div class="mods-grid local-mods-grid">
-                  {#each visibleEnabledLocal as mod, index (`${animationNonce}-local-enabled-${mod.name}`)}
+                  {#each filteredEnabledLocalMods as mod, index (`local-enabled-${mod.path}`)}
                     <div class="virtual-cell" style="--card-index: {index}">
                       <LocalModCard
                         {mod}
@@ -3419,11 +3467,6 @@
                       />
                     </div>
                   {/each}
-                  <div
-                    bind:this={localSentinel}
-                    class="render-sentinel"
-                    aria-hidden="true"
-                  ></div>
                 </div>
               {/if}
 
@@ -3437,7 +3480,7 @@
                   >
                 </div>
                 <div class="mods-grid local-mods-grid">
-                  {#each visibleDisabledLocal as mod, index (`${animationNonce}-local-disabled-${mod.name}`)}
+                  {#each filteredDisabledLocalMods as mod, index (`local-disabled-${mod.path}`)}
                     <div class="virtual-cell" style="--card-index: {index}">
                       <LocalModCard
                         {mod}
@@ -3447,11 +3490,6 @@
                       />
                     </div>
                   {/each}
-                  <div
-                    bind:this={localSentinel}
-                    class="render-sentinel"
-                    aria-hidden="true"
-                  ></div>
                 </div>
               {/if}
 
@@ -3490,7 +3528,7 @@
                   class="mods-grid"
                   class:has-local-mods={localMods.length > 0}
                 >
-                  {#each visibleEnabledCatalog as mod, index (`${animationNonce}-${$currentCategory}-enabled-${mod.downloadURL || mod.repo || mod.title}`)}
+                  {#each filteredEnabledMods as mod, index (`${$currentCategory}-enabled-${mod.id || mod._dirName || mod.title}`)}
                     <div class="virtual-cell" style="--card-index: {index}">
                       <ModCard
                         {mod}
@@ -3519,7 +3557,7 @@
                   class="mods-grid"
                   class:has-local-mods={localMods.length > 0}
                 >
-                  {#each visibleDisabledCatalog as mod, index (`${animationNonce}-${$currentCategory}-disabled-${mod.downloadURL || mod.repo || mod.title}`)}
+                  {#each filteredDisabledMods as mod, index (`${$currentCategory}-disabled-${mod.id || mod._dirName || mod.title}`)}
                     <div class="virtual-cell" style="--card-index: {index}">
                       <ModCard
                         {mod}
@@ -3538,7 +3576,7 @@
               {#if filteredEnabledMods.length === 0 && filteredDisabledMods.length === 0 && !$installedModsSearchStore}
                 <!-- Fallback: show installed catalog mods before enabled state resolves -->
                 <div class="mods-grid">
-                  {#each visiblePaginatedMods as mod, index (`${animationNonce}-${$currentCategory}-fallback-${mod.downloadURL || mod.repo || mod.title}`)}
+                  {#each paginatedMods as mod, index (`${$currentCategory}-fallback-${mod.id || mod._dirName || mod.title}`)}
                     <div class="virtual-cell" style="--card-index: {index}">
                       <ModCard
                         {mod}
@@ -3553,20 +3591,16 @@
                   {/each}
                 </div>
               {/if}
-
-              <!-- Virtual scroll sentinel for catalog mods - triggers loading more when visible -->
-              {#if visibleEnabledCatalog.length < filteredEnabledMods.length || visibleDisabledCatalog.length < filteredDisabledMods.length}
-                <div
-                  bind:this={catalogSentinel}
-                  class="virtual-scroll-sentinel"
-                  aria-hidden="true"
-                ></div>
-              {/if}
             {/if}
           {:else}
+            {#if sortedAndFilteredMods.length === 0}<div
+                class="collections-empty"
+              >
+                No mods match '{activeSearch}'.
+              </div>{/if}
             <!-- Original non-InstalledMods categories -->
             <div class="mods-grid">
-              {#each visiblePaginatedMods as mod, index (`${animationNonce}-${$currentCategory}-${mod.downloadURL || mod.repo || mod.title}`)}
+              {#each paginatedMods as mod, index (`${$currentCategory}-${mod.id || mod._dirName || mod.title}`)}
                 <div class="virtual-cell" style="--card-index: {index}">
                   <ModCard
                     {mod}
@@ -3627,7 +3661,7 @@
     transition: all 0.2s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     padding: 0 1rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 0.9rem;
     white-space: nowrap;
     gap: 0.5rem;
@@ -3695,7 +3729,7 @@
   }
 
   .section-divider .section-label {
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1.2rem;
     color: var(--ui-heading);
     text-transform: uppercase;
@@ -3703,7 +3737,7 @@
   }
 
   .section-divider .section-count {
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 0.9rem;
     color: var(--ui-text);
     opacity: 0.7;
@@ -3712,7 +3746,7 @@
   }
 
   .section-divider .section-info {
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 0.9rem;
     color: var(--ui-text);
     opacity: 0.7;
@@ -3756,13 +3790,13 @@
   }
 
   .subsection-divider .subsection-label {
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
     color: var(--ui-text);
   }
 
   .subsection-divider .subsection-count {
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 0.85rem;
     color: var(--ui-text);
     opacity: 0.6;
@@ -3824,7 +3858,7 @@
     outline: var(--ui-button-forest-border) solid 2px;
     border-radius: 4px;
     padding: 0.75rem 1.5rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1.2rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -3838,38 +3872,8 @@
     transform: translateY(-2px);
   }
 
-  .render-sentinel {
-    width: 100%;
-    height: 1px;
-  }
-
-  .virtual-scroll-sentinel {
-    width: 100%;
-    height: 1px;
-  }
-
   .virtual-cell {
     min-height: 0;
-    animation: cardEntrance 0.3s ease-out backwards;
-    animation-delay: calc(min(var(--card-index, 0), 15) * 30ms);
-  }
-
-  @keyframes cardEntrance {
-    from {
-      opacity: 0;
-      transform: translateY(15px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Respect reduced motion preference */
-  @media (prefers-reduced-motion: reduce) {
-    .virtual-cell {
-      animation: none;
-    }
   }
 
   .open-folder-button:active {
@@ -3902,25 +3906,14 @@
   }
 
   .no-mods-message p {
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1.8rem;
     color: var(--ui-text);
     text-align: center;
     /*Add black stroke with two methods for better browser compatibility*/
     -webkit-text-stroke: 0.1px black;
     /*Fallback using text-shadow for browsers that don't support text-stroke*/
-    text-shadow:
-      -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-      1px 1px 0 #000,
-      2px 2px 3px rgba(0, 0, 0, 0.5);
-  }
-
-  .separator {
-    width: 2px;
-    background: var(--ui-mod-divider);
-    height: 100%;
+    text-shadow: none;
   }
 
   .controls-container {
@@ -3973,7 +3966,7 @@
     border: 2px solid var(--ui-mod-chip-border);
     border-radius: 6px;
     color: var(--ui-mod-chip-text);
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
     outline: none;
     box-sizing: border-box;
@@ -4018,68 +4011,6 @@
 
   .installed-search-clear:hover {
     opacity: 1;
-  }
-
-  .categories {
-    width: 190px;
-    min-width: 190px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding: 2rem 0;
-    &::-webkit-scrollbar {
-      width: 0;
-      height: 0;
-      display: none;
-    }
-    &::-webkit-scrollbar-track {
-      background: transparent;
-      border-radius: 15px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: var(--ui-scroll-thumb);
-      border: 2px solid var(--ui-scroll-thumb-border);
-      border-radius: 15px;
-    }
-    &::-webkit-scrollbar:horizontal {
-      display: none;
-    }
-    &::-webkit-scrollbar-corner {
-      background-color: transparent;
-    }
-    scrollbar-width: 0;
-    scrollbar-color: transparent transparent;
-  }
-
-  .categories button {
-    text-align: left;
-    padding: 1rem 1rem;
-    background: var(--ui-mod-chip-bg);
-    border: 2px solid var(--ui-mod-chip-border);
-    color: var(--ui-mod-chip-text);
-    font-family: "M6X11", sans-serif;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: 6px;
-    margin-right: 0.3rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .categories button:hover {
-    background: var(--ui-mod-chip-active-bg);
-    color: var(--ui-mod-chip-active-text);
-  }
-
-  .categories button.active {
-    background: var(--ui-mod-chip-active-bg);
-    color: var(--ui-mod-chip-active-text);
   }
 
   .collections-shell {
@@ -4128,7 +4059,7 @@
     border: 2px solid var(--ui-mod-input-border);
     border-radius: 6px;
     padding: 0.6rem 0.75rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
   }
 
@@ -4146,7 +4077,7 @@
     background: var(--ui-success-strong);
     color: var(--ui-text);
     font-size: 1.4rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     cursor: pointer;
     transition:
       transform 0.15s ease,
@@ -4183,7 +4114,7 @@
     color: var(--ui-text);
     padding: 0.7rem 0.9rem;
     border-radius: 6px;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1.05rem;
     cursor: pointer;
     transition:
@@ -4210,7 +4141,7 @@
     color: var(--ui-text);
     padding: 0.7rem 0.9rem;
     border-radius: 6px;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1.05rem;
     cursor: pointer;
     transition:
@@ -4251,7 +4182,7 @@
     color: var(--ui-mod-chip-text);
     padding: 0 0.9rem;
     border-radius: 6px;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1.05rem;
     cursor: pointer;
     height: 44px;
@@ -4278,7 +4209,7 @@
     color: var(--ui-mod-chip-text);
     padding: 0 0.9rem;
     border-radius: 6px;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1.05rem;
     text-align: center;
     height: 44px;
@@ -4322,7 +4253,7 @@
     color: var(--ui-text);
     padding: 0.7rem 0.9rem;
     border-radius: 6px;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1.05rem;
     cursor: pointer;
     transition:
@@ -4377,7 +4308,7 @@
     border: 2px solid var(--ui-mod-chip-border);
     border-radius: 6px;
     padding: 0.7rem 0.9rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1.05rem;
     cursor: pointer;
     transition:
@@ -4595,7 +4526,7 @@
       transform 0.2s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     color: var(--ui-mod-chip-text);
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
   }
 
@@ -4655,7 +4586,7 @@
     background: transparent;
     border: none;
     color: var(--ui-mod-chip-text);
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
     cursor: pointer;
     text-align: left;
@@ -4709,7 +4640,7 @@
 
   .loading-text {
     color: var(--ui-text);
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1.5rem;
     min-width: 150px;
   }
@@ -4722,5 +4653,142 @@
     .sort-controls {
       right: 1rem;
     }
+  }
+
+  .mods-wrapper {
+    width: 100%;
+    padding: 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .controls-container {
+    position: relative;
+    height: auto;
+    min-height: 58px;
+    gap: 10px;
+    padding: 10px 16px;
+    margin: 0;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+  }
+  .sort-controls {
+    position: relative;
+    right: auto;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    box-shadow: none;
+  }
+  .installed-search-wrapper {
+    flex: 1;
+    min-width: 180px;
+    margin: 0;
+  }
+  .installed-search-input {
+    width: 100%;
+    min-width: 0;
+    font-size: 14px;
+    height: 34px;
+    box-sizing: border-box;
+  }
+  .preview-control,
+  .page-size-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: var(--ui-text);
+    white-space: nowrap;
+  }
+  .preview-control input {
+    accent-color: var(--ui-mod-input-focus);
+  }
+  .page-size-control select {
+    padding: 5px;
+    border-radius: 5px;
+    background: var(--ui-mod-chip-bg);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-mod-chip-border);
+  }
+  .sort-dropdown-trigger {
+    font-size: 13px;
+    border-width: 1px;
+    padding: 7px 9px;
+  }
+  .sort-dropdown-item {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+  .mods-grid,
+  .collections-mods-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+    gap: 12px;
+    padding: 12px 16px;
+    align-content: start;
+  }
+  .collections-mods-grid {
+    --card-scale: 1;
+  }
+  .collection-list-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 0 16px 10px;
+  }
+  .collection-list-controls .text-input {
+    flex: 1;
+    min-width: 0;
+  }
+  .section-label {
+    font-size: 16px;
+  }
+  .subsection-label,
+  .subsection-count {
+    font-size: 13px;
+  }
+
+  .mods-container {
+    gap: 0;
+    padding: 0;
+  }
+  .folder-icon-button {
+    position: static;
+    transform: none;
+    width: 34px;
+    height: 34px;
+    border-width: 1px;
+    border-radius: 5px;
+    box-shadow: none;
+  }
+  .collection-list-controls {
+    flex-wrap: wrap;
+  }
+  .collection-pagination {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    padding: 0 16px 10px;
+  }
+  .collection-sort {
+    background: var(--ui-mod-chip-bg);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-mod-chip-border);
+    border-radius: 5px;
+    padding: 5px 8px;
+    font-size: 13px;
+  }
+  .collection-pagination button {
+    background: var(--ui-mod-chip-bg);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-mod-chip-border);
+    border-radius: 5px;
+    padding: 5px 8px;
+  }
+  .collection-pagination button:disabled {
+    opacity: 0.45;
   }
 </style>

@@ -124,7 +124,7 @@
     color: var(--ui-text);
     border: 1px solid var(--ui-danger-overlay-border);
     border-radius: 6px;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -133,7 +133,7 @@
   .dropdown-trigger:hover:not(:disabled) {
     background-color: var(--ui-danger-overlay-stronger);
     border-color: var(--ui-danger-overlay-border-strong);
-    transform: translateY(-2px);
+    transform: none;
   }
 
   .dropdown.open .dropdown-trigger {
@@ -199,7 +199,7 @@
     background: transparent;
     color: var(--ui-text);
     border: none;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
     text-align: left;
     cursor: pointer;
@@ -217,5 +217,9 @@
 
   .disabled {
     pointer-events: none;
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

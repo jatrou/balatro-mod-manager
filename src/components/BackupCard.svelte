@@ -74,9 +74,9 @@
     gap: 1rem;
     align-items: center;
     background: rgba(244, 238, 224, 0.05);
-    border: 2px solid rgba(244, 238, 224, 0.3);
+    border: 1px solid var(--ui-border);
     border-radius: 8px;
-    padding: 1rem 1.25rem;
+    padding: 12px 16px;
     transition:
       background 0.2s ease,
       border-color 0.2s ease;
@@ -84,23 +84,23 @@
 
   .backup-card:hover {
     background: rgba(244, 238, 224, 0.08);
-    border-color: rgba(244, 238, 224, 0.4);
+    border-color: var(--ui-border);
   }
 
   .backup-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
-    background: rgba(234, 150, 0, 0.2);
-    color: #ea9600;
+    background: var(--ui-glass);
+    color: var(--ui-accent);
   }
 
   .backup-icon.manual {
-    background: rgba(86, 167, 134, 0.2);
-    color: #56a786;
+    background: var(--ui-glass);
+    color: var(--ui-accent);
   }
 
   .backup-info {
@@ -111,9 +111,9 @@
   }
 
   .backup-name {
-    font-family: "M6X11", sans-serif;
-    font-size: 1.35rem;
-    color: #fdcf51;
+    font-family: var(--ui-font);
+    font-size: 16px;
+    color: var(--ui-accent);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -123,8 +123,8 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
-    font-size: 1.1rem;
-    color: rgba(244, 238, 224, 0.8);
+    font-size: 14px;
+    color: var(--ui-text-muted);
   }
 
   .separator {
@@ -133,7 +133,7 @@
 
   .lovely-version {
     font-size: 1rem;
-    color: rgba(244, 238, 224, 0.7);
+    color: var(--ui-text-muted);
   }
 
   .backup-actions {
@@ -144,44 +144,44 @@
   button {
     border: none;
     border-radius: 6px;
-    padding: 0.7rem 1.1rem;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.1rem;
+    padding: 7px 12px;
+    font-family: var(--ui-font);
+    font-size: 14px;
     cursor: pointer;
     transition:
       transform 0.2s ease,
       background-color 0.2s ease;
-    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: none;
   }
 
   button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+    transform: none;
+    box-shadow: none;
   }
 
   button:active {
     transform: translateY(0);
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: none;
   }
 
   .restore-button {
-    background: #56a786;
-    color: #f4eee0;
-    border: 2px solid #459373;
+    background: var(--ui-success);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
   }
 
   .restore-button:hover {
-    background: #67b897;
+    background: var(--ui-success-hover);
   }
 
   .delete-button {
-    background: #c14139;
-    color: #f4eee0;
-    border: 2px solid #a13029;
+    background: var(--ui-danger);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
   }
 
   .delete-button:hover {
-    background: #d2524a;
+    background: var(--ui-danger-hover);
   }
 
   @media (max-width: 768px) {
@@ -208,5 +208,9 @@
       flex: 1;
       padding: 0.75rem;
     }
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

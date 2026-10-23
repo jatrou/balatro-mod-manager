@@ -12,6 +12,14 @@ import AwesomeMods from "./AwesomeMods.svelte";
 import { installationStatus, modsStore, type Mod } from "../../stores/modStore";
 import { installedModsCache, forceRefreshCache } from "../../stores/modCache";
 import { openExternal } from "$lib/opener";
+import { modsPerPage, showModPreviews } from "../../stores/ui";
+import { bundledAwesomeCatalog } from "$lib/awesomeCatalog";
+import { getRepositoryStars } from "$lib/repositoryMetadata";
+
+vi.mock("$lib/repositoryMetadata", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("$lib/repositoryMetadata")>()),
+  getRepositoryStars: vi.fn(() => null),
+}));
 
 vi.mock("$lib/opener", () => ({
   openExternal: vi.fn(),
@@ -42,6 +50,28 @@ const catalogMod: Mod = {
   last_updated: 0,
 };
 
+async function selectOption(name: string, value: string): Promise<void> {
+  const select = screen.getByRole("combobox", { name }) as HTMLSelectElement;
+  const option = Array.from(select.options).find(
+    (item) => item.value === value,
+  );
+  if (!option) throw new Error(`Missing option ${value}`);
+  option.selected = true;
+  // happy-dom 20 only implements :checked for inputs. Svelte uses this query
+  // to read select bindings, so supply the browser's selected option here.
+  const querySelector = select.querySelector.bind(select);
+  const checkedQuery = vi
+    .spyOn(select, "querySelector")
+    .mockImplementation((selector: string) =>
+      selector === ":checked" ? option : querySelector(selector),
+    );
+  try {
+    await fireEvent.change(select);
+  } finally {
+    checkedQuery.mockRestore();
+  }
+}
+
 describe("AwesomeMods", () => {
   beforeEach(() => {
     Object.defineProperty(HTMLDialogElement.prototype, "showModal", {
@@ -55,6 +85,9 @@ describe("AwesomeMods", () => {
     installationStatus.set({});
     installedModsCache.set([]);
     vi.clearAllMocks();
+    vi.mocked(getRepositoryStars).mockReturnValue(null);
+    modsPerPage.set(25);
+    showModPreviews.set(false);
   });
 
   afterEach(() => {
@@ -62,6 +95,144 @@ describe("AwesomeMods", () => {
     modsStore.set([]);
     installationStatus.set({});
     installedModsCache.set([]);
+  });
+
+  it("fuzzy-matches a mistyped title and opens its GitHub repository", async () => {
+    render(AwesomeMods);
+    await fireEvent.input(
+      screen.getByRole("searchbox", { name: /search awesome balatro/i }),
+      {
+        target: { value: "Redux-Arcanm" },
+      },
+    );
+    const link = screen.getByRole("link", { name: "Redux-Arcanum" });
+    expect(link.getAttribute("href")?.toLowerCase()).toBe(
+      "https://github.com/jumbocarrot0/redux-arcanum",
+    );
+    await fireEvent.click(link);
+    expect(openExternal).toHaveBeenCalledWith(link.getAttribute("href"));
+  });
+
+  it("paginates the directory and keeps the selected page size", async () => {
+    modsPerPage.set(10);
+    const firstRender = render(AwesomeMods);
+    expect(screen.getAllByRole("article")).toHaveLength(10);
+    const firstTitle = within(screen.getAllByRole("article")[0]).getByRole(
+      "heading",
+    ).textContent;
+    await fireEvent.click(screen.getByRole("button", { name: /^Next$/ }));
+    expect(
+      within(screen.getAllByRole("article")[0]).getByRole("heading")
+        .textContent,
+    ).not.toBe(firstTitle);
+    expect(screen.getByText(/Page 2 of/)).toBeTruthy();
+    await selectOption("Mods per page", "50");
+    expect(screen.getAllByRole("article")).toHaveLength(50);
+    expect(screen.getByText(/Page 1 of/)).toBeTruthy();
+    expect(localStorage.getItem("ui.modsPerPage")).toBe("50");
+    firstRender.unmount();
+    render(AwesomeMods);
+    expect(screen.getAllByRole("article")).toHaveLength(50);
+    await selectOption("Mods per page", "all");
+    expect(screen.queryByRole("navigation", { name: "Mod pages" })).toBeNull();
+    expect(screen.getAllByRole("article").length).toBeGreaterThan(100);
+  });
+
+  it("offers previews only for available pictures and retains the preference", async () => {
+    modsStore.set([
+      {
+        ...catalogMod,
+        image: "https://example.com/redux.png",
+        _hasThumbnail: true,
+      },
+    ]);
+    const firstRender = render(AwesomeMods);
+    expect(
+      screen.queryByRole("img", { name: "Redux-Arcanum preview" }),
+    ).toBeNull();
+    await fireEvent.click(screen.getByRole("checkbox", { name: "Previews" }));
+    expect(localStorage.getItem("ui.showModPreviews")).toBe("true");
+    await fireEvent.input(
+      screen.getByRole("searchbox", { name: /search awesome balatro/i }),
+      { target: { value: "Redux-Arcanum" } },
+    );
+    expect(
+      screen.getByRole("img", { name: "Redux-Arcanum preview" }),
+    ).toBeTruthy();
+    firstRender.unmount();
+    render(AwesomeMods);
+    await fireEvent.input(
+      screen.getByRole("searchbox", { name: /search awesome balatro/i }),
+      { target: { value: "Redux-Arcanum" } },
+    );
+    expect(
+      (screen.getByRole("checkbox", { name: "Previews" }) as HTMLInputElement)
+        .checked,
+    ).toBe(true);
+    expect(
+      screen.getByRole("img", { name: "Redux-Arcanum preview" }),
+    ).toBeTruthy();
+    modsStore.set([
+      {
+        ...catalogMod,
+        image: "https://example.com/placeholder.png",
+        _hasThumbnail: false,
+      },
+    ]);
+    await waitFor(() =>
+      expect(screen.queryByRole("checkbox", { name: "Previews" })).toBeNull(),
+    );
+    expect(screen.queryByRole("img")).toBeNull();
+  });
+
+  it("sorts by checked GitHub stars without treating unknown counts as zero", async () => {
+    vi.mocked(getRepositoryStars).mockImplementation((url) =>
+      url?.toLowerCase().includes("jumbocarrot0/redux-arcanum") ? 123 : null,
+    );
+    render(AwesomeMods);
+    await selectOption("Sort mods", "stars");
+    const card = screen.getAllByRole("article")[0];
+    expect(
+      within(card).getByRole("heading", { name: "Redux-Arcanum" }),
+    ).toBeTruthy();
+    expect(within(card).getByText("123")).toBeTruthy();
+  });
+
+  it("uses the sidebar category and reports refreshed directory categories", () => {
+    const category = bundledAwesomeCatalog.entries.find(
+      (entry) => entry.kind === "mod" && entry.categories.length,
+    )?.categories[0];
+    expect(category).toBeTruthy();
+    const onCategoriesChange = vi.fn();
+    render(AwesomeMods, { props: { category, onCategoriesChange } });
+    expect(
+      screen.getByRole("heading", { name: category, level: 2 }),
+    ).toBeTruthy();
+    expect(onCategoriesChange).toHaveBeenCalledWith(
+      expect.arrayContaining([category]),
+    );
+    expect(
+      screen.queryByRole("combobox", { name: "Filter by category" }),
+    ).toBeNull();
+    for (const card of screen.getAllByRole("article")) {
+      expect(card.textContent).toContain(category);
+    }
+  });
+
+  it("returns to mods when the sidebar category is selected from loaders", async () => {
+    const rendered = render(AwesomeMods, {
+      props: { category: "All", categorySelection: 0 },
+    });
+    await fireEvent.click(screen.getByRole("tab", { name: "Loaders" }));
+    expect(
+      screen
+        .getByRole("tab", { name: "Loaders" })
+        .getAttribute("aria-selected"),
+    ).toBe("true");
+    await rendered.rerender({ category: "All", categorySelection: 1 });
+    expect(
+      screen.getByRole("tab", { name: "Mods" }).getAttribute("aria-selected"),
+    ).toBe("true");
   });
 
   it("opens an exact current-catalog match through the parent callback", async () => {
@@ -144,8 +315,8 @@ describe("AwesomeMods", () => {
     modsStore.set([]);
     installedModsCache.set([
       {
-        name: "Absolute Deck",
-        path: "C:\\Balatro\\Mods\\Absolute Deck",
+        name: "Redux-Arcanum",
+        path: "C:\\Balatro\\Mods\\Redux-Arcanum",
         orphaned: false,
       },
     ]);
@@ -153,11 +324,11 @@ describe("AwesomeMods", () => {
     await fireEvent.input(
       screen.getByRole("searchbox", { name: /search awesome balatro/i }),
       {
-        target: { value: "Absolute Deck" },
+        target: { value: "Redux-Arcanum" },
       },
     );
     const card = screen
-      .getByRole("heading", { name: "Absolute Deck" })
+      .getByRole("heading", { name: "Redux-Arcanum" })
       .closest("article");
     expect(card).not.toBeNull();
     expect(within(card as HTMLElement).getByText("Installed")).toBeTruthy();

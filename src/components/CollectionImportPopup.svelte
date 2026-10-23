@@ -80,51 +80,54 @@
   }
 
   .import-modal {
+    box-sizing: border-box;
+    max-height: 90vh;
+    overflow-y: auto;
     width: 520px;
     max-width: 92vw;
-    background: #2d2d2d;
-    color: #f4eee0;
-    border: 2px solid #f4eee0;
+    background: var(--ui-surface);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
     border-radius: 10px;
-    padding: 1.8rem;
+    padding: 20px;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
   }
 
   h3 {
     margin: 0;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.8rem;
+    font-family: var(--ui-font);
+    font-size: 18px;
   }
 
   .subtitle {
     margin: 0.4rem 0 1rem;
-    color: rgba(244, 238, 224, 0.85);
-    font-size: 1.1rem;
+    color: var(--ui-text-muted);
+    font-size: 14px;
   }
 
   .import-textarea {
     width: 100%;
     box-sizing: border-box;
     min-height: 140px;
-    background: #1f1f1f;
-    color: #f4eee0;
-    border: 2px solid #f4eee0;
+    background: var(--ui-input-bg);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
     border-radius: 6px;
     padding: 0.7rem 0.8rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
     resize: vertical;
   }
 
   .import-textarea:focus {
     outline: none;
-    border-color: #ea9600;
-    box-shadow: 0 0 0 2px rgba(234, 150, 0, 0.35);
+    border-color: var(--ui-mod-input-focus);
+    box-shadow: 0 0 0 2px var(--ui-mod-input-focus-glow);
   }
 
   .import-textarea::selection {
-    background: #f4eee0;
-    color: #393646;
+    background: var(--ui-mod-chip-active-bg);
+    color: var(--ui-mod-chip-active-text);
   }
 
   .import-actions {
@@ -136,12 +139,12 @@
 
   .primary,
   .ghost {
-    border: 2px solid #f4eee0;
-    background: #ea9600;
-    color: #f4eee0;
+    border: 1px solid var(--ui-border);
+    background: var(--ui-surface);
+    color: var(--ui-text);
     padding: 0.6rem 1rem;
     border-radius: 6px;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
     cursor: pointer;
     transition:
@@ -151,19 +154,23 @@
   }
 
   .ghost.neutral {
-    background: #b86a2b;
-    color: #f4eee0;
+    background: var(--ui-surface);
+    color: var(--ui-text);
   }
 
   .primary:hover,
   .ghost:hover {
-    transform: translateY(-2px);
+    transform: none;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   }
 
   .primary:active,
   .ghost:active {
-    transform: translateY(1px);
+    transform: none;
     box-shadow: none;
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

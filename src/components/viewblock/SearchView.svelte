@@ -7,18 +7,14 @@
     loadingStates2 as loadingStates,
     uninstallDialogStore,
   } from "../../stores/modStore";
-  // lightweight debounce to avoid pulling in lodash for a single helper
-  function debounce<TArgs extends unknown[]>(
-    fn: (...args: TArgs) => void,
-    wait: number,
-  ) {
-    let t: ReturnType<typeof setTimeout> | null = null;
-    return (...args: TArgs) => {
-      if (t) clearTimeout(t);
-      t = setTimeout(() => fn(...args), wait);
-    };
-  }
-  import { fuzzySearch } from "../../utils/fuzzy";
+  import { fuzzyFilter } from "../../utils/fuzzy";
+  import { showModPreviews, modsPerPage } from "../../stores/ui";
+  import { currentSort, SortOption } from "../../stores/modStore";
+  import {
+    getModRepository,
+    getRepositoryStars,
+  } from "$lib/repositoryMetadata";
+  import { pageCount, pageItems } from "./browseList";
   import { currentModView } from "../../stores/modStore";
   import { invoke } from "@tauri-apps/api/core";
   import { fetchCachedMods } from "../../stores/modCache";
@@ -33,15 +29,57 @@
   import { get } from "svelte/store";
 
   let searchQuery = $state("");
-  let searchResults = $state<Mod[]>([]);
-  let isSearching = $state(false);
-  let mods = $state<Mod[]>([]);
-  // Cached searchable haystack, parallel to `mods`. Rebuilt when the catalog changes.
-  let haystack: string[] = [];
-  let lastModCount = 0; // Track mod count to avoid unnecessary rebuilds
+  let page = $state(1);
   let installedMods = $state<InstalledMod[]>([]);
   let mod = $state<Mod | null>(null);
   let searchInput: HTMLInputElement;
+  let searchResults = $derived.by(() => {
+    const results = fuzzyFilter(
+      $modsStore,
+      searchQuery,
+      (item) => `${item.title} ${item.publisher} ${item.description ?? ""}`,
+    );
+    if (
+      $currentSort === SortOption.StarsAsc ||
+      $currentSort === SortOption.StarsDesc
+    ) {
+      return [...results].sort((a, b) => {
+        const left = getRepositoryStars(getModRepository(a));
+        const right = getRepositoryStars(getModRepository(b));
+        if (left === null)
+          return right === null ? a.title.localeCompare(b.title) : 1;
+        if (right === null) return -1;
+        return (
+          ($currentSort === SortOption.StarsAsc
+            ? left - right
+            : right - left) || a.title.localeCompare(b.title)
+        );
+      });
+    }
+    if (
+      $currentSort === SortOption.NameAsc ||
+      $currentSort === SortOption.NameDesc
+    ) {
+      return [...results].sort(
+        (a, b) =>
+          ($currentSort === SortOption.NameAsc ? 1 : -1) *
+          a.title.localeCompare(b.title),
+      );
+    }
+    return results;
+  });
+  let totalPages = $derived(pageCount(searchResults.length, $modsPerPage));
+  let visibleResults = $derived(pageItems(searchResults, page, $modsPerPage));
+  $effect(() => {
+    searchQuery;
+    $modsPerPage;
+    $currentSort;
+    page = 1;
+  });
+  $effect(() => {
+    if (page > totalPages) page = totalPages;
+  });
+  onMount(() => searchInput?.focus());
 
   function handleModClick(mod: Mod) {
     currentModView.set(mod);
@@ -247,254 +285,155 @@
     }
   });
 
-  // Debounced haystack rebuild to avoid blocking main thread
-  const rebuildIndex = debounce((currentMods: Mod[]) => {
-    if (currentMods.length === 0) return;
-    haystack = currentMods.map(
-      (mod) => `${mod.title} ${mod.publisher} ${mod.description ?? ""}`,
-    );
-    lastModCount = currentMods.length;
-  }, 100);
-
-  onMount(() => {
-    $effect(() => {
-      if (searchInput) {
-        searchInput.focus();
-      }
-    });
-
-    // Subscribe to mods store - only rebuild index when count changes significantly
-    return modsStore.subscribe((currentMods) => {
-      mods = currentMods;
-      // Only rebuild if mod count changed by more than 10% or first load
-      const countDiff = Math.abs(currentMods.length - lastModCount);
-      const threshold = Math.max(1, Math.floor(lastModCount * 0.1));
-      if (
-        currentMods.length > 0 &&
-        (lastModCount === 0 || countDiff >= threshold)
-      ) {
-        rebuildIndex(currentMods);
-      }
-    });
-  });
-
-  const handleSearch = debounce(() => {
-    if (haystack.length === 0 || searchQuery.length < 2) {
-      searchResults = [];
-      showSpinner = false;
-      return;
-    }
-
-    isSearching = true;
-
-    try {
-      const searchTerm = searchQuery.toLowerCase();
-      const results = fuzzySearch(haystack, searchTerm);
-
-      searchResults = results.map((idx) => mods[idx]);
-      if (searchResults.length > 0) {
-        invoke("track_event", {
-          name: "mod_searched",
-          props: { query: searchTerm, results: searchResults.length },
-        }).catch(() => {});
-      }
-    } catch (error) {
-      console.error("Search failed:", error);
-      searchResults = [];
-    } finally {
-      showSpinner = false;
-      isSearching = false;
-    }
-  }, 300);
-
-  let showSpinner = $state(false);
-
-  function handleInput() {
-    showSpinner = true;
-    handleSearch();
-  }
-
   let scrollContainer: HTMLDivElement | null = $state(null);
-
   $effect(() => {
-    searchResults;
-    if (scrollContainer) {
-      scrollContainer.scrollTop = 0;
-    }
+    page;
+    searchQuery;
+    if (scrollContainer) scrollContainer.scrollTop = 0;
   });
 </script>
 
 <div class="search-container">
   <div class="search-bar">
-    <form onsubmit={handleSearch}>
-      <input
-        bind:this={searchInput}
-        type="text"
-        bind:value={searchQuery}
-        oninput={handleInput}
-        placeholder="Search mods... (Author or Title)"
-        class="search-input"
-      />
-      <!-- <button type="submit" class="search-button">
-				<Search size={20} />
-			</button> -->
-    </form>
-
-    {#if showSpinner}
-      <!-- svelte-ignore element_invalid_self_closing_tag -->
-      <div transition:fade={{ duration: 100 }} class="search-spinner" />
-    {/if}
+    <input
+      bind:this={searchInput}
+      type="search"
+      bind:value={searchQuery}
+      placeholder="Search mods, authors, descriptions..."
+      aria-label="Search all mods"
+      class="search-input"
+    />
+    <label
+      ><input type="checkbox" bind:checked={$showModPreviews} /> Previews</label
+    >
+    <label
+      >Per page <select
+        aria-label="Search results per page"
+        bind:value={$modsPerPage}
+        ><option value={10}>10</option><option value={25}>25</option><option
+          value={50}>50</option
+        ><option value={100}>100</option><option value="all">All</option
+        ></select
+      ></label
+    >
+    <select aria-label="Sort search results" bind:value={$currentSort}
+      ><option value={SortOption.NameAsc}>Name (A-Z)</option><option
+        value={SortOption.NameDesc}>Name (Z-A)</option
+      ><option value={SortOption.StarsDesc}>Stars (most first)</option><option
+        value={SortOption.StarsAsc}>Stars (fewest first)</option
+      ></select
+    >
   </div>
-
   <div
     class="results-scroll-container default-scrollbar"
     bind:this={scrollContainer}
   >
     <div class="results-container">
-      {#if isSearching}
-        <p transition:fade={{ duration: 100 }} class="resulting-text">
-          Searching...
-        </p>
-      {:else if searchResults.length === 0 && searchQuery.length >= 2}
-        <p transition:fade={{ duration: 100 }} class="resulting-text">
-          No mods found matching "{searchQuery}"
-        </p>
-      {:else if searchResults.length > 0}
-        <div transition:fade={{ duration: 100 }} class="results-wrapper">
-          {#each searchResults as mod (mod.downloadURL || mod.repo || mod.title)}
+      <p class="result-count">
+        {searchResults.length}
+        {searchResults.length === 1 ? "mod" : "mods"}
+      </p>
+      {#if searchResults.length === 0}
+        <p>No mods found matching '{searchQuery}'.</p>
+      {:else}
+        <div class="results-wrapper">
+          {#each visibleResults as mod (mod.id || mod._dirName || mod.title)}
             <ModCard
               {mod}
               oninstallclick={installMod}
               onuninstallclick={uninstallMod}
               onmodclick={handleModClick}
-              searchSpacing={true}
             />
           {/each}
         </div>
       {/if}
     </div>
   </div>
+  {#if totalPages > 1}
+    <div class="search-pagination">
+      <button disabled={page === 1} onclick={() => (page -= 1)}>Previous</button
+      ><span>{page} / {totalPages}</span><button
+        disabled={page === totalPages}
+        onclick={() => (page += 1)}>Next</button
+      >
+    </div>
+  {/if}
 </div>
 
 <style>
   .search-container {
-    position: relative;
-    /* 192px being the width of the catagories + seperator */
-    width: calc(100% - 192px);
-    padding: 0 1rem;
-  }
-
-  :global(::selection) {
-    background: var(--ui-mod-chip-bg);
-    color: var(--ui-text);
-  }
-
-  .search-bar {
-    height: 3rem;
-    /* accounting for the padding (2rem) & scroll container's scrollbar (0.625rem/10px)*/
-    width: calc(100% - 2.625rem);
-    position: absolute;
-    top: 1rem;
-    z-index: 100;
-  }
-
-  .search-spinner {
-    display: block;
-    position: absolute;
-    top: 25%;
-    left: calc(100% - 2.5rem);
-    width: 1rem;
-    height: 1rem;
-    z-index: 10;
-    animation: spin infinite 1s linear;
-    border-radius: 9999px;
-    border: 2px solid var(--ui-text);
-    border-right: 2px solid transparent;
-  }
-
-  .search-bar form {
     display: flex;
-    gap: 0.5rem;
+    flex-direction: column;
     width: 100%;
+    min-width: 0;
+    min-height: 0;
   }
-
+  .search-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 16px;
+  }
   .search-input {
-    /* 2rem just for some spacing from the scrollbar */
-    width: calc(100% - 2rem);
-    padding: 0.75rem;
-    border: 2px solid var(--ui-mod-input-border);
-    border-radius: 6px;
-    background-color: var(--ui-mod-input-bg);
+    flex: 1;
+    min-width: 200px;
+    padding: 8px 10px;
+    border: 1px solid var(--ui-mod-input-border);
+    border-radius: 5px;
+    background: var(--ui-mod-input-bg);
     color: var(--ui-text);
-    font-family: "M6X11", sans-serif;
-    font-size: 1.1rem;
+    font-size: 14px;
   }
-  .search-input:focus {
-    outline: none;
-    border-color: var(--ui-mod-input-focus);
-    transition: border-color 0.2s ease;
+  label {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    font-size: 13px;
+    color: var(--ui-text);
   }
-  /* legacy search button code */
-  /* .search-button {
-		padding: 0.75rem 1rem;
-		background: #ea9600;
-		border: 2px solid #f4eee0;
-		border-radius: 6px;
-		color: #f4eee0;
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		transition: all 0.2s ease;
-	}
-
-	.search-button:hover {
-		background: #f4eee0;
-		color: #393646;
-	}
-
-	.search-button:active {
-		transform: scale(0.95);
-		padding: 0.75rem 0.95rem;
-	} */
-
-  .resulting-text {
-    position: absolute;
+  select,
+  button {
+    padding: 6px 8px;
+    color: var(--ui-text);
+    background: var(--ui-mod-chip-bg);
+    border: 1px solid var(--ui-mod-chip-border);
+    border-radius: 5px;
+    font-size: 13px;
   }
-
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
   .results-container {
-    padding: 1rem;
-    padding-top: 5rem;
-    contain: layout paint;
+    padding: 0 16px 16px;
   }
-
+  .result-count {
+    margin: 4px 0 10px;
+    color: var(--ui-text);
+    font-size: 13px;
+  }
   .results-wrapper {
-    width: 100%;
-    height: 100%;
     display: grid;
-    grid-template-columns: repeat(
-      auto-fill,
-      minmax(calc(300px * var(--card-scale, 1)), 1fr)
-    );
-    gap: 1rem;
-    content-visibility: auto;
-    contain-intrinsic-size: 900px 1200px;
+    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+    gap: 12px;
+    align-content: start;
   }
-
   .results-scroll-container {
     overflow-y: auto;
-    height: 100%;
-    contain: layout paint;
+    flex: 1;
+    min-height: 0;
     scrollbar-gutter: stable;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-    will-change: scroll-position;
-    overscroll-behavior: contain;
   }
-
-  @media (max-width: 1160px) {
-    .results-container {
-      padding: 1rem;
-      padding-top: 5rem;
-    }
+  .search-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 10px;
+    font-size: 13px;
   }
 </style>

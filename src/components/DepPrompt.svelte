@@ -149,10 +149,10 @@
   }
 
   .dep-modal {
-    background: #2d2d2d;
-    border: 2px solid #f4eee0;
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
     border-radius: 12px;
-    padding: 2rem;
+    padding: 20px;
     width: 520px;
     max-width: 90vw;
     text-align: center;
@@ -161,16 +161,16 @@
 
   h3 {
     margin: 0 0 1rem;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.5rem;
-    color: #fdcf51;
+    font-family: var(--ui-font);
+    font-size: 18px;
+    color: var(--ui-accent);
   }
 
   p {
     margin: 0 0 1.5rem;
-    font-size: 1.15rem;
+    font-size: 14px;
     line-height: 1.6;
-    color: #f4eee0;
+    color: var(--ui-text);
   }
 
   .dep-actions {
@@ -181,45 +181,49 @@
 
   .cancel-btn,
   .confirm-btn {
-    padding: 0.75rem 1.5rem;
-    border: 2px solid #f4eee0;
+    padding: 0.75rem 16px;
+    border: 1px solid var(--ui-border);
     border-radius: 6px;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.1rem;
+    font-family: var(--ui-font);
+    font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: none;
   }
 
   .cancel-btn {
-    background: #b86a2b;
-    color: #f4eee0;
+    background: var(--ui-surface);
+    color: var(--ui-text);
   }
 
   .cancel-btn:hover {
-    background: #c97a3b;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.25);
+    background: var(--ui-glass-strong);
+    transform: none;
+    box-shadow: none;
   }
 
   .cancel-btn:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+    transform: none;
+    box-shadow: none;
   }
 
   .confirm-btn {
-    background: #ea9600;
-    color: #f4eee0;
+    background: var(--ui-surface);
+    color: var(--ui-text);
   }
 
   .confirm-btn:hover {
-    background: #f0a51a;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.25);
+    background: var(--ui-glass-strong);
+    transform: none;
+    box-shadow: none;
   }
 
   .confirm-btn:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+    transform: none;
+    box-shadow: none;
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

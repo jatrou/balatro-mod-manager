@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Settings from "./Settings.svelte";
+import { modsPerPage, showModPreviews } from "../../stores/ui";
 import {
   cachedVersions,
   catalogLastRefreshed,
@@ -106,6 +107,40 @@ describe("Settings view", () => {
 
   afterEach(() => {
     vi.unstubAllGlobals();
+  });
+
+  it("changes the shared mod page size and preview preferences", async () => {
+    modsPerPage.set(25);
+    showModPreviews.set(false);
+    render(Settings);
+    const select = screen.getByRole("combobox", { name: "Mods per page" });
+    expect(
+      Array.from((select as HTMLSelectElement).options).map(
+        (o) => o.textContent,
+      ),
+    ).toEqual(["10", "25", "50", "100", "All mods"]);
+    for (const option of (select as HTMLSelectElement).options)
+      option.selected = false;
+    (select as HTMLSelectElement).selectedIndex = 4;
+    // happy-dom 20 does not implement option:checked; emulate the native query
+    // used by Svelte's select binding while still dispatching the real change.
+    const nativeQuery = select.querySelector.bind(select);
+    const checkedQuery = vi
+      .spyOn(select, "querySelector")
+      .mockImplementation((selector: string) =>
+        selector === ":checked"
+          ? (select as HTMLSelectElement).options[4]
+          : nativeQuery(selector),
+      );
+    await fireEvent.change(select);
+    checkedQuery.mockRestore();
+    expect(get(modsPerPage)).toBe("all");
+    await fireEvent.click(
+      screen.getByRole("checkbox", { name: "Show mod previews" }),
+    );
+    expect(get(showModPreviews)).toBe(true);
+    expect(screen.queryByText("Enable Background Animation")).toBeNull();
+    expect(screen.queryByText("Enable Dark Mode")).toBeNull();
   });
 
   it("opens the mods folder from Settings", async () => {

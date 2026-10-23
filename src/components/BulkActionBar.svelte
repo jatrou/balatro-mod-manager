@@ -342,19 +342,19 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: #1a1a2e;
-    border: 2px solid var(--ui-mod-panel-border);
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-mod-panel-border);
     border-radius: 8px;
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   }
 
   .bulk-action-bar.light {
-    background: #8a2a35;
+    background: var(--ui-surface);
   }
 
   .count {
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
     color: var(--ui-warning);
     white-space: nowrap;
@@ -375,7 +375,7 @@
     padding: 0.4rem 0.6rem;
     border: none;
     border-radius: 4px;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -409,12 +409,12 @@
   }
 
   .action-btn.disable {
-    background: #b8860b;
-    border: 1px solid #8b6508;
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
   }
 
   .action-btn.disable:hover:not(:disabled) {
-    background: #9a7209;
+    background: var(--ui-glass-strong);
   }
 
   .action-btn.uninstall {
@@ -427,7 +427,7 @@
   }
 
   .action-btn:active:not(:disabled) {
-    transform: translateY(1px);
+    transform: none;
   }
 
   .select-dropdown-wrapper {
@@ -439,8 +439,8 @@
     bottom: 100%;
     left: 0;
     margin-bottom: 0.5rem;
-    background: #1a1a1a;
-    border: 2px solid white;
+    background: var(--ui-input-bg);
+    border: 1px solid white;
     border-radius: 6px;
     min-width: 160px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
@@ -455,7 +455,7 @@
     border: none;
     background: transparent;
     color: white;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 0.9rem;
     text-align: left;
     cursor: pointer;
@@ -472,7 +472,7 @@
 
   /* Light mode styles - Balatro red theme */
   .select-dropdown.light {
-    background: #a33d48;
+    background: var(--ui-glass-strong);
     border-color: white;
   }
 
@@ -481,7 +481,7 @@
   }
 
   .select-dropdown.light .dropdown-item:hover {
-    background: #8a2a35;
+    background: var(--ui-surface);
   }
 
   .select-dropdown.light .dropdown-item:not(:last-child) {
@@ -490,12 +490,12 @@
 
   /* Light mode disable button - slightly brighter */
   .bulk-action-bar.light .action-btn.disable {
-    background: #cc9a0c;
-    border-color: #a67d08;
+    background: var(--ui-glass-strong);
+    border-color: var(--ui-border);
   }
 
   .bulk-action-bar.light .action-btn.disable:hover:not(:disabled) {
-    background: #b8860b;
+    background: var(--ui-surface);
   }
 
   @media (max-width: 768px) {
@@ -513,5 +513,9 @@
       padding: 0.35rem 0.5rem;
       font-size: 0.8rem;
     }
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

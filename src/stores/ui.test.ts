@@ -75,34 +75,63 @@ describe("ui store", () => {
     });
   });
 
-  describe("darkMode", () => {
-    it("should have default value of false", async () => {
-      const { darkMode } = await import("./ui");
-      expect(get(darkMode)).toBe(false);
-    });
-
-    it("should load persisted true value", async () => {
-      mockStorage["ui.darkMode"] = "true";
+  describe("browsing preferences", () => {
+    it("uses dark mode even after upgrading from a light preference", async () => {
+      mockStorage["ui.darkMode"] = "false";
       const { darkMode } = await import("./ui");
       expect(get(darkMode)).toBe(true);
     });
 
-    it("should load persisted false value", async () => {
-      mockStorage["ui.darkMode"] = "false";
-      const { darkMode } = await import("./ui");
-      expect(get(darkMode)).toBe(false);
+    it("defaults to compact browsing with previews off and 25 mods", async () => {
+      const { showModPreviews, modsPerPage } = await import("./ui");
+      expect(get(showModPreviews)).toBe(false);
+      expect(get(modsPerPage)).toBe(25);
     });
 
-    it("should persist changes to localStorage", async () => {
-      const { darkMode } = await import("./ui");
-      darkMode.set(true);
-      expect(mockStorage["ui.darkMode"]).toBe("true");
+    it.each([10, 25, 50, 100, "all"])(
+      "restores saved page size %s",
+      async (value) => {
+        mockStorage["ui.modsPerPage"] = String(value);
+        const { modsPerPage } = await import("./ui");
+        expect(get(modsPerPage)).toBe(value);
+      },
+    );
+
+    it.each(["12", "0", "-1", "Infinity", "garbage", ""])(
+      "rejects invalid saved size %s",
+      async (value) => {
+        mockStorage["ui.modsPerPage"] = value;
+        const { modsPerPage } = await import("./ui");
+        expect(get(modsPerPage)).toBe(25);
+      },
+    );
+
+    it("persists and restores both browsing preferences", async () => {
+      const { modsPerPage, showModPreviews } = await import("./ui");
+      modsPerPage.set("all");
+      showModPreviews.set(true);
+      expect(mockStorage["ui.modsPerPage"]).toBe("all");
+      expect(mockStorage["ui.showModPreviews"]).toBe("true");
+      vi.resetModules();
+      const restored = await import("./ui");
+      expect(get(restored.modsPerPage)).toBe("all");
+      expect(get(restored.showModPreviews)).toBe(true);
     });
 
-    it("should treat non-true string as false", async () => {
-      mockStorage["ui.darkMode"] = "yes";
-      const { darkMode } = await import("./ui");
-      expect(get(darkMode)).toBe(false);
+    it("works when browser storage is unavailable", async () => {
+      vi.stubGlobal("localStorage", {
+        getItem() {
+          throw new Error("disabled");
+        },
+        setItem() {
+          throw new Error("disabled");
+        },
+      });
+      const { modsPerPage, showModPreviews } = await import("./ui");
+      modsPerPage.set(100);
+      showModPreviews.set(true);
+      expect(get(modsPerPage)).toBe(100);
+      expect(get(showModPreviews)).toBe(true);
     });
   });
 });

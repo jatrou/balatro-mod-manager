@@ -76,20 +76,20 @@
 
 <style>
   .backups-container {
-    padding: 1.5rem;
+    padding: 16px;
   }
 
   h2 {
-    color: #fdcf51;
-    font-size: 2.8rem;
-    margin: 0 0 2rem 0;
-    font-family: "M6X11", sans-serif;
+    color: var(--ui-text);
+    font-size: 20px;
+    margin: 0 0 16px;
+    font-family: var(--ui-font);
   }
 
   .actions-row {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 8px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
   }
 
@@ -97,85 +97,85 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
+    padding: 7px 12px;
     border-radius: 6px;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.1rem;
+    font-family: var(--ui-font);
+    font-size: 14px;
     cursor: pointer;
     transition:
       transform 0.15s ease,
       background-color 0.15s ease;
-    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: none;
   }
 
   .action-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+    transform: none;
+    box-shadow: none;
   }
 
   .action-button:active {
     transform: translateY(0);
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: none;
   }
 
   .action-button.primary {
-    background: #56a786;
-    color: #f4eee0;
-    border: 2px solid #459373;
+    background: var(--ui-success);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
   }
 
   .action-button.primary:hover {
-    background: #67b897;
+    background: var(--ui-success-hover);
   }
 
   .action-button.secondary {
-    background: #ea9600;
-    color: #f4eee0;
-    border: 2px solid #cc8400;
+    background: var(--ui-surface);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
   }
 
   .action-button.secondary:hover {
-    background: #fca800;
+    background: var(--ui-glass-strong);
   }
 
   .size-info {
-    color: #f4eee0;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.15rem;
+    color: var(--ui-text);
+    font-family: var(--ui-font);
+    font-size: 14px;
     margin-bottom: 1rem;
   }
 
   .highlight {
-    color: #fdcf51;
+    color: var(--ui-accent);
   }
 
   .status-message {
-    color: #f4eee0;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.1rem;
-    padding: 2rem;
+    color: var(--ui-text);
+    font-family: var(--ui-font);
+    font-size: 14px;
+    padding: 20px;
     text-align: center;
     opacity: 0.8;
   }
 
   .status-message.error {
-    color: #c14139;
+    color: #e1a3a8;
   }
 
   .empty-state {
     text-align: center;
-    padding: 3rem 1rem;
-    color: #f4eee0;
-    font-family: "M6X11", sans-serif;
+    padding: 20px 1rem;
+    color: var(--ui-text);
+    font-family: var(--ui-font);
   }
 
   .empty-state p {
     margin: 0.5rem 0;
-    font-size: 1.3rem;
+    font-size: 16px;
   }
 
   .empty-state .hint {
-    font-size: 1.15rem;
+    font-size: 14px;
     opacity: 0.7;
   }
 
@@ -191,7 +191,7 @@
     }
 
     h2 {
-      font-size: 1.8rem;
+      font-size: 18px;
     }
 
     .actions-row {
@@ -202,5 +202,9 @@
       width: 100%;
       justify-content: center;
     }
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

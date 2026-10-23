@@ -13,7 +13,6 @@
   import { fade, fly } from "svelte/transition";
   import { invoke } from "@tauri-apps/api/core";
   import {
-    backgroundEnabled,
     cachedVersions,
     catalogLastRefreshed,
     catalogResetNonce,
@@ -23,15 +22,18 @@
     searchResults,
   } from "../../stores/modStore";
   import { descriptionsStore } from "../../stores/descriptions";
-  import { cardScale, darkMode } from "../../stores/ui";
+  import {
+    cardScale,
+    modsPerPage,
+    showModPreviews,
+    MODS_PER_PAGE_OPTIONS,
+  } from "../../stores/ui";
   import { browser } from "$app/environment";
   import { openExternal } from "$lib/opener";
 
   let isReindexing = $state(false);
   let isClearingCache = $state(false);
   let isConsoleEnabled = $state(false);
-  let isBackgroundAnimationEnabled = $state(false);
-  let isDarkMode = $state(false);
   let lastReindexStats = $state({
     removedFiles: 0,
     cleanedEntries: 0,
@@ -139,22 +141,6 @@
     }
   }
 
-  async function handleBackgroundAnimationChange() {
-    const newValue = !isBackgroundAnimationEnabled;
-
-    // Optimistic UI update
-    backgroundEnabled.set(newValue);
-
-    try {
-      await invoke("set_background_state", { enabled: newValue });
-      isBackgroundAnimationEnabled = newValue;
-    } catch (error) {
-      // Rollback on failure
-      backgroundEnabled.set(!newValue);
-      isBackgroundAnimationEnabled = !newValue;
-    }
-  }
-
   async function handleCompatHelperChange() {
     const newValue = !isCompatHelperEnabled;
     try {
@@ -168,11 +154,6 @@
       console.error("Failed to set compatibility helper:", error);
       addMessage("Failed to update compatibility helper", "error");
     }
-  }
-
-  async function handleDarkModeChange() {
-    const newValue = !isDarkMode;
-    darkMode.set(newValue);
   }
 
   async function handleLinuxPrefixChange() {
@@ -238,10 +219,6 @@
   }
 
   onMount(() => {
-    const unsubscribeDarkMode = darkMode.subscribe((value) => {
-      isDarkMode = value;
-    });
-
     (async () => {
       // Detect platform for Linux-specific UI gating
       try {
@@ -260,8 +237,6 @@
         const settings = await invoke<AllSettings>("get_all_settings");
         isDiscordRpcEnabled = settings.discord_rpc;
         isConsoleEnabled = settings.lovely_console;
-        isBackgroundAnimationEnabled = settings.background_enabled;
-        backgroundEnabled.set(isBackgroundAnimationEnabled);
         isCompatHelperEnabled = settings.compat_helper;
         if (isLinux) {
           linuxPrefix = settings.linux_prefix;
@@ -279,10 +254,6 @@
         addMessage("Error loading settings", "error");
       }
     })();
-
-    return () => {
-      unsubscribeDarkMode();
-    };
   });
 </script>
 
@@ -290,6 +261,46 @@
   <div class="settings-container">
     <h2>Settings</h2>
     <div class="content">
+      <h3>Browsing</h3>
+      <div class="preference-row">
+        <label for="mods-per-page">Mods per page</label>
+        <select id="mods-per-page" bind:value={$modsPerPage}>
+          {#each MODS_PER_PAGE_OPTIONS as count}
+            <option value={count}>{count === "all" ? "All mods" : count}</option
+            >
+          {/each}
+        </select>
+      </div>
+      <p class="description-small">
+        Applies to every mod list and is remembered between sessions.
+      </p>
+      <label class="preview-preference">
+        <input type="checkbox" bind:checked={$showModPreviews} />
+        Show mod previews
+      </label>
+      <p class="description-small">
+        You can also change this from any mod list.
+      </p>
+      <!-- Card size slider -->
+      <div class="slider-row">
+        <div class="slider-label">
+          <span class="label-text">Card Size</span>
+          <span class="value">{Math.round($cardScale * 100)}%</span>
+        </div>
+        <input
+          class="range"
+          type="range"
+          min="0.75"
+          max="1.4"
+          step="0.05"
+          bind:value={$cardScale}
+          aria-label="Card size"
+        />
+      </div>
+      <p class="description-small">
+        Adjust how large mod cards render. Smaller cards fit more per row.
+      </p>
+
       <h3>Game Path</h3>
       <PathSelector />
       <h3>Cache</h3>
@@ -481,61 +492,6 @@
           </p>
         {/if}
       </div>
-      <h3>Appearance</h3>
-      <div class="console-settings">
-        <span class="label-text">Enable Dark Mode</span>
-        <div class="switch-container">
-          <label class="switch">
-            <input
-              type="checkbox"
-              checked={isDarkMode}
-              onchange={handleDarkModeChange}
-            /> <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-      <p class="description-small">
-        Use a darker palette across the UI for low-light environments.
-      </p>
-      {#if !isLinux}
-        <div class="console-settings">
-          <span class="label-text">Enable Background Animation</span>
-          <div class="switch-container">
-            <label class="switch">
-              <input
-                type="checkbox"
-                checked={isBackgroundAnimationEnabled}
-                onchange={handleBackgroundAnimationChange}
-              /> <span class="slider"></span>
-            </label>
-          </div>
-        </div>
-        <p class="description-small">
-          Enable or disable the animated background. Disabling may improve
-          performance on low-end devices.
-        </p>
-      {/if}
-
-      <!-- Card size slider -->
-      <div class="slider-row">
-        <div class="slider-label">
-          <span class="label-text">Card Size</span>
-          <span class="value">{Math.round($cardScale * 100)}%</span>
-        </div>
-        <input
-          class="range"
-          type="range"
-          min="0.75"
-          max="1.4"
-          step="0.05"
-          bind:value={$cardScale}
-          aria-label="Card size"
-        />
-      </div>
-      <p class="description-small">
-        Adjust how large mod cards render. Smaller cards fit more per row.
-      </p>
-
       <div class="console-settings">
         <span class="label-text">Enable Discord Rich Presence</span>
         <div class="switch-container">
@@ -577,577 +533,248 @@
 
 <style>
   .settings-container {
-    padding: 0rem 2rem;
-    padding-bottom: 2rem;
+    padding: 20px;
+    max-width: 1000px;
   }
-
   h2 {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
+    margin: 0 0 20px;
+    font-size: 1.45rem;
     color: var(--ui-heading);
   }
   h3 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    align-self: flex-start;
+    margin: 24px 0 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
     color: var(--ui-heading);
   }
+  h3:first-child {
+    margin-top: 0;
+  }
   .content {
-    flex: 1;
+    max-width: 760px;
   }
-  .reindex-button {
-    background: var(--ui-button-green);
-    color: var(--ui-text);
-    border: none;
-    outline: var(--ui-button-green-border) solid 2px;
-    border-radius: 4px;
-    padding: 0.75rem 1.5rem;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    align-self: flex-start;
-    display: flex;
+  button {
+    display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid var(--ui-border);
+    border-radius: 5px;
+    padding: 7px 10px;
+    background: var(--ui-button-blue);
+    color: var(--ui-text);
+    font: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
   }
-  .reindex-button:hover {
-    background: var(--ui-button-green-hover);
-    transform: translateY(-2px);
+  button:hover:not(:disabled) {
+    background: var(--ui-button-blue-hover);
   }
-  .throbber {
-    width: 20px;
-    height: 20px;
-    border: 3px solid var(--ui-spinner);
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
+  }
+  button :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+  .open-folder-button,
+  .prefix-button {
+    margin-top: 8px;
+  }
+  .description,
+  .description-small {
+    color: var(--ui-text-muted);
+    font-size: 0.875rem;
+    margin: 6px 0 14px;
+    line-height: 1.55;
+    max-width: 680px;
   }
   .warning {
-    color: var(--ui-warning);
-    font-size: 1.1rem;
-    border-left: 3px solid var(--ui-warning-border);
-    padding-left: 0.8rem;
-    margin-top: 0.8rem;
-    max-width: 600px !important;
+    border-left: 2px solid var(--ui-warning-border);
+    padding-left: 10px;
+  }
+  .warning-icon {
+    display: none;
+  }
+  .console-settings,
+  .preference-row,
+  .preview-preference {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+    color: var(--ui-text);
+  }
+  .console-settings {
+    margin-top: 12px;
+    justify-content: space-between;
+    max-width: 420px;
+  }
+  .preference-row {
+    justify-content: space-between;
+    max-width: 420px;
+  }
+  .preview-preference {
+    width: fit-content;
+    cursor: pointer;
+  }
+  .preview-preference input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--ui-accent);
+  }
+  select,
+  .prefix-input {
+    background: var(--ui-input-bg);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-input-border);
+    border-radius: 5px;
+    padding: 7px 9px;
+    font: inherit;
+  }
+  select {
+    min-width: 110px;
+  }
+  .prefix-input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 12px;
+  }
+  .switch {
+    display: inline-flex;
+    align-items: center;
+  }
+  .switch input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--ui-accent);
+  }
+  .slider {
+    display: none;
+  }
+  .slider-row {
+    max-width: 420px;
+    margin-top: 14px;
+  }
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+  }
+  .value {
+    color: var(--ui-text-muted);
+  }
+  .range {
+    width: 100%;
+    accent-color: var(--ui-accent);
+    margin: 8px 0 0;
+  }
+  .linux-note {
+    display: flex;
+    gap: 8px;
+    border: 1px solid var(--ui-border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 12px;
+    background: var(--ui-note-bg);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+  .linux-note-icon {
+    color: var(--ui-note-icon);
+  }
+  .linux-note-content {
+    min-width: 0;
+  }
+  .linux-note code {
+    font-family: ui-monospace, monospace;
+    overflow-wrap: anywhere;
+  }
+  .linux-note-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .linux-help {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .linux-help figure {
+    margin: 0;
+  }
+  .linux-help-button {
+    padding: 0;
+    cursor: zoom-in;
+  }
+  .linux-help img {
+    width: 100%;
+    display: block;
+    border-radius: 5px;
+  }
+  .linux-help figcaption {
+    font-size: 0.8rem;
+    color: var(--ui-text-muted);
+    margin-top: 5px;
+  }
+  .image-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--ui-modal-overlay);
+  }
+  .image-modal-content {
+    position: relative;
+    max-width: min(1100px, 92vw);
+    padding: 16px;
+    border: 1px solid var(--ui-border);
+    border-radius: 8px;
+    background: var(--ui-help-bg);
+  }
+  .image-modal-content img {
+    width: 100%;
+    max-height: 75vh;
+    object-fit: contain;
+  }
+  .image-modal-content p {
+    margin: 8px 0 0;
+    font-size: 0.875rem;
+  }
+  .image-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+  .throbber {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--ui-spinner);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
   }
-  .reindex-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.8;
-    transform: none;
-  }
-  .clear-cache-button {
-    background: var(--ui-button-purple);
-    color: var(--ui-text);
-    border: none;
-    outline: var(--ui-button-purple-border) solid 2px;
-    border-radius: 4px;
-    padding: 0.75rem 1.5rem;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .clear-cache-button:hover:not(:disabled) {
-    background: var(--ui-button-purple-hover);
-    transform: translateY(-2px);
-  }
-  .clear-cache-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.8;
-    transform: none;
-  }
-
-  .open-folder-button {
-    background: var(--ui-button-forest);
-    color: var(--ui-text);
-    border: none;
-    outline: var(--ui-button-forest-border) solid 2px;
-    border-radius: 4px;
-    padding: 0.75rem 1.5rem;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    align-self: flex-start;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  .open-folder-button:hover {
-    background: var(--ui-button-forest-hover);
-    transform: translateY(-2px);
-  }
-
-  .open-folder-button:active {
-    transform: translateY(1px);
-  }
-  .prefix-input {
-    margin-top: 1rem;
-    background: var(--ui-input-bg);
-    color: var(--ui-text);
-    border: 2px solid var(--ui-input-border);
-    border-radius: 4px;
-    padding: 0.6rem 0.8rem;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.1rem;
-    min-width: 320px;
-  }
-  .prefix-input::placeholder {
-    color: var(--ui-input-placeholder);
-  }
-  .prefix-button {
-    margin-top: 0.6rem;
-    background: var(--ui-button-lilac);
-    color: var(--ui-text);
-    border: none;
-    outline: var(--ui-button-lilac-border) solid 2px;
-    border-radius: 4px;
-    padding: 0.6rem 1.2rem;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .prefix-button:hover {
-    background: var(--ui-button-lilac-hover);
-    transform: translateY(-2px);
-  }
-  .linux-note {
-    margin-top: 0.8rem;
-    padding: 1rem 1.1rem;
-    background: var(--ui-note-bg);
-    border: 1px solid var(--ui-note-border);
-    border-radius: 4px;
-    color: var(--ui-text);
-    font-size: 1.1rem;
-    max-width: 100%;
-    line-height: 1.4;
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-  }
-  .linux-note-icon {
-    color: var(--ui-note-icon);
-    margin-top: 2px;
-    display: inline-flex;
-  }
-  .linux-note-icon :global(svg) {
-    display: block;
-  }
-  .linux-note-content {
-    flex: 1;
-  }
-  .linux-note code {
-    font-family: "M6X11", sans-serif;
-    background: var(--ui-note-code);
-    padding: 0.1rem 0.3rem;
-    border-radius: 3px;
-  }
-  .linux-note-actions {
-    margin-top: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .linux-copy-button {
-    background: var(--ui-copy-bg);
-    color: var(--ui-text);
-    border: 2px solid var(--ui-copy-border);
-    border-radius: 4px;
-    padding: 0.4rem 0.6rem;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.15rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    transition:
-      transform 0.15s ease,
-      background 0.15s ease,
-      border-color 0.15s ease;
-  }
-  .linux-copy-button:hover {
-    background: var(--ui-copy-hover);
-    border-color: var(--ui-copy-hover-border);
-    transform: translateY(-1px);
-  }
-  .linux-copy-button:focus-visible {
-    outline: 2px solid var(--ui-note-icon);
-    outline-offset: 2px;
-  }
-  .linux-copy-button:active {
-    transform: translateY(0);
-    background: var(--ui-copy-active);
-    border-color: var(--ui-copy-active-border);
-  }
-  .linux-what-button {
-    background: var(--ui-button-blue);
-    color: var(--ui-text);
-    border: 2px solid var(--ui-button-blue-border);
-    border-radius: 4px;
-    padding: 0.4rem 0.6rem;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.15rem;
-    cursor: pointer;
-    transition:
-      transform 0.15s ease,
-      background 0.15s ease,
-      border-color 0.15s ease;
-  }
-  .linux-what-button:hover {
-    background: var(--ui-button-blue-hover);
-    border-color: var(--ui-button-blue-border-hover);
-    transform: translateY(-1px);
-  }
-  .linux-what-button:focus-visible {
-    outline: 2px solid var(--ui-help-focus);
-    outline-offset: 2px;
-  }
-  .linux-what-button:active {
-    transform: translateY(0);
-    background: var(--ui-button-blue-active);
-    border-color: var(--ui-button-blue-active-border);
-  }
-  .linux-help {
-    margin-top: 0.7rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem;
-    width: 100%;
-  }
-  .linux-help figure {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-  }
-  .linux-help-button {
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: zoom-in;
-  }
-  .linux-help-button:focus-visible {
-    outline: 2px solid var(--ui-help-focus);
-    outline-offset: 3px;
-    border-radius: 6px;
-  }
-  .linux-help img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border: 2px solid var(--ui-help-border);
-    border-radius: 6px;
-    background: var(--ui-help-bg);
-  }
-  .linux-help figcaption {
-    color: var(--ui-text);
-    font-size: 1.2rem;
-    opacity: 0.9;
-  }
-  .image-modal {
-    position: fixed;
-    inset: 0;
-    background: var(--ui-modal-overlay);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 1.5rem;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-  }
-  .image-modal-content {
-    position: relative;
-    max-width: min(1100px, 92vw);
-    max-height: 90vh;
-    background: var(--ui-help-bg);
-    border: 2px solid var(--ui-help-border);
-    border-radius: 10px;
-    padding: 1rem 1.2rem 1.2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-  .image-modal-content img {
-    width: 100%;
-    height: auto;
-    max-height: 75vh;
-    object-fit: contain;
-    border-radius: 6px;
-  }
-  .image-modal-content p {
-    margin: 0;
-    color: var(--ui-text);
-    font-size: 1.1rem;
-  }
-  .image-modal-close {
-    position: absolute;
-    top: 8px;
-    right: 10px;
-    background: var(--ui-button-blue);
-    color: var(--ui-text);
-    border: 2px solid var(--ui-button-blue-border);
-    border-radius: 6px;
-    width: 32px;
-    height: 32px;
-    font-size: 1.2rem;
-    line-height: 1;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .image-modal-close:hover {
-    background: var(--ui-button-blue-hover);
-  }
-  .description {
-    color: var(--ui-text);
-    font-size: 1.2rem;
-    margin-top: 0.5rem;
-    opacity: 0.9;
-    max-width: 400px;
-    line-height: 1.4;
-  } /* Custom Toggle Switch Styles */
-  .description-small {
-    /* color a bit grayer but still light */
-    color: var(--ui-text-muted);
-    font-size: 1.1rem;
-    margin-top: 0.5rem;
-    opacity: 0.9;
-    max-width: 400px;
-    line-height: 1.4;
-  }
-  .console-settings {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-top: 1rem;
-    font-size: 1.2rem;
-    color: var(--ui-text);
-  }
-  .label-text {
-    white-space: nowrap;
-  }
-
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 32px;
-  }
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0; /* Disabled state: red fill and border */
-    background-color: var(--ui-switch-off);
-    border: 2px solid var(--ui-switch-off-border);
-    transition: 0.3s;
-    border-radius: 10px;
-  }
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 24px;
-    width: 24px;
-    left: 2px;
-    bottom: 2px;
-    background-color: var(--ui-switch-thumb);
-    /* do a gray outline */
-    outline: 2px solid var(--ui-switch-thumb-outline);
-    transition: 0.3s;
-    border-radius: 5px;
-  } /* Enabled state: green fill and border */
-  .switch input:checked + .slider {
-    background-color: var(--ui-switch-on);
-    border: 2px solid var(--ui-switch-on-border);
-  }
-  .switch input:checked + .slider:before {
-    transform: translateX(28px);
-  }
-
-  /* Range slider styling */
-  .slider-row {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    max-width: 420px;
-  }
-  .slider-label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--ui-text);
-    font-size: 1.1rem;
-  }
-  .slider-label .value {
-    color: var(--ui-accent);
-  }
-  .range {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    height: 28px; /* provide vertical room for thumb */
-    background: transparent; /* move visuals to track */
-    border: 0;
-    box-shadow: none;
-  }
-
-  /* Track visuals */
-  .range::-webkit-slider-runnable-track {
-    height: 12px; /* thicker bar */
-    border-radius: 6px;
-    background: linear-gradient(
-      90deg,
-      var(--ui-slider-start),
-      var(--ui-slider-end)
-    );
-    border: 2px solid var(--ui-slider-border);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-  }
-  .range::-moz-range-track {
-    height: 12px; /* thicker bar */
-    border-radius: 6px;
-    background: linear-gradient(
-      90deg,
-      var(--ui-slider-start),
-      var(--ui-slider-end)
-    );
-    border: 2px solid var(--ui-slider-border);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-  }
-  .range::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    background: var(--ui-slider-thumb); /* white thumb */
-    border: 2px solid var(--ui-slider-thumb-border); /* subtle gray border */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-    cursor: pointer;
-    position: relative; /* allow offset */
-    margin-top: -4px; /* center 20px thumb over 12px track */
-  }
-  .range::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    background: var(--ui-slider-thumb); /* white thumb */
-    border: 2px solid var(--ui-slider-thumb-border); /* subtle gray border */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-    cursor: pointer;
-  }
-  .range::-webkit-slider-thumb:hover,
-  .range::-moz-range-thumb:hover {
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-  }
-
-  /* Responsive sizing */
-  @media (max-width: 1160px) {
-    /* Keep slider a comfortable width on smaller screens */
-    .slider-row {
-      max-width: 300px;
-    }
-    .slider-label {
-      font-size: 1rem;
-    }
-    .slider-label .value {
-      font-size: 0.95rem;
-    }
-    .range {
-      height: 24px;
-    }
-    .range::-webkit-slider-runnable-track {
-      height: 10px;
-    }
-    .range::-moz-range-track {
-      height: 10px;
-    }
-    .range::-webkit-slider-thumb {
-      width: 16px;
-      height: 16px;
-      margin-top: -3px;
-      border-radius: 4px;
-    }
-    .range::-moz-range-thumb {
-      width: 16px;
-      height: 16px;
-      border-radius: 4px;
-    }
-  }
-
-  @media (max-width: 1160px) {
-    .switch {
-      width: 50px;
-      height: 24px;
-    }
-    .slider {
-      border-radius: 8px;
-    }
-    .slider:before {
-      height: 16px;
-      width: 16px;
-      left: 1px;
-      bottom: 2px;
-      border-radius: 4px;
-    }
-    .switch input:checked + .slider:before {
-      transform: translateX(26px);
-    }
-  }
-  @media (max-width: 1160px) {
-    h2 {
-      font-size: 2rem;
-      transition: all 0.2s ease;
-    }
-    h3 {
-      font-size: 1.5rem;
-      transition: all 0.2s ease;
-    }
-    .reindex-button {
-      font-size: 1rem;
-      padding: 0.6rem 1.2rem;
-    }
-    .open-folder-button {
-      font-size: 1rem;
-      padding: 0.6rem 1.2rem;
-    }
-    .clear-cache-button {
-      font-size: 1rem;
-      padding: 0.6rem 1.2rem;
-    }
-    .description {
-      font-size: 1.1rem;
-      max-width: 100%;
-    }
-    .description-small {
-      font-size: 1rem;
-      max-width: 100%;
+  @media (max-width: 650px) {
+    .settings-container {
+      padding: 14px;
     }
   }
 </style>

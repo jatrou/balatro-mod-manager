@@ -94,36 +94,36 @@
   .dialog-content {
     width: 480px;
     max-width: 90vw;
-    background: #393646;
-    color: #f4eee0;
-    border: 2px solid #f4eee0;
+    background: var(--ui-surface);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
     border-radius: 12px;
-    padding: 2rem;
+    padding: 20px;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
   }
 
   h3 {
-    color: #fdcf51;
-    font-size: 2.1rem;
+    color: var(--ui-accent);
+    font-size: 22px;
     margin: 0 0 1rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     text-align: center;
   }
 
   .dialog-text {
-    color: #f4eee0;
-    font-size: 1.25rem;
+    color: var(--ui-text);
+    font-size: 14px;
     margin: 0 0 0.75rem;
     line-height: 1.5;
   }
 
   .dialog-text strong {
-    color: #fdcf51;
+    color: var(--ui-accent);
   }
 
   .dialog-warning {
-    color: #c14139;
-    font-size: 1.15rem;
+    color: #e1a3a8;
+    font-size: 14px;
     margin: 0 0 1.5rem;
     line-height: 1.4;
   }
@@ -138,23 +138,23 @@
     border: none;
     border-radius: 6px;
     padding: 0.9rem 1.25rem;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.25rem;
+    font-family: var(--ui-font);
+    font-size: 14px;
     cursor: pointer;
     transition:
       transform 0.2s ease,
       background-color 0.2s ease;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: none;
   }
 
   button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.25);
+    transform: none;
+    box-shadow: none;
   }
 
   button:active:not(:disabled) {
     transform: translateY(0);
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: none;
   }
 
   button:disabled {
@@ -163,32 +163,32 @@
   }
 
   .delete-button {
-    background: #c14139;
-    color: #f4eee0;
-    border: 2px solid #a13029;
+    background: var(--ui-danger);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
   }
 
   .delete-button:hover:not(:disabled) {
-    background: #d2524a;
+    background: var(--ui-danger-hover);
   }
 
   .cancel-button {
-    background: #ea9600;
-    color: #f4eee0;
-    border: 2px solid #cc8400;
+    background: var(--ui-surface);
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
   }
 
   .cancel-button:hover:not(:disabled) {
-    background: #fca800;
+    background: var(--ui-glass-strong);
   }
 
   @media (max-width: 768px) {
     .dialog-content {
-      padding: 1.5rem;
+      padding: 16px;
     }
 
     h3 {
-      font-size: 1.5rem;
+      font-size: 18px;
     }
 
     .dialog-text {
@@ -198,5 +198,9 @@
     .dialog-actions {
       grid-template-columns: 1fr;
     }
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

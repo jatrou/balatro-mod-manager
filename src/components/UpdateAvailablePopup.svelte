@@ -82,9 +82,9 @@
     z-index: 2000;
   }
   .modal {
-    background: #2d2d2d;
-    outline: 2px solid #56a786;
-    padding: 2rem;
+    background: var(--ui-surface);
+    outline: 1px solid var(--ui-border);
+    padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
     max-width: 420px;
@@ -92,26 +92,26 @@
     text-align: center;
   }
   h2 {
-    color: #56a786;
+    color: var(--ui-accent);
     margin-bottom: 0.75rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
   }
   p,
   .ver {
-    color: #f4eee0;
-    font-size: 1.1rem;
-    font-family: "M6X11", sans-serif;
+    color: var(--ui-text);
+    font-size: 14px;
+    font-family: var(--ui-font);
     margin: 0.25rem 0 0.75rem 0;
   }
   .ver .version {
-    color: #fdcf51;
+    color: var(--ui-accent);
   }
   .buttons {
     display: flex;
     justify-content: center;
     gap: 0.6rem;
     flex-wrap: wrap;
-    margin-top: 1.5rem;
+    margin-top: 16px;
   }
   button {
     padding: 0.6rem 1.2rem;
@@ -120,23 +120,27 @@
     cursor: pointer;
     font-size: 1rem;
     transition: all 0.2s ease;
-    font-family: "M6X11", sans-serif;
-    color: #fff;
+    font-family: var(--ui-font);
+    color: var(--ui-text);
   }
   .download-button {
-    background: #3498db;
-    outline: #2980b9 solid 2px;
+    background: var(--ui-info);
+    outline: var(--ui-border) solid 1px;
   }
   .close-button {
-    background: #56a786;
-    outline: #74cca8 solid 2px;
+    background: var(--ui-success);
+    outline: var(--ui-border) solid 1px;
   }
   .dontshow-button {
-    background: #c14139;
-    outline: #a13029 solid 2px;
+    background: var(--ui-danger);
+    outline: var(--ui-border) solid 1px;
   }
   button:hover {
     opacity: 0.9;
-    transform: translateY(-1px);
+    transform: none;
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

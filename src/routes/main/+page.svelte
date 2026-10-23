@@ -1,12 +1,7 @@
 <script lang="ts">
-  // Lazy-load ShaderBackground only when enabled
-  import type { Component } from "svelte";
-  let ShaderBackgroundComp = $state<Component | null>(null);
-  import About from "../../components/viewblock/About.svelte";
   import LaunchButton from "../../components/LaunchButton.svelte";
   import Mods from "../../components/viewblock/Mods.svelte";
   import AwesomeMods from "../../components/viewblock/AwesomeMods.svelte";
-  import SubmitMod from "../../components/viewblock/SubmitMod.svelte";
   import Settings from "../../components/viewblock/Settings.svelte";
   import RequiresPopup from "../../components/RequiresPopup.svelte";
   import WarningPopup from "../../components/WarningPopup.svelte";
@@ -19,7 +14,6 @@
     currentCategory,
     modsStore,
   } from "../../stores/modStore";
-  import { backgroundEnabled } from "../../stores/modStore";
   import { selectedModStore, dependentsStore } from "../../stores/modStore";
   import { currentPage, paginationWindow } from "../../stores/modStore";
   import {
@@ -34,7 +28,7 @@
   import UninstallDialog from "../../components/UninstallDialog.svelte";
   import { onMount } from "svelte";
   import { lovelyPopupStore } from "../../stores/modStore";
-  import { cardScale, darkMode } from "../../stores/ui";
+  import { cardScale } from "../../stores/ui";
   import { get } from "svelte/store";
   import ReportIssue from "../../components/ReportIssue.svelte";
   import CollectionPicker from "../../components/CollectionPicker.svelte";
@@ -43,13 +37,44 @@
   import RestoreBackupPopup from "../../components/RestoreBackupPopup.svelte";
   import DeleteBackupPopup from "../../components/DeleteBackupPopup.svelte";
   import { fade } from "svelte/transition";
-  import { isLinuxPlatform } from "$lib/platform";
   import { backupsStore } from "../../stores/backups";
 
-  let currentSection = $state("mods");
-  let awesomeOpened = $state(false);
-  let isLinux = $state(false);
-  let hasMounted = $state(false);
+  import {
+    Archive,
+    Check,
+    FolderHeart,
+    Grid2X2,
+    Layers,
+    Package,
+    Settings2,
+  } from "lucide-svelte";
+  import { bundledAwesomeCatalog } from "$lib/awesomeCatalog";
+
+  let currentSection = $state("awesome");
+  let selectedAwesomeCategory = $state("All");
+  let selectedAwesomeRevision = $state(0);
+  let awesomeCategories = $state(
+    Array.from(
+      new Set(
+        bundledAwesomeCatalog.entries
+          .filter((entry) => entry.kind === "mod")
+          .flatMap((entry) => entry.categories),
+      ),
+    ).sort((a, b) => a.localeCompare(b)),
+  );
+
+  function selectLibrary(category: string) {
+    currentModView.set(null);
+    currentCategory.set(category);
+    currentPage.set(1);
+    currentSection = "mods";
+  }
+
+  function selectAwesome(category: string) {
+    selectedAwesomeRevision += 1;
+    selectedAwesomeCategory = category;
+    currentSection = "awesome";
+  }
   let appVersion = $state("");
 
   let requiresPopupDismissedAt = 0;
@@ -239,8 +264,6 @@
   }
 
   onMount(async () => {
-    isLinux = await isLinuxPlatform();
-    hasMounted = true;
     handleRefresh();
 
     // Fetch all init data in a single batched IPC call
@@ -302,146 +325,176 @@
     }
     wasRequiresPopupVisible = $requiresPopupStore.visible;
   });
-
-  $effect(() => {
-    if (!hasMounted || isLinux) {
-      return;
-    }
-
-    if ($backgroundEnabled && !ShaderBackgroundComp) {
-      import("../../components/ShaderBackground.svelte")
-        .then((m) => {
-          ShaderBackgroundComp = m.default;
-        })
-        .catch(() => {});
-    }
-  });
 </script>
-
-<!-- Background shader is dynamically imported below when enabled -->
-
-{#if $backgroundEnabled && ShaderBackgroundComp && !isLinux}
-  <ShaderBackgroundComp darkMode={$darkMode} />
-{/if}
 
 <div class="main-page">
   <header>
-    <div class="header-content">
-      <h1>Balatro Mod Manager</h1>
-      <LaunchButton />
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"
+        ><Package size={19} strokeWidth={1.7} /></span
+      >
+      <h1>Balatro <span>Mod Manager</span></h1>
+      {#if appVersion}<span class="version-text">v{appVersion}</span>{/if}
     </div>
-    <nav>
-      <button
-        class:active={currentSection === "mods"}
-        onclick={() => (currentSection = "mods")}
-      >
-        Mods
-      </button>
-      <button
-        class:active={currentSection === "backups"}
-        onclick={() => {
-          currentSection = "backups";
-          backupsStore.load();
-        }}
-      >
-        Backups
-      </button>
-      <button
-        class:active={currentSection === "submit"}
-        onclick={() => (currentSection = "submit")}
-      >
-        Submit Mod
-      </button>
-      <button
-        class:active={currentSection === "awesome"}
-        onclick={() => {
-          awesomeOpened = true;
-          currentSection = "awesome";
-        }}
-      >
-        Awesome Balatro
-      </button>
-      <button
-        class:active={currentSection === "settings"}
-        onclick={() => (currentSection = "settings")}
-      >
-        Settings
-      </button>
-      <button
-        class:active={currentSection === "about"}
-        onclick={() => (currentSection = "about")}
-      >
-        About
-      </button>
-    </nav>
+    <LaunchButton />
   </header>
 
-  <div
-    class="content"
-    class:modal-open={!!$currentModView && currentSection == "mods"}
-    bind:this={contentElement}
-    style="--card-scale: {$cardScale}"
-  >
-    <!-- All sections stay mounted for smooth transitions -->
-    <div class="section-wrapper" class:active={currentSection === "mods"}>
-      <Mods mod={null} {handleDependencyCheck} />
-    </div>
-
-    <div class="section-wrapper" class:active={currentSection === "backups"}>
-      <BackupsPanel />
-    </div>
-
-    <div class="section-wrapper" class:active={currentSection === "submit"}>
-      <SubmitMod />
-    </div>
-
-    <div class="section-wrapper" class:active={currentSection === "awesome"}>
-      {#if awesomeOpened}
-        <AwesomeMods onViewCatalog={(mod) => {
-          currentModView.set(mod);
-          currentSection = "mods";
-        }} />
-      {/if}
-    </div>
-
-    <div class="section-wrapper" class:active={currentSection === "settings"}>
-      <Settings />
-    </div>
-
-    <div class="section-wrapper" class:active={currentSection === "about"}>
-      <About />
-    </div>
-  </div>
-
-  {#if currentSection === "mods" && !$currentModView && $currentCategory !== "Search" && $currentCategory !== "Collections" && $currentCategory !== "Installed Mods" && $paginationWindow.totalPages > 1}
-    <div
-      class="pagination-footer"
-      in:fade={{ duration: 150 }}
-      out:fade={{ duration: 120 }}
-    >
-      <div class="pagination-controls">
-        <button onclick={previousPage} disabled={$currentPage === 1}>
-          Previous
-        </button>
-        {#each Array(Math.min($paginationWindow.maxVisiblePages, $paginationWindow.totalPages)) as _, i (i)}
-          {#if $paginationWindow.startPage + i <= $paginationWindow.totalPages}
-            <button
-              class:active={$currentPage === $paginationWindow.startPage + i}
-              onclick={() => goToPage($paginationWindow.startPage + i)}
-            >
-              {$paginationWindow.startPage + i}
-            </button>
-          {/if}
-        {/each}
+  <div class="workspace">
+    <aside class="sidebar" aria-label="Navigation">
+      <nav class="library-nav" aria-label="Your library">
+        <p class="nav-label">Library</p>
         <button
-          onclick={nextPage}
-          disabled={$currentPage === $paginationWindow.totalPages}
+          class:active={currentSection === "mods" &&
+            $currentCategory === "Installed Mods"}
+          onclick={() => selectLibrary("Installed Mods")}
         >
-          Next
+          <Package size={15} />Installed mods
         </button>
+        <button
+          class:active={currentSection === "mods" &&
+            $currentCategory === "Collections"}
+          onclick={() => selectLibrary("Collections")}
+        >
+          <FolderHeart size={15} />Collections
+        </button>
+        <button
+          class:active={currentSection === "mods" &&
+            $currentCategory === "All Mods"}
+          onclick={() => selectLibrary("All Mods")}
+        >
+          <Grid2X2 size={15} />Mod catalog
+        </button>
+      </nav>
+
+      <nav
+        class="catalog-nav default-scrollbar"
+        aria-label="Awesome Balatro categories"
+      >
+        <p class="nav-label">Awesome Balatro</p>
+        <button
+          class:active={currentSection === "awesome" &&
+            selectedAwesomeCategory === "All"}
+          onclick={() => selectAwesome("All")}
+        >
+          <Layers size={15} />All mods
+        </button>
+        {#each awesomeCategories as category (category)}
+          <button
+            class="category-button"
+            class:active={currentSection === "awesome" &&
+              selectedAwesomeCategory === category}
+            onclick={() => selectAwesome(category)}
+          >
+            <span>{category}</span>
+            {#if currentSection === "awesome" && selectedAwesomeCategory === category}<Check
+                size={13}
+              />{/if}
+          </button>
+        {/each}
+      </nav>
+
+      <nav class="utility-nav" aria-label="Manager">
+        <button
+          class:active={currentSection === "backups"}
+          onclick={() => {
+            currentSection = "backups";
+            backupsStore.load();
+          }}
+        >
+          <Archive size={15} />Backups
+        </button>
+        <button
+          class:active={currentSection === "settings"}
+          onclick={() => (currentSection = "settings")}
+        >
+          <Settings2 size={15} />Settings
+        </button>
+        <ReportIssue inline />
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <div
+        class="content"
+        class:modal-open={!!$currentModView && currentSection == "mods"}
+        bind:this={contentElement}
+        style="--card-scale: {$cardScale}"
+      >
+        <!-- All sections stay mounted for smooth transitions -->
+        <div
+          class="section-wrapper"
+          class:active={currentSection === "mods"}
+          inert={currentSection !== "mods"}
+        >
+          <Mods mod={null} {handleDependencyCheck} />
+        </div>
+
+        <div
+          class="section-wrapper"
+          class:active={currentSection === "backups"}
+          inert={currentSection !== "backups"}
+        >
+          <BackupsPanel />
+        </div>
+
+        <div
+          class="section-wrapper"
+          class:active={currentSection === "awesome"}
+          inert={currentSection !== "awesome"}
+        >
+          <AwesomeMods
+            category={selectedAwesomeCategory}
+            categorySelection={selectedAwesomeRevision}
+            onCategoriesChange={(categories) =>
+              (awesomeCategories = categories)}
+            onViewCatalog={(mod) => {
+              currentModView.set(mod);
+              currentSection = "mods";
+            }}
+          />
+        </div>
+
+        <div
+          class="section-wrapper"
+          class:active={currentSection === "settings"}
+          inert={currentSection !== "settings"}
+        >
+          <Settings />
+        </div>
       </div>
-    </div>
-  {/if}
+
+      {#if currentSection === "mods" && !$currentModView && $currentCategory !== "Search" && $currentCategory !== "Collections" && $paginationWindow.totalPages > 1}
+        <div
+          class="pagination-footer"
+          in:fade={{ duration: 150 }}
+          out:fade={{ duration: 120 }}
+        >
+          <div class="pagination-controls">
+            <button onclick={previousPage} disabled={$currentPage === 1}>
+              Previous
+            </button>
+            {#each Array(Math.min($paginationWindow.maxVisiblePages, $paginationWindow.totalPages)) as _, i (i)}
+              {#if $paginationWindow.startPage + i <= $paginationWindow.totalPages}
+                <button
+                  class:active={$currentPage ===
+                    $paginationWindow.startPage + i}
+                  onclick={() => goToPage($paginationWindow.startPage + i)}
+                >
+                  {$paginationWindow.startPage + i}
+                </button>
+              {/if}
+            {/each}
+            <button
+              onclick={nextPage}
+              disabled={$currentPage === $paginationWindow.totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      {/if}
+    </main>
+  </div>
 
   <RequiresPopup />
 
@@ -462,214 +515,193 @@
     {onUninstalled}
     {onError}
   />
-
-  {#if appVersion}<div class="version-text">v{appVersion}</div>{/if}
 </div>
 
 <LovelyMissingPopup />
 <CollectionPicker />
 <CollectionImportPopup />
-<ReportIssue />
+
 <CreateBackupModal />
 <RestoreBackupPopup />
 <DeleteBackupPopup />
 
 <style>
   .main-page {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    padding: 2rem;
-    box-sizing: border-box;
-    background: transparent;
+    background: var(--ui-bg);
   }
+
   header {
-    margin-bottom: -1rem;
-  }
-
-  h1 {
-    color: var(--ui-text);
-    font-size: 3rem;
-    margin-bottom: 2rem;
-    font-family: "M6X11", sans-serif;
-    text-shadow:
-      -2px -2px 0 #000,
-      2px -2px 0 #000,
-      -2px 2px 0 #000,
-      2px 2px 0 #000;
-  }
-
-  nav {
+    height: 62px;
+    flex-shrink: 0;
+    padding: 0 22px;
     display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--ui-border);
   }
 
-  button {
-    background: transparent;
-    border: 2px solid var(--ui-text);
-    color: var(--ui-text);
-    padding: 0.7rem 1.4rem;
-    border-radius: 8px;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
   }
-
-  button:hover,
-  button.active {
-    background: var(--ui-mod-chip-active-bg);
-    color: var(--ui-mod-chip-active-text);
+  .brand-mark {
+    display: flex;
+    color: var(--ui-accent);
   }
-
-  .content {
+  h1 {
+    font-size: 17px;
+    font-weight: 650;
+    letter-spacing: -0.3px;
+    margin: 0;
+  }
+  h1 span {
+    font-weight: 400;
+    color: var(--ui-text-muted);
+    margin-left: 3px;
+  }
+  .version-text {
+    color: var(--ui-text-muted);
+    font-size: 11px;
+    margin-left: 5px;
+  }
+  .workspace {
+    display: flex;
     flex: 1;
-    background: var(--ui-danger-overlay);
-    border-radius: 5px;
-    backdrop-filter: blur(10px);
-    margin-bottom: 2rem;
-    outline: 2px solid var(--ui-danger-overlay-border-strong);
-    /* overflow-y: auto; Enable vertical scrolling */
-    overflow: hidden;
-    max-height: calc(100vh - 12rem);
     min-height: 0;
   }
-
-  .content.modal-open {
-    overflow: hidden !important;
-    /* scrollbar-gutter: stable; */
+  .sidebar {
+    width: 190px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 10px 10px;
+    box-sizing: border-box;
+    border-right: 1px solid var(--ui-border);
+    background: #1b1e21;
   }
-
-  /* Add scrollbar width variable for consistency */
-  :global(:root) {
-    --scrollbar-width: 10px;
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
-
-  .content.modal-open {
-    /* padding-right: var(--scrollbar-width); */
-    padding-right: 0;
+  .nav-label {
+    color: var(--ui-text-muted);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin: 0 10px 7px;
   }
-
+  .library-nav {
+    margin-bottom: 19px;
+  }
+  .catalog-nav {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-bottom: 10px;
+  }
+  .utility-nav {
+    border-top: 1px solid var(--ui-border);
+    padding-top: 9px;
+    margin-top: 4px;
+  }
+  nav button {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 30px;
+    flex-shrink: 0;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--ui-text-muted);
+    font-size: 12px;
+    text-align: left;
+    cursor: pointer;
+  }
+  nav button:hover {
+    color: var(--ui-text);
+    background: var(--ui-glass);
+  }
+  nav button.active {
+    color: var(--ui-mod-chip-active-text);
+    background: var(--ui-mod-chip-active-bg);
+  }
+  nav .category-button {
+    min-height: 27px;
+    padding: 4px 10px 4px 34px;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+  .content {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
   .section-wrapper {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0;
+    inset: 0;
     visibility: hidden;
-    transition:
-      opacity 0.2s ease,
-      visibility 0.2s ease;
     overflow-y: auto;
     overflow-x: hidden;
   }
-
-  .section-wrapper::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  .section-wrapper::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 15px;
-  }
-
-  .section-wrapper::-webkit-scrollbar-thumb {
-    background: var(--ui-scroll-thumb);
-    border: 2px solid var(--ui-scroll-thumb-border);
-    border-radius: 15px;
-  }
-
   .section-wrapper.active {
-    opacity: 1;
     visibility: visible;
   }
-
-  .content {
-    position: relative;
-  }
-
-  .version-text {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    color: var(--ui-text);
-    font-family: "M6X11", sans-serif;
-    text-shadow:
-      -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-      1px 1px 0 #000;
-  }
-  .header-content {
-    position: relative;
-    margin-bottom: 2rem;
-  }
-
   .pagination-footer {
-    position: fixed;
-    left: 50%;
-    bottom: 1.1rem;
-    transform: translateX(-50%);
     display: flex;
     justify-content: center;
-    z-index: 1400;
+    padding: 10px 18px;
+    border-top: 1px solid var(--ui-border);
   }
-
   .pagination-controls {
     display: flex;
-    gap: 0.4rem;
-    padding: 0;
-    background: transparent;
-    border: none;
-    box-shadow: none;
+    gap: 4px;
   }
-
   .pagination-controls button {
-    padding: 0.45rem 0.9rem;
-    background: var(--ui-mod-chip-bg);
-    border: 1px solid var(--ui-mod-chip-border);
-    color: var(--ui-mod-chip-text);
-    font-family: "M6X11", sans-serif;
-    font-size: 0.9rem;
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
+    color: var(--ui-text-muted);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
     cursor: pointer;
-    border-radius: 3px;
-    transition: all 0.2s ease;
   }
-
-  .pagination-controls button:hover:not(:disabled) {
-    background: var(--ui-mod-chip-active-bg);
-    color: var(--ui-mod-chip-active-text);
-  }
-
+  .pagination-controls button:hover:not(:disabled),
   .pagination-controls button.active {
+    color: var(--ui-text);
     background: var(--ui-mod-chip-active-bg);
-    color: var(--ui-mod-chip-active-text);
+    border-color: var(--ui-success);
   }
-
   .pagination-controls button:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
   }
-  header {
-    margin-bottom: -1rem;
-  }
 
-  :global([data-platform="linux"]) .content {
-    backdrop-filter: none;
-    background: var(--ui-danger-overlay-strong);
-  }
-
-  @media (max-width: 1160px) {
-    button {
-      padding: 0.6rem 1.2rem;
-      border-radius: 8px;
-      font-family: "M6X11", sans-serif;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
+  @media (max-width: 900px) {
+    .sidebar {
+      width: 172px;
+    }
+    header {
+      padding: 0 16px;
+    }
+    .version-text {
+      display: none;
     }
   }
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { showModPreviews } from "../../stores/ui";
   import { fade } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import {
@@ -1176,15 +1177,30 @@
       </div>
     </div>
 
-    <h2>{mod.title}</h2>
+    <div class="detail-title">
+      <h2>{mod.title}</h2>
+      <label class="preview-control"
+        ><input type="checkbox" bind:checked={$showModPreviews} /> Previews</label
+      >
+    </div>
     <div class="content-grid">
       <div class="left-column">
-        <div class="image-container">
-          {#if !isDefaultCover(mod.image)}
-            <button
-              class="image-button"
-              aria-label={`View full size image of ${mod.title}`}
-            >
+        {#if $showModPreviews}
+          <div class="image-container">
+            {#if !isDefaultCover(mod.image)}
+              <button
+                class="image-button"
+                aria-label={`View full size image of ${mod.title}`}
+              >
+                <LazyImage
+                  src={mod.image}
+                  fallbackSrc={mod.imageFallback}
+                  alt={mod.title}
+                  cacheTitle={mod.title}
+                  hasThumbnail={mod._hasThumbnail !== false}
+                />
+              </button>
+            {:else}
               <LazyImage
                 src={mod.image}
                 fallbackSrc={mod.imageFallback}
@@ -1192,18 +1208,9 @@
                 cacheTitle={mod.title}
                 hasThumbnail={mod._hasThumbnail !== false}
               />
-            </button>
-          {:else}
-            <LazyImage
-              src={mod.image}
-              fallbackSrc={mod.imageFallback}
-              alt={mod.title}
-              cacheTitle={mod.title}
-              hasThumbnail={mod._hasThumbnail !== false}
-            />
-          {/if}
-        </div>
-
+            {/if}
+          </div>
+        {/if}
         <div class="button-container">
           <!-- Enable/Disable toggle button - MOVED TO FIRST POSITION -->
           {#if $installationStatus[mod.title]}
@@ -1369,6 +1376,7 @@
       <div class="right-column">
         <div
           class="description"
+          class:hide-preview-images={!$showModPreviews}
           role="button"
           bind:this={description}
           tabindex="0"
@@ -1418,14 +1426,14 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 1rem;
+    padding: 10px;
     border: none;
     border-radius: 6px;
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "M6X11", sans-serif;
-    min-height: 48px;
+    font-family: var(--ui-font);
+    min-height: 34px;
   }
 
   .toggle-button.enabled {
@@ -1457,14 +1465,14 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 1rem;
+    padding: 10px;
     border: none;
     border-radius: 6px;
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "M6X11", sans-serif;
-    min-height: 48px;
+    font-family: var(--ui-font);
+    min-height: 34px;
     background: var(--ui-info-strong);
     color: var(--ui-text);
   }
@@ -1487,7 +1495,7 @@
 
   .categories-section h3 {
     margin: 0 0 0.7rem 0;
-    font-size: 1.2rem;
+    font-size: 0.9375rem;
     color: var(--ui-text);
     text-align: center;
   }
@@ -1506,10 +1514,10 @@
     border: 1px solid var(--ui-glass-border); /* Subtle border */
     border-radius: 6px;
     padding: 0.5rem 1rem; /* Larger padding for bigger tags */
-    font-size: 1.1rem; /* Larger font size */
+    font-size: 0.875rem; /* Larger font size */
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     backdrop-filter: blur(8px); /* Add blur effect */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
@@ -1532,20 +1540,19 @@
     width: 100%;
     height: 100%;
     /* background: linear-gradient(to bottom, #393646, #4a4458); */
-    background: var(--ui-danger-overlay);
-    backdrop-filter: blur(20px);
+    background: var(--ui-bg);
     z-index: 1000;
     overflow-y: auto;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
   }
 
   .mod-content {
     position: relative;
 
     /* max-width: 1000px; */
-    padding: 3rem;
+    padding: 24px;
     color: var(--ui-text);
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
   }
 
   .image-button {
@@ -1563,13 +1570,13 @@
 
   h2 {
     margin-bottom: 2rem;
-    font-size: 1.8rem;
+    font-size: 1.4rem;
   }
 
   .content-grid {
     display: grid;
     grid-template-columns: 350px 1fr;
-    gap: 3rem;
+    gap: 20px;
   }
 
   .image-container {
@@ -1606,15 +1613,15 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 1rem;
+    padding: 10px;
     border: none;
     border-radius: 6px;
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     /* Fixed height to prevent resizing */
-    min-height: 48px;
+    min-height: 34px;
   }
 
   .download-button {
@@ -1687,8 +1694,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    font-size: 1.1rem;
-    padding: 1rem;
+    font-size: 0.875rem;
+    padding: 10px;
     background: var(--ui-glass);
     border-radius: 6px;
     justify-content: center;
@@ -1720,13 +1727,14 @@
   }
 
   .description {
-    font-size: 1.2rem;
+    font-size: 0.9375rem;
     line-height: 1;
     color: var(--ui-text);
     background: var(--ui-glass-weak);
     padding: 1.25rem;
     border-radius: 6px;
-    width: 50rem;
+    width: auto;
+    box-sizing: border-box;
     line-height: 1.5;
   }
 
@@ -1816,7 +1824,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
     z-index: 100;
 
@@ -1941,7 +1949,7 @@
     }
     .image-container {
       width: 100%;
-      height: 350px;
+      height: 220px;
     }
 
     .image-button {
@@ -1984,7 +1992,7 @@
     color: var(--ui-text);
     border: 1px solid var(--ui-danger-overlay-border);
     border-radius: 6px;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
     text-align: center;
   }
@@ -2001,7 +2009,7 @@
     border: none;
     outline: var(--ui-code-outline) solid 2px;
     border-radius: 4px;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -2094,5 +2102,23 @@
     to {
       transform: rotate(360deg);
     }
+  }
+
+  .detail-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .preview-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: var(--ui-text);
+  }
+  .description.hide-preview-images :global(img),
+  .description.hide-preview-images :global(.desc-img-wrapper) {
+    display: none !important;
   }
 </style>

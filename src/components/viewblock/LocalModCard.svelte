@@ -5,6 +5,7 @@
     CornerDownRight,
     Folder,
     Check,
+    Star,
   } from "lucide-svelte";
   import { invoke } from "@tauri-apps/api/core";
   import { addMessage } from "$lib/stores";
@@ -16,6 +17,23 @@
   } from "../../stores/modStore";
   import { cardScale, darkMode } from "../../stores/ui";
   import { pickDarkPalette } from "../../utils/cardPalette";
+
+  import {
+    getModRepository,
+    getRepositoryStars,
+  } from "$lib/repositoryMetadata";
+  import { openExternal } from "$lib/opener";
+
+  let catalogMod = $derived(
+    $modsStore.find((item) =>
+      mod.catalog_match
+        ? item.title === mod.catalog_match.title
+        : item.title.toLowerCase().replace(/[^a-z0-9]/g, "") ===
+          mod.name.toLowerCase().replace(/[^a-z0-9]/g, ""),
+    ),
+  );
+  let repository = $derived(catalogMod ? getModRepository(catalogMod) : null);
+  let stars = $derived(getRepositoryStars(repository));
 
   import type { LocalMod } from "../../stores/modStore";
 
@@ -257,6 +275,22 @@
   class="mod-card"
   class:compact={$cardScale <= 0.85}
   class:selected={isSelected}
+  class:selectable={showCheckbox}
+  onclick={() => {
+    if (repository) void openExternal(repository);
+  }}
+  onkeydown={(event) => {
+    if (
+      repository &&
+      event.target === event.currentTarget &&
+      (event.key === "Enter" || event.key === " ")
+    ) {
+      event.preventDefault();
+      void openExternal(repository);
+    }
+  }}
+  role="button"
+  tabindex={repository ? 0 : -1}
   style="--bg-color: {cardColors.color1}; --bg-color-2: {cardColors.color2};"
 >
   <!-- Dark overlay to improve readability -->
@@ -283,7 +317,20 @@
   {/if}
 
   <div class="mod-content">
-    <h3>{mod.name}</h3>
+    <h3>
+      {#if repository}<a
+          href={repository}
+          onclick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            void openExternal(repository!);
+          }}>{mod.name}</a
+        >{:else}{mod.name}{/if}
+    </h3>
+    {#if repository}<span class="stars" title="GitHub stars (cached snapshot)"
+        ><Star size={13} />
+        {stars === null ? "Unavailable" : stars.toLocaleString()}</span
+      >{/if}
     <p class="description">{mod.description}</p>
 
     <div class="mod-meta">
@@ -475,7 +522,7 @@
     color: var(--ui-heading);
     font-size: calc(1.5rem * var(--card-scale, 1));
     margin-bottom: 0.5rem;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    text-shadow: none;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -572,7 +619,7 @@
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: calc(0.95rem * var(--card-scale, 1));
     min-height: calc(38px * var(--card-scale, 1));
     position: relative;
@@ -592,7 +639,7 @@
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     min-height: calc(38px * var(--card-scale, 1));
     position: relative;
     background: var(--ui-success);
@@ -668,7 +715,7 @@
     color: var(--ui-text);
     border: none;
     flex-shrink: 0;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: calc(1rem * var(--card-scale, 1));
   }
 
@@ -797,5 +844,94 @@
   .mod-card.selected {
     outline: 2px solid var(--ui-success);
     outline-offset: -2px;
+  }
+
+  .mod-card {
+    width: 100%;
+    max-width: none;
+    height: 200px;
+    min-width: 0;
+    padding: 10px;
+    border-width: 1px;
+    contain-intrinsic-size: 250px 200px;
+    background: var(--ui-surface-raised, var(--ui-panel));
+  }
+  .mod-card:hover {
+    scale: 1;
+    animation: none;
+  }
+  .overlay {
+    display: none;
+  }
+  .mod-content {
+    padding: 4px 0 40px;
+  }
+  h3 {
+    font-size: 16px;
+    margin: 0 0 5px;
+  }
+  h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  h3 a:hover {
+    text-decoration: underline;
+  }
+  .description {
+    font-size: 13px;
+    line-height: 1.35;
+    margin: 6px 0;
+  }
+  .mod-meta,
+  .mod-card.compact .mod-meta {
+    font-size: 12px;
+    gap: 4px;
+  }
+  .mod-version,
+  .catalog-version,
+  .mod-card.compact .mod-version,
+  .mod-card.compact .catalog-version {
+    font-size: 12px;
+  }
+  .stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 12px;
+    color: var(--ui-text);
+  }
+  .button-container {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    gap: 5px;
+  }
+  .install-button {
+    min-height: 30px;
+    padding: 4px 7px;
+    font-size: 13px;
+  }
+  .toggle-button,
+  .delete-button,
+  .trash-button,
+  .folder-button {
+    min-width: 30px;
+    height: 30px;
+    padding: 4px;
+    font-size: 12px;
+  }
+  .catalog-badge {
+    position: static;
+    align-self: flex-end;
+    font-size: 11px;
+    padding: 2px 5px;
+    margin-bottom: 4px;
+    box-shadow: none;
+  }
+  .button-container {
+    width: auto;
+  }
+  .mod-card.selectable .mod-content h3 {
+    padding-left: 28px;
   }
 </style>

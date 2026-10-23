@@ -1,4 +1,5 @@
 import { writable, get, type Writable } from "svelte/store";
+import { modsPerPage } from "./ui";
 import {
   safeLocalStorageSet,
   monitorStorageQuota,
@@ -56,6 +57,8 @@ export enum SortOption {
   LastUpdatedDesc = "updated_desc",
   DownloadsAsc = "downloads_asc",
   DownloadsDesc = "downloads_desc",
+  StarsAsc = "stars_asc",
+  StarsDesc = "stars_desc",
 }
 
 export const backgroundEnabled = writable(false);
@@ -116,7 +119,7 @@ export const selectedModStore = writable<{ name: string; path: string } | null>(
 );
 export const dependentsStore = writable<string[]>([]);
 export const currentPage = writable(1);
-export const itemsPerPage = writable(12);
+export const itemsPerPage = modsPerPage;
 export const paginationWindow = writable({
   startPage: 1,
   totalPages: 1,

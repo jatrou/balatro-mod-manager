@@ -7,6 +7,8 @@
   import DiscordFab from "./DiscordFab.svelte";
   import { reportIssueStore } from "../stores/modStore";
 
+  let { inline = false }: { inline?: boolean } = $props();
+
   let title = $state("");
   let description = $state("");
   const TITLE_MAX = 120;
@@ -105,9 +107,10 @@
 <svelte:window onkeydown={handleWindowKeydown} />
 
 <!-- Floating report button + Discord link -->
-<div class="fab-group">
+<div class="fab-group" class:inline>
   <button class="report-fab" aria-label="Report an issue" onclick={open}>
     <Bug size={16} />
+    {#if inline}<span>Report issue</span>{/if}
   </button>
   <DiscordFab />
 </div>
@@ -185,6 +188,30 @@
 {/if}
 
 <style>
+  .fab-group.inline {
+    position: static;
+    padding: 6px 0 0;
+    gap: 6px;
+  }
+  .inline .report-fab {
+    width: auto;
+    height: 30px;
+    padding: 5px 7px;
+    gap: 5px;
+    border: 1px solid var(--ui-border);
+    border-radius: 5px;
+    outline: none;
+    box-shadow: none;
+    background: var(--ui-panel-muted);
+    color: var(--ui-text-muted);
+    font: inherit;
+    font-size: 11px;
+  }
+  .inline .report-fab:hover {
+    background: var(--ui-glass-hover);
+    transform: none;
+  }
+
   .fab-group {
     position: fixed;
     left: 1rem;
@@ -246,17 +273,17 @@
     margin-bottom: 0.5rem;
   }
   h2 {
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     margin: 0;
   }
   .desc {
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     margin: 0.5rem 0 1.25rem;
   }
   .input-label {
     display: block;
     margin: 0.5rem 0 0.25rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
   }
   .text-input,
   .text-area {
@@ -267,7 +294,7 @@
     border-radius: 6px;
     padding: 0.6rem 0.75rem;
     font-size: 1rem;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     outline: none;
     caret-color: #74cca8;
     box-sizing: border-box;
@@ -315,7 +342,7 @@
     padding: 0.6rem 1.2rem;
     border-radius: 6px;
     cursor: pointer;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1.1rem;
     transition:
       transform 0.12s ease,
@@ -331,7 +358,7 @@
     padding: 0.6rem 1.2rem;
     border-radius: 6px;
     cursor: pointer;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 1.1rem;
     transition:
       transform 0.12s ease,

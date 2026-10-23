@@ -255,18 +255,16 @@
 </div>
 
 <style>
-  :root {
-    /* Base Colors */
-    --color-dark: #3b41a8; /* Brighter base blue */
-    --color-medium: #4b52d1; /* Vibrant medium blue */
-    --color-light: #6166ff; /* Bright highlight blue */
-    --color-cream: #f4eee0; /* Original cream color */
-
-    --text-primary: var(--color-cream);
-    --text-secondary: var(--color-light);
-    --background-primary: var(--color-dark);
-    --background-secondary: var(--color-medium);
-    --accent: var(--color-light);
+  .page-wrapper {
+    --color-dark: var(--ui-surface);
+    --color-medium: var(--ui-border);
+    --color-light: var(--ui-accent);
+    --color-cream: var(--ui-text);
+    --text-primary: var(--ui-text);
+    --text-secondary: var(--ui-text-muted);
+    --background-primary: var(--ui-surface);
+    --background-secondary: var(--ui-input-bg);
+    --accent: var(--ui-accent);
   }
 
   .page-wrapper {
@@ -298,10 +296,10 @@
     align-items: center;
     width: 400px;
     max-width: 95vw; /* Ensure it doesn't overflow on smaller screens */
-    padding: 2.5rem;
-    border-radius: 25px;
+    padding: 20px;
+    border-radius: 8px;
     background-color: var(--background-primary);
-    outline: 2px solid var(--color-medium);
+    outline: 1px solid var(--color-medium);
     color: var(--text-primary);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     height: auto;
@@ -312,16 +310,16 @@
 
   .action-button {
     margin-top: 1rem; /* Reduced from 2rem */
-    padding: 0.75rem 2rem;
-    border: 2px solid var(--color-cream);
-    border-radius: 12px;
+    padding: 0.75rem 20px;
+    border: 1px solid var(--ui-border);
+    border-radius: 5px;
     background-color: transparent;
     color: var(--color-cream);
     font-family: inherit;
-    font-size: 1.4rem;
+    font-size: 16px;
     cursor: pointer;
     width: 150px;
-    height: 60px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -329,8 +327,8 @@
     overflow: hidden;
   }
   .action-button:hover {
-    background-color: var(--color-cream);
-    color: var(--background-primary);
+    background-color: var(--ui-glass-strong);
+    color: var(--ui-text);
   }
 
   .action-button:active {
@@ -348,7 +346,7 @@
   .action-button.loading {
     width: 70px; /* Smaller width when showing throbber */
     padding: 0.75rem;
-    background-color: #f4eee0;
+    background-color: var(--ui-mod-chip-active-bg);
   }
 
   .throbber {
@@ -386,14 +384,14 @@
 
   h2 {
     margin: 0;
-    font-size: 2rem;
+    font-size: 22px;
     font-weight: 600;
     text-align: center;
   }
 
   p {
     margin: 0.5rem 0 1.5rem;
-    font-size: 1.2rem;
+    font-size: 14px;
     opacity: 0.9;
     text-align: center;
   }
@@ -403,7 +401,7 @@
     flex-direction: column;
     gap: 1rem;
     width: 100%;
-    margin-bottom: 1.5rem; /* Added to reduce space after radio buttons */
+    margin-bottom: 16px; /* Added to reduce space after radio buttons */
   }
   .radio-label {
     display: flex;
@@ -417,7 +415,7 @@
     -webkit-appearance: none;
     width: 24px;
     height: 24px;
-    border: 2px solid var(--color-cream);
+    border: 1px solid var(--ui-border);
     border-radius: 50%;
     margin: 0;
     cursor: pointer;
@@ -448,8 +446,8 @@
   }
 
   .radio-text {
-    color: #f4eee0;
-    font-size: 1.4rem;
+    color: var(--ui-text);
+    font-size: 16px;
   }
 
   .custom-input-section {
@@ -468,9 +466,9 @@
 
   .path-type-selector button {
     flex: 1;
-    background: #c88000;
+    background: var(--ui-surface);
     color: white;
-    border: 2px solid #fda200;
+    border: 1px solid var(--ui-border);
     border-radius: 8px;
     padding: 0.5rem;
     display: flex;
@@ -479,12 +477,12 @@
     gap: 0.5rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "M6X11", sans-serif;
+    font-family: var(--ui-font);
     font-size: 0.9rem;
   }
 
   .path-type-selector button.active {
-    background: #fda200;
+    background: var(--ui-glass-strong);
     border-color: white;
   }
 
@@ -506,10 +504,10 @@
   input[type="text"] {
     width: 100%;
     padding: 0.75rem;
-    border: 2px solid #fda200;
+    border: 1px solid var(--ui-border);
     border-radius: 8px;
-    background-color: #c88000;
-    font-family: "M6X11", sans-serif;
+    background-color: var(--ui-surface);
+    font-family: var(--ui-font);
     color: white;
     font-size: 1rem;
     cursor: pointer;
@@ -530,5 +528,9 @@
     color: white;
     -webkit-user-select: none;
     user-select: none;
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

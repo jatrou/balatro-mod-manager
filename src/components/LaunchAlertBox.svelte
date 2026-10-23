@@ -115,10 +115,13 @@
   }
 
   .alert-box {
-    background: #393646;
-    border: 2px solid #f4eee0;
+    box-sizing: border-box;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
     border-radius: 8px;
-    padding: 2rem;
+    padding: 20px;
     width: 400px;
     text-align: center;
     position: relative;
@@ -135,10 +138,10 @@
   }
 
   #alert-title {
-    color: #f4eee0;
-    margin-bottom: 2rem;
-    font-family: "M6X11", sans-serif;
-    font-size: 2.5rem;
+    color: var(--ui-text);
+    margin-bottom: 20px;
+    font-family: var(--ui-font);
+    font-size: 22px;
   }
 
   #alert-title.shake {
@@ -146,9 +149,9 @@
   }
 
   #alert-title-first {
-    color: #f4eee0;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.6rem;
+    color: var(--ui-text);
+    font-family: var(--ui-font);
+    font-size: 18px;
   }
 
   .error-message {
@@ -185,16 +188,16 @@
     width: 25px;
     height: 25px;
     border-radius: 4px; /* Changed from 50% to 4px for rounded corners */
-    background: #6e6e80;
-    /* border: 2px solid #f4eee0; */
-    color: #f4eee0;
+    background: var(--ui-surface);
+    /* border: 1px solid var(--ui-border); */
+    color: var(--ui-text);
     transition: all 0.2s ease;
   }
 
   .close-button:hover .close-icon-container {
-    background: #c14139;
+    background: var(--ui-danger);
     transform: scale(1.1);
-    color: #f4eee0;
+    color: var(--ui-text);
   }
 
   .close-button:active .close-icon-container {
@@ -222,41 +225,45 @@
   }
 
   .launch-button {
-    background: #c14139;
-    border: 2px solid #a13029;
-    color: #f4eee0;
-    padding: 0.75rem 1.5rem;
+    background: var(--ui-danger);
+    border: 1px solid var(--ui-border);
+    color: var(--ui-text);
+    padding: 0.75rem 16px;
     border-radius: 4px;
     cursor: pointer;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.1rem;
+    font-family: var(--ui-font);
+    font-size: 14px;
     transition: all 0.2s ease;
   }
   .launch-button:hover {
-    background: #a13029;
-    border: 2px solid #c14139;
+    background: var(--ui-danger);
+    border: 1px solid var(--ui-border);
   }
   .launch-button:active {
-    transform: translateY(2px);
+    transform: none;
   }
 
   .check-button {
-    background: #56a786;
-    border: 2px solid #459373;
-    color: #f4eee0;
-    padding: 0.75rem 1.5rem;
+    background: var(--ui-success);
+    border: 1px solid var(--ui-border);
+    color: var(--ui-text);
+    padding: 0.75rem 16px;
     border-radius: 4px;
     cursor: pointer;
-    font-family: "M6X11", sans-serif;
-    font-size: 1.1rem;
+    font-family: var(--ui-font);
+    font-size: 14px;
     transition: all 0.2s ease;
   }
 
   .check-button:hover {
-    background: #459373;
-    border: 2px solid #56a786;
+    background: var(--ui-success);
+    border: 1px solid var(--ui-border);
   }
   .check-button:active {
-    transform: translateY(2px);
+    transform: none;
+  }
+  button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 </style>

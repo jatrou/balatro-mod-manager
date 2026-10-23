@@ -159,14 +159,14 @@ The project uses a **workspace structure** with two Rust crates:
 **Linux**
 
 - Flatpak is the recommended distribution method
-- Requires `flatpak-builder` and runtimes: GNOME 47, Node 20, Rust stable
+- The Flatpak build requires `flatpak-builder` and the runtimes specified in `packaging/flatpak/io.balatro.ModManager.json`
 - Linux builds detect Steam via Flatpak or native paths
 - Wayland compositor issues: app defaults to X11 (XWayland); set `BMM_ALLOW_WAYLAND=1` to override
 
 **Windows**
 
 - Target: `x86_64-pc-windows-msvc`
-- Code signing via SignPath (production releases)
+- This fork's local Windows builds are unsigned; it does not inherit the original project's SignPath arrangement
 
 ## Key Workflows
 
@@ -191,7 +191,7 @@ The project uses a **workspace structure** with two Rust crates:
 
 ### Running Tests
 
-- **Frontend**: No automated tests currently; use `bun run check` for type checking
+- **Frontend**: `bun run test` runs Vitest tests; use `bun run check` for type checking and `bun run lint` for linting
 - **Backend**: `cargo test -p bmm-lib -- --test-threads=1` and `cargo test -p balatro-mod-manager -- --test-threads=1`
 - **CI**: GitHub Actions runs all checks (see `.github/workflows/ci.yml`)
 
@@ -211,7 +211,12 @@ The project uses a **workspace structure** with two Rust crates:
 
 ## External Integrations
 
-- **Mod Index**: Fetches mod catalog from remote repository (binary cache format)
+- **Mod Index**: Fetches the maintained `kasimeka/balatro-mod-index` at an immutable Git revision and reconciles removals; persisted catalog URLs require live revalidation before installation
+- **Awesome Balatro**: Bundled and refreshable curated directory; entries without exact current catalog matches link to their source for manual installation
 - **Discord RPC**: Optional Discord Rich Presence (enable/disable in settings)
 - **Steam**: Detects Steam library folders via `libraryfolders.vdf` parsing
 - **Lovely**: Mod loader injector (bundled/downloaded as needed)
+
+## Repair Validation
+
+See `docs/update-repair.md` for the 0.4.2 repair, confirmed upstream changes, and platform coverage. Use an absolute `BMM_DATA_DIR` and a temporary game fixture for isolated validation. This override isolates manager data and Mods but does not prevent discovery of real game installations; do not modify a discovered live game during tests.

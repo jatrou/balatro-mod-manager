@@ -1,13 +1,13 @@
 [package]
 name = "balatro-mod-manager"
-version = "0.4.1"
+version = "0.4.2"
 description = "A mod manager for Balatro - easily install and manage mods for the popular roguelike deckbuilding game"
 authors = ["skyline69<67526259+skyline69@users.noreply.github.com>"]
 edition = "2024"
 keywords = ["gaming", "mods", "balatro", "manager", "tauri"]
 categories = ["games", "development-tools", "gui"]
 readme = "README.md"
-repository = "https://github.com/skyline69/balatro-mod-manager"
+repository = "https://github.com/jatrou/balatro-mod-manager"
 publish = false
 
 
@@ -30,7 +30,6 @@ tauri-plugin-fs = "2"
 log = "0.4.33"
 fix-path-env = { git = "https://github.com/tauri-apps/fix-path-env-rs" }
 tauri-utils = "2.9.3"
-base64 = "0.22.1"
 reqwest = { version = "0.13", features = ["json", "stream"] }
 httpdate = "1.0.3"
 # chrono = "0.4.40"
@@ -46,7 +45,6 @@ rayon = "1.12.0"
 urlencoding = "2.1.3"
 tokio = { version = "1.53.1", features = ["time", "sync", "fs", "io-util"] }
 futures = "0.3.34"
-sysinfo = "0.39"
 tauri-plugin-os = "2"
 libc = "0.2"
 once_cell = "1.21.4"

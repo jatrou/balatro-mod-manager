@@ -1,31 +1,33 @@
 # [![Balatro Mod Manager](images/title.svg)](#)
 
-> [!WARNING]
-> **This project has been discontinued.** I no longer have the time to maintain it, so the servers behind Balatro Mod Manager are being shut down and this repository is archived. Features that rely on those servers will stop working.
->
-> Looking for an alternative? Try [r2modman](https://thunderstore.io/c/balatro/p/ebkr/r2modman/) or [imm](https://codeberg.org/balafrost/imm) (Balatro Mod Manager, but in-game).
->
-> The code stays open source under its license. If you want to continue the project, feel free to fork it. Thanks to everyone who used it and contributed!
+This is [jatrou's continuation](https://github.com/jatrou/balatro-mod-manager) of Balatro Mod Manager, originally created by _Skyline_. The original project and its hosted services were discontinued. This fork restores updating without relying on those services.
 
-The Balatro Mod Manager by _Skyline_.
+## Changes in 0.4.2
+
+- Lovely 0.10 uses `winmm.dll`. Installation, detection, enable/disable, and Proton launch settings now handle the new filename and retire the legacy `version.dll` after a successful update.
+- The catalog comes directly from the maintained [kasimeka/balatro-mod-index](https://github.com/kasimeka/balatro-mod-index). Refreshes reconcile removals as well as additions and version changes. Existing local mods remain on disk when removed from the index.
+- Mod archives are extracted and checked before replacing an installed mod. Failed replacement restores the previous directory, and disabled mods stay disabled after updating.
+- An Awesome Balatro directory includes all 321 listed mods and four loader references, with search, filters, and source links. Exact current catalog matches use the normal install flow; other entries include manual installation guidance.
+- Application update notices use this fork's published releases, and mod submissions link to the maintained index. The retired telemetry and report-upload services are no longer used.
+
+Build this fork to obtain these changes; an installed copy of the original manager does not acquire them automatically. Releases from the original project's package repositories are also unaffected. See [repair and validation notes](docs/update-repair.md) for sources, migration behavior, and test coverage.
 
 Balatro Mod Manager is a standalone tool made for [Balatro](https://store.steampowered.com/app/2379780/Balatro/) that makes finding, downloading, and installing mods easy.
 
 <p align="center">
-    <a href="https://star-history.com/#skyline69/balatro-mod-manager&Date">
+    <a href="https://star-history.com/#jatrou/balatro-mod-manager&Date">
         <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=skyline69/balatro-mod-manager&type=Date&theme=dark" />
-            <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=skyline69/balatro-mod-manager&type=Date" />
-            <img width="75%" alt="Star History Chart" src="https://api.star-history.com/svg?repos=skyline69/balatro-mod-manager&type=Date" />
+            <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=jatrou/balatro-mod-manager&type=Date&theme=dark" />
+            <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=jatrou/balatro-mod-manager&type=Date" />
+            <img width="75%" alt="Star History Chart" src="https://api.star-history.com/svg?repos=jatrou/balatro-mod-manager&type=Date" />
         </picture>
     </a>
 </p>
 
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/skyline69/balatro-mod-manager/total)
-![GitHub License](https://img.shields.io/github/license/skyline69/balatro-mod-manager)
-![GitHub Tag](https://img.shields.io/github/v/tag/skyline69/balatro-mod-manager)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/skyline69/balatro-mod-manager/ci.yml)
-![Website](https://img.shields.io/website?url=https%3A%2F%2Fbalatro-mod-manager.dasguney.com%2F)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/jatrou/balatro-mod-manager/total)
+![GitHub License](https://img.shields.io/github/license/jatrou/balatro-mod-manager)
+![GitHub Tag](https://img.shields.io/github/v/tag/jatrou/balatro-mod-manager)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/jatrou/balatro-mod-manager/ci.yml)
 
 ![Rust](https://img.shields.io/badge/rust-%23000000.svg?logo=rust&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white)
@@ -33,13 +35,13 @@ Balatro Mod Manager is a standalone tool made for [Balatro](https://store.steamp
 ![Tauri](https://img.shields.io/badge/tauri-%2324C8DB.svg?logo=tauri&logoColor=%23FFFFFF)
 ![Svelte](https://img.shields.io/badge/svelte-%23f1413d.svg?logo=svelte&logoColor=white)
 
-# [![Download](images/download.svg)](https://github.com/skyline69/balatro-mod-manager/releases/latest)
+# [![Download](images/download.svg)](https://github.com/jatrou/balatro-mod-manager/releases/latest)
 
-Balatro Mod Manager is available for Windows, macOS, and Linux. The installer is standalone and does not require any external libraries.
+Balatro Mod Manager targets Windows, macOS, and Linux. This fork's repair has been built and smoke-tested on Windows; see the validation notes for platform coverage.
 
 > Note: The Balatro Mod Manager is **NOT** compatible with the Xbox Gamepass version of Balatro
 
-[Download the Balatro Mod Manager installer here](https://github.com/skyline69/balatro-mod-manager/releases/latest).
+Published installers will appear in [this fork's releases](https://github.com/jatrou/balatro-mod-manager/releases). Until a release is published, build from this repository. The installation examples below describe the respective package formats.
 
 Scroll down to find **▸Assets** and download the right version of the installer for your system.
 
@@ -52,7 +54,7 @@ Scroll down to find **▸Assets** and download the right version of the installe
 The macOS build is signed ad-hoc (not notarized by Apple), so Gatekeeper blocks the first launch. After installing once, the app opens normally on every subsequent launch.
 
 1. Mount the `.dmg` and drag **Balatro Mod Manager** into `/Applications`.
-2. Try to open it. macOS will refuse with either *"Apple cannot verify..."* or *"is damaged and can't be opened"*. Close the dialog.
+2. Try to open it. macOS will refuse with either _"Apple cannot verify..."_ or _"is damaged and can't be opened"_. Close the dialog.
 3. Pick one of the following bypasses:
 
    **Option A — System Settings (macOS 14 and newer, no Terminal):**
@@ -61,9 +63,11 @@ The macOS build is signed ad-hoc (not notarized by Apple), so Gatekeeper blocks 
    - If no button appears (macOS 15+ sometimes hides it for "damaged" bundles), use Option B.
 
    **Option B — Terminal one-liner (works on every macOS version):**
+
    ```bash
    xattr -dr com.apple.quarantine "/Applications/Balatro Mod Manager.app"
    ```
+
    Then double-click the app normally.
 
    **Option C — Older macOS (13 and below):** right-click the app → **Open** → confirm in the dialog.
@@ -72,7 +76,7 @@ Why this happens: shipping notarized builds requires an active Apple Developer P
 
 ### Arch Linux (AUR)
 
-Install using your preferred AUR helper:
+The original AUR packages may still point to the discontinued upstream and do not automatically include this repair. Check the package source before using your preferred AUR helper:
 
 ```bash
 yay -S balatro-mod-manager-bin
@@ -82,7 +86,7 @@ paru -S balatro-mod-manager-bin
 
 ### Debian / Ubuntu
 
-Download the `.deb` from the [latest release](https://github.com/skyline69/balatro-mod-manager/releases/latest) and install:
+Download the `.deb` from the [latest release](https://github.com/jatrou/balatro-mod-manager/releases/latest) and install:
 
 ```bash
 sudo apt install ./Balatro.Mod.Manager_*_amd64.deb
@@ -94,7 +98,7 @@ sudo apt install ./Balatro.Mod.Manager_*_amd64.deb
 
 - Run from a local checkout:
   ```bash
-  git clone https://github.com/skyline69/balatro-mod-manager.git
+  git clone https://github.com/jatrou/balatro-mod-manager.git
   cd balatro-mod-manager
   ```
 - Install runtimes once (GNOME 50 + toolchain extensions):
@@ -113,11 +117,10 @@ sudo apt install ./Balatro.Mod.Manager_*_amd64.deb
   flatpak install --user balatro-mod-manager.flatpak
   flatpak run io.balatro.ModManager
   ```
-  AppImage/Deb/RPM still land in `target/release/bundle/` during the Flatpak build if you need them.
 
 # [![Build](images/build.svg)](#build-prerequisites)
 
-Alternatively, if you would prefer to build Balatro Mod Manager yourself instead of downloading the [prebuilt installer](https://github.com/skyline69/balatro-mod-manager/releases/latest), Balatro Mod Manager can be compiled from source using the instructions below.
+Alternatively, if you would prefer to build Balatro Mod Manager yourself instead of downloading the [prebuilt installer](https://github.com/jatrou/balatro-mod-manager/releases/latest), Balatro Mod Manager can be compiled from source using the instructions below.
 
 ## Build Prerequisites
 
@@ -131,36 +134,14 @@ Alternatively, if you would prefer to build Balatro Mod Manager yourself instead
   - **macOS**: `brew install go-task`
   - **Windows**: `choco install go-task` or `winget install Task.Task`
 
-## Automatic Installation
+## Linux Flatpak helper
 
-### For Windows
+For Windows and macOS source builds, use the manual local-checkout workflow below. The legacy one-line installer scripts are not part of this fork's validated release workflow.
 
-open Powershell & run this command:
-
-```powershell
-iwr https://raw.githubusercontent.com/skyline69/balatro-mod-manager/main/scripts/install.ps1 -useb | iex
-```
-
-### For macOS
-
-run this command:
-
-```bash
-curl -sL https://raw.githubusercontent.com/skyline69/balatro-mod-manager/main/scripts/install.sh | bash
-```
-
-### For Linux (Flatpak)
-
-From a local checkout (respects your current branch/changes):
+For Linux, run the Flatpak helper from a local checkout so you can review the script. It prefers a published Flatpak; if none is available, its build fallback uses your current checkout:
 
 ```bash
 ./scripts/linux-install.sh
-```
-
-If you want to install from the latest GitHub main without cloning manually, pass `--clone`:
-
-```bash
-curl -sL https://raw.githubusercontent.com/skyline69/balatro-mod-manager/main/scripts/linux-install.sh | bash -s -- --clone
 ```
 
 The script now prefers the latest GitHub Release Flatpak if available, and falls back to a local build if not.
@@ -171,14 +152,14 @@ Launch after install:
 flatpak run io.balatro.ModManager
 ```
 
-Linux builds use Flatpak, so you’ll need `flatpak` and `flatpak-builder` installed.
+The Linux Flatpak helper requires `flatpak` and `flatpak-builder`.
 On Linux the manager currently supports the Steam version of Balatro only.
 
 ## Manual Installation
 
 1. Clone the repository & install bun's dependencies:
    ```sh
-   git clone https://github.com/skyline69/balatro-mod-manager.git
+   git clone https://github.com/jatrou/balatro-mod-manager.git
    cd balatro-mod-manager && bun install --allow-scripts
    ```
 2. Run the task based on your OS
@@ -217,7 +198,7 @@ To build the project for production:
    task release-windows # or task release-macos
    ```
 
-The built application will be located in the `src-tauri/target/release` directory and the installer paths will be shown at the end of the build process.
+The built application will be located under the workspace's `target/<target-triple>/release` directory when the build specifies a target, or `target/release` otherwise. The installer paths are shown at the end of the build process.
 
 ## Cleaning the Build
 
@@ -230,7 +211,6 @@ To clean the build files, use the provided taskfile:
 
 > Font by Daniel Linssen
 
-
 # Code Signing
 
-Balatro Mod Manager releases are code-signed using [SignPath](https://signpath.io) to ensure authenticity and security. This helps verify that the downloaded software hasn't been tampered with and comes from a trusted source.
+This fork does not inherit the original project's SignPath signing arrangement. The locally built Windows 0.4.2 installer is unsigned; Windows may show an unknown-publisher prompt. Signing status for future published installers will be stated in their release notes.

@@ -2,7 +2,7 @@ name = "version_updater"
 version = "0.1.0"
 license = "license"
 author = "Ö. Efe D."
-maintainer = "67526259+skyline69@users.noreply.github.com"
+maintainer = "https://github.com/jatrou/balatro-mod-manager"
 copyright = "Copyright 2025, Ö. Efe D."
 
 [build]

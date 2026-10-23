@@ -30,7 +30,7 @@
 
 - Rust unit tests live beside code (`#[cfg(test)]`); integration tests per crate; use `rstest` when helpful.
 - Name tests with descriptive `snake_case`; focus on core logic and file/IO boundaries.
-- Frontend: no formal unit tests; use `bun run check` and manual flows for regressions.
+- Frontend: use `bun run test` for Vitest tests, `bun run check` for type checks, and manual flows for desktop integration regressions.
 - Run: `cargo test -q` in `src-tauri/` and `src-tauri/bmm-lib/` before PRs.
 
 ## Commit & Pull Request Guidelines

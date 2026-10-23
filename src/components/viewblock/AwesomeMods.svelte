@@ -21,6 +21,13 @@
     type AwesomeLoader,
   } from "$lib/awesomeCatalog";
   import { openExternal } from "$lib/opener";
+  import { getAwesomeInstallSource } from "$lib/awesomeInstall";
+  import AwesomeInstallDialog from "../AwesomeInstallDialog.svelte";
+  import {
+    installedModsCache,
+    fetchCachedMods,
+    forceRefreshCache,
+  } from "../../stores/modCache";
 
   let {
     onViewCatalog = () => {},
@@ -36,6 +43,13 @@
   let loaderFilter = $state<AwesomeLoader | "All">("All");
   let categoryFilter = $state("All");
   let view = $state<"mods" | "loaders">("mods");
+  let installing = $state<AwesomeEntry | null>(null);
+  let installedMessage = $state("");
+  let displayRevision = $derived(
+    /^[a-f0-9]{40}$/i.test(catalog.source.revision)
+      ? catalog.source.revision.slice(0, 12)
+      : catalog.source.revision,
+  );
 
   const normalize = (value: string) =>
     value
@@ -58,17 +72,20 @@
     ),
   );
   let installedCount = $derived(
-    modEntries.filter((entry) => {
-      const match = matches.get(entry.id);
-      return !!match && (match.installed || !!$installationStatus[match.title]);
-    }).length,
+    modEntries.filter((entry) => isInstalled(entry)).length,
   );
   let availableCount = $derived(
     modEntries.filter(
       (entry) => matches.has(entry.id) && !!matches.get(entry.id),
     ).length,
   );
-  let manualCount = $derived(modEntries.length - availableCount);
+  let downloadCount = $derived(
+    modEntries.filter(
+      (entry) =>
+        getAwesomeInstallSource(entry, matches.get(entry.id)).kind ===
+        "download",
+    ).length,
+  );
   let categories = $derived(
     Array.from(
       new Set(
@@ -113,6 +130,7 @@
   });
 
   onMount(() => {
+    void fetchCachedMods();
     loadAwesomeCatalog().then((result) => {
       catalog = result.catalog;
       origin = result.origin;
@@ -144,7 +162,35 @@
     const match = matches.get(entry.id);
     if (match) onViewCatalog(match);
   }
+
+  function isInstalled(entry: AwesomeEntry): boolean {
+    const match = matches.get(entry.id);
+    return (
+      !!(match && (match.installed || $installationStatus[match.title])) ||
+      $installedModsCache.some(
+        (mod) => mod.name.toLowerCase() === entry.title.toLowerCase(),
+      )
+    );
+  }
+
+  function installed(path: string): void {
+    installedMessage = `${installing?.title} installed into ${path}`;
+    installing = null;
+    void forceRefreshCache();
+  }
 </script>
+
+{#if installing}
+  <AwesomeInstallDialog
+    entry={installing}
+    source={getAwesomeInstallSource(installing, matches.get(installing.id))}
+    folderName={matches.get(installing.id)?.folderName || installing.title}
+    onClose={() => {
+      installing = null;
+    }}
+    onInstalled={installed}
+  />
+{/if}
 
 <div class="container default-scrollbar">
   <div class="awesome-view">
@@ -173,17 +219,22 @@
       <div><strong>{modEntries.length}</strong><span>Mods listed</span></div>
       <div><strong>{availableCount}</strong><span>In BMM catalog</span></div>
       <div><strong>{installedCount}</strong><span>Installed</span></div>
-      <div><strong>{manualCount}</strong><span>Source/manual</span></div>
+      <div><strong>{downloadCount}</strong><span>Direct downloads</span></div>
     </div>
 
     <div class="notice">
       <ShieldAlert size={20} />
       <span>
-        Community links may be old or require Discord, Balamod, a standalone Lua
-        file, or special setup. BMM only offers its normal flow for an exact,
-        current catalog match.
+        Install archives and individual Lua mods directly, or import downloaded
+        files from Discord. BMM checks the package and warns about conflicts
+        before installation. Special loader and game-patching setups include
+        source instructions.
       </span>
     </div>
+
+    {#if installedMessage}<div class="notice" role="status">
+        {installedMessage}
+      </div>{/if}
 
     {#if refreshWarning}
       <div class="refresh-warning" role="status">
@@ -268,8 +319,8 @@
       <div class="card-grid">
         {#each filteredEntries as entry (entry.id)}
           {@const match = matches.get(entry.id)}
-          {@const installed =
-            !!match && (match.installed || !!$installationStatus[match.title])}
+          {@const installed = isInstalled(entry)}
+          {@const source = getAwesomeInstallSource(entry, match)}
           <article class:safety={!!entry.safetyWarning}>
             <div class="card-heading">
               <div>
@@ -288,7 +339,11 @@
                 <span class="status manual"
                   >{entry.kind === "loader"
                     ? "Reference"
-                    : "Manual/source"}</span
+                    : source.kind === "download"
+                      ? "Direct download"
+                      : source.kind === "local"
+                        ? "Import download"
+                        : "Source instructions"}</span
                 >
               {/if}
             </div>
@@ -321,7 +376,27 @@
               </div>
             {/if}
 
+            {#if source.kind === "unsupported" && !entry.safetyWarning && entry.kind !== "loader"}
+              <p class="author">{source.reason}</p>
+            {/if}
+
             <div class="actions">
+              {#if source.kind !== "unsupported" && !installed}
+                <button
+                  type="button"
+                  class="catalog-button"
+                  onclick={() => {
+                    installedMessage = "";
+                    installing = entry;
+                  }}
+                >
+                  {source.kind === "download"
+                    ? "Install"
+                    : source.discordUrl
+                      ? "Download from Discord"
+                      : "Import download"}
+                </button>
+              {/if}
               {#if match}
                 <button
                   type="button"
@@ -356,9 +431,7 @@
     {/if}
 
     <footer>
-      Source: {catalog.source.repository} · revision {(/^([a-f0-9]{40})$/i).test(catalog.source.revision)
-        ? catalog.source.revision.slice(0, 12)
-        : catalog.source.revision}
+      Source: {catalog.source.repository} · revision {displayRevision}
       · {origin === "live"
         ? "live refresh"
         : origin === "cache"

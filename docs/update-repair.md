@@ -16,7 +16,7 @@ Installed mods that leave the catalog remain on disk and are treated as local/or
 
 Download counts from the retired service are unavailable. They must not be presented as current popularity statistics. Catalog browsing, descriptions, and downloads use the public index and each mod's own download location.
 
-The **Awesome Balatro** section supplements the main catalog with the mod listings from [jie65535/awesome-balatro](https://github.com/jie65535/awesome-balatro). Matching catalog entries open their normal mod details. Discord-only downloads, older loader-specific mods, unverified archives, and withdrawn entries remain source links with clear installation guidance. Inclusion in a curated list is not a claim of compatibility with current Balatro or Steamodded. See [coverage notes](awesome-balatro-coverage.md) for the bundled source revision and counts.
+The **Awesome Balatro** section supplements the main catalog with the mod listings from [jie65535/awesome-balatro](https://github.com/jie65535/awesome-balatro). It can prepare supported GitHub packages, archives, and individual Lua mods for installation. Discord downloads prompt for a downloaded file or folder. The review step checks the staged package against installed mods before installation; it does not overwrite an existing mod. Withdrawn entries and special loader/game-patching setups retain source instructions. Inclusion in a curated list is not a claim of compatibility with current Balatro or Steamodded. See [coverage notes](awesome-balatro-coverage.md) for installation behavior and limits.
 
 ## Installing this repair
 

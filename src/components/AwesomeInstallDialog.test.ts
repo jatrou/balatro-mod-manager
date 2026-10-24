@@ -92,6 +92,67 @@ describe("AwesomeInstallDialog", () => {
 
   afterEach(() => cleanup());
 
+  it("shows fully functional as source information and installs without acknowledgement", async () => {
+    invokeMock
+      .mockResolvedValueOnce(prepared)
+      .mockResolvedValueOnce(prepared.destination);
+    const { onInstalled } = mount(download, {
+      badges: [{ label: "fully functional smods v1.0.0", url: "" }],
+    });
+
+    await waitFor(() =>
+      expect(screen.getByText(prepared.destination)).toBeTruthy(),
+    );
+    expect(screen.getByText("Source status (Awesome Balatro)")).toBeTruthy();
+    expect(screen.getByText("fully functional smods v1.0.0")).toBeTruthy();
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.queryByRole("checkbox")).toBeNull();
+    const install = screen.getByRole("button", {
+      name: "Install mod",
+    }) as HTMLButtonElement;
+    expect(install.disabled).toBe(false);
+    await fireEvent.click(install);
+    await waitFor(() =>
+      expect(onInstalled).toHaveBeenCalledWith(prepared.destination),
+    );
+    expect(invokeMock).toHaveBeenCalledWith("finish_awesome_install", {
+      token: prepared.token,
+      acceptWarnings: false,
+    });
+  });
+
+  it("requires acknowledgement of reported crashes while keeping positive status separate", async () => {
+    invokeMock
+      .mockResolvedValueOnce(prepared)
+      .mockResolvedValueOnce(prepared.destination);
+    const { onInstalled } = mount(download, {
+      badges: [
+        { label: "fully functional smods v1.0.0", url: "" },
+        { label: "occasional crashes smods v0.9.8", url: "" },
+      ],
+    });
+
+    await waitFor(() =>
+      expect(screen.getByText(prepared.destination)).toBeTruthy(),
+    );
+    expect(screen.getByRole("alert").textContent).toContain(
+      "Awesome Balatro reports: occasional crashes smods v0.9.8",
+    );
+    expect(screen.getByRole("alert").textContent).not.toContain(
+      "fully functional",
+    );
+    const install = screen.getByRole("button", {
+      name: "Install mod",
+    }) as HTMLButtonElement;
+    expect(install.disabled).toBe(true);
+    await fireEvent.click(screen.getByRole("checkbox"));
+    expect(install.disabled).toBe(false);
+    await fireEvent.click(install);
+    await waitFor(() =>
+      expect(onInstalled).toHaveBeenCalledWith(prepared.destination),
+    );
+  });
+
   it("prepares a direct download, requires warning acknowledgement, then installs", async () => {
     invokeMock
       .mockResolvedValueOnce({

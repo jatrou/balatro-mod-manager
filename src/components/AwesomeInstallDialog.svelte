@@ -4,6 +4,7 @@
   import { open as choosePath } from "@tauri-apps/plugin-dialog";
   import type { AwesomeEntry } from "$lib/awesomeCatalog";
   import type { AwesomeInstallSource } from "$lib/awesomeInstall";
+  import { isAwesomeCompatibilityWarning } from "$lib/awesomeCompatibility";
   import { openExternal } from "$lib/opener";
 
   interface PreparedInstall {
@@ -39,7 +40,12 @@
   let blocked = $derived(
     prepared?.warnings.some((warning) => warning.blocking) ?? false,
   );
-  let upstreamWarnings = $derived(entry.badges.map((badge) => badge.label));
+  let upstreamWarnings = $derived(
+    entry.badges.filter(isAwesomeCompatibilityWarning),
+  );
+  let upstreamNotes = $derived(
+    entry.badges.filter((badge) => !isAwesomeCompatibilityWarning(badge)),
+  );
   let hasWarnings = $derived(
     !!prepared?.warnings.length || !!upstreamWarnings.length,
   );
@@ -226,6 +232,16 @@
             .join(", ")}
         </p>
       {/if}
+      {#if upstreamNotes.length}
+        <div class="source-notes">
+          <h3>Source status (Awesome Balatro)</h3>
+          <ul>
+            {#each upstreamNotes as note}
+              <li>{note.label}</li>
+            {/each}
+          </ul>
+        </div>
+      {/if}
       {#if hasWarnings}
         <div class="warnings" role="alert">
           <h3>
@@ -236,7 +252,7 @@
               <li class:blocking={warning.blocking}>{warning.message}</li>
             {/each}
             {#each upstreamWarnings as warning}
-              <li>Awesome Balatro lists: {warning}</li>
+              <li>Awesome Balatro reports: {warning.label}</li>
             {/each}
           </ul>
         </div>
@@ -364,6 +380,20 @@
     background: #71511c30;
     border-radius: 8px;
     padding: 16px;
+  }
+  .source-notes {
+    color: var(--ui-text-soft);
+    border-left: 2px solid var(--ui-border);
+    padding-left: 12px;
+    margin: 16px 0;
+    font-size: 0.88rem;
+  }
+  .source-notes h3 {
+    font-size: inherit;
+    margin-bottom: 6px;
+  }
+  .source-notes ul {
+    margin-top: 0;
   }
   ul {
     padding-left: 20px;

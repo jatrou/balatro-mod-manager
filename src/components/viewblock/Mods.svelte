@@ -77,6 +77,7 @@
   import {
     catalogIdFromBmiUrl,
     mergeAuthoritativeCatalog,
+    ensureInstalledModCards,
   } from "$lib/catalogMerge";
   import {
     currentPage,
@@ -577,15 +578,14 @@
         $installationStatus[mod.title] && $modEnabledStore[mod.title] === false,
     );
 
-    // Filter local mods - check by folder name first since backend uses folder name for local mods
+    // Full paths keep duplicate local copies independent; older summaries use folder names.
     const enabled: LocalMod[] = [];
     const disabled: LocalMod[] = [];
     for (const mod of paginatedLocalMods) {
       const folderName = mod.path.split(/[\\/]/).pop();
       const byPath =
-        folderName && folderName in $modEnabledStore
-          ? $modEnabledStore[folderName]
-          : undefined;
+        $modEnabledStore[mod.path] ??
+        (folderName ? $modEnabledStore[folderName] : undefined);
       if (byPath === false) {
         disabled.push(mod);
       } else {
@@ -691,6 +691,7 @@
         // After mods load, update install status and local mods if needed
         try {
           const installed = await fetchCachedMods();
+          await seedInstalledPlaceholders(installed);
           // Create a set of normalized installed mod names for fuzzy matching
           const installedNormalized = new Set(
             installed.map((mod) => normalizeModName(mod.name)),
@@ -1430,22 +1431,26 @@
     }>("reconcile_orphan_mods", { remoteTitles: titles })
       .then((res) => {
         if (!res || res.skipped) return;
-        if (res.changed.length === 0) return;
+        const primaryTitles = new Set(
+          mods.map((mod) => mod.title.toLowerCase()),
+        );
         const orphanedNow = new Set(
-          res.changed.filter((name) => !mods.some((m) => m.title === name)),
+          res.changed
+            .filter((name) => !primaryTitles.has(name.toLowerCase()))
+            .map((name) => name.toLowerCase()),
         );
         modsStore.update((arr) =>
           arr.map((m) =>
-            orphanedNow.has(m.title)
+            orphanedNow.has(m.title.toLowerCase())
               ? { ...m, orphaned: true }
-              : mods.some((nm) => nm.title === m.title)
+              : primaryTitles.has(m.title.toLowerCase())
                 ? { ...m, orphaned: false }
                 : m,
           ),
         );
         if (orphanedNow.size > 0) {
           addMessage(
-            `${orphanedNow.size} installed mod${orphanedNow.size === 1 ? "" : "s"} removed from index`,
+            `${orphanedNow.size} installed mod${orphanedNow.size === 1 ? "" : "s"} not in the primary catalog`,
             "info",
           );
         }
@@ -1805,7 +1810,11 @@
     modsStore.update((arr) => {
       const result = mergeAuthoritativeCatalog(arr, incomingMods);
       prunedCount = result.prunedCount;
-      return result.mods;
+      return ensureInstalledModCards(
+        result.mods,
+        installedMods,
+        createInstalledPlaceholder,
+      );
     });
     return prunedCount;
   }
@@ -1878,51 +1887,41 @@
     thumbRefreshTimer = window.setTimeout(poll, 1500);
   }
 
-  async function seedInstalledPlaceholders() {
-    try {
-      // Load installed mods quickly from DB cache helper
-      installedMods = await fetchCachedMods();
-      if (!installedMods || installedMods.length === 0) return;
-      modsStore.update((arr) => {
-        const existingByTitle = new Map(arr.map((m) => [m.title, m]));
-        const orphanFromDb = new Map(
-          installedMods
-            .filter((m) => m.orphaned === true)
-            .map((m) => [m.name, true as const]),
-        );
-        const additions: Mod[] = installedMods
-          .filter((m) => !existingByTitle.has(m.name))
-          .map((m) => ({
-            title: m.name,
-            description: "",
-            image: "/images/cover.jpg",
-            colors: getRandomColorPair(),
-            categories: [],
-            requires_steamodded: false,
-            requires_talisman: false,
-            publisher: "Installed",
-            repo: "",
-            downloadURL: "",
-            folderName: m.name,
-            version: "",
-            installed: true,
-            last_updated: 0,
-            _hasThumbnail: false,
-            // Keep private installed path for potential future local reads
-            _installedPath: m.path,
-            orphaned: m.orphaned === true,
-          }));
-        const merged = additions.length ? [...additions, ...arr] : arr;
-        // Sync orphan flag onto existing entries that already had a card.
-        return merged.map((m) =>
-          orphanFromDb.has(m.title) ? { ...m, orphaned: true } : m,
-        );
-      });
+  function createInstalledPlaceholder(m: InstalledMod): Mod {
+    return {
+      title: m.name,
+      description: "",
+      image: "/images/cover.jpg",
+      colors: getRandomColorPair(),
+      categories: [],
+      requires_steamodded: false,
+      requires_talisman: false,
+      publisher: "Installed",
+      repo: "",
+      downloadURL: "",
+      folderName: m.name,
+      version: "",
+      installed: true,
+      last_updated: 0,
+      _catalogEntry: false,
+      _hasThumbnail: false,
+      _installedPath: m.path,
+      orphaned: m.orphaned === true,
+    };
+  }
 
-      // Immediately reflect installationStatus so filters show
-      for (const m of installedMods) {
-        installationStatus.update((s) => ({ ...s, [m.name]: true }));
-      }
+  async function seedInstalledPlaceholders(snapshot?: InstalledMod[]) {
+    try {
+      // A supplied snapshot needs no further IPC and cannot recursively refresh state.
+      installedMods = snapshot ?? (await fetchCachedMods());
+      modsStore.update((arr) =>
+        ensureInstalledModCards(arr, installedMods, createInstalledPlaceholder),
+      );
+      // Immediately reflect installationStatus so newly seeded cards enter the list.
+      installationStatus.update((status) => ({
+        ...status,
+        ...Object.fromEntries(installedMods.map((m) => [m.name, true])),
+      }));
     } catch (e) {
       console.warn("seedInstalledPlaceholders failed", e);
     }
@@ -2937,7 +2936,8 @@
 
   async function refreshInstalledMods() {
     try {
-      await forceRefreshCache();
+      const installed = await forceRefreshCache();
+      await seedInstalledPlaceholders(installed);
       await refreshStateSummary();
     } catch (error) {
       console.error("Failed to refresh installed mods:", error);
@@ -2948,7 +2948,7 @@
     try {
       const localPaths = localMods.map((m) => m.path);
       const summary = await invoke<{
-        installed: { name: string; path: string }[];
+        installed: InstalledMod[];
         enabled: Record<string, boolean>;
         updates: Record<string, boolean>;
         thumbnails: Record<string, string>;
@@ -2958,10 +2958,16 @@
         catalogTitles: paginatedMods.map((m) => m.title),
       });
 
-      installedMods = summary.installed.map((m) => ({
-        name: m.name,
-        path: m.path,
-      }));
+      const previous = new Map(
+        installedMods.map((m) => [m.name.toLowerCase(), m]),
+      );
+      // The compact backend summary may omit orphaned; retain a full DB snapshot's flag.
+      await seedInstalledPlaceholders(
+        summary.installed.map((m) => ({
+          ...previous.get(m.name.toLowerCase()),
+          ...m,
+        })),
+      );
 
       // Create a set of normalized installed mod names for fuzzy matching
       const installedNormalized = new Set(
@@ -3033,9 +3039,6 @@
       prevCategory !== "Installed Mods"
     ) {
       refreshInstalledMods();
-      if (sortedAndFilteredMods.length === 0) {
-        seedInstalledPlaceholders();
-      }
     }
     prevCategory = cat;
   });
@@ -3453,7 +3456,7 @@
                   <span class="status-dot enabled"></span>
                   <span class="subsection-label">Enabled</span>
                   <span class="subsection-count"
-                    >{filteredEnabledLocalMods.length} active</span
+                    >{filteredEnabledLocalMods.length} enabled</span
                   >
                 </div>
                 <div class="mods-grid local-mods-grid">
@@ -3476,7 +3479,7 @@
                   <span class="status-dot disabled"></span>
                   <span class="subsection-label">Disabled</span>
                   <span class="subsection-count"
-                    >{filteredDisabledLocalMods.length} inactive</span
+                    >{filteredDisabledLocalMods.length} disabled</span
                   >
                 </div>
                 <div class="mods-grid local-mods-grid">
@@ -3521,7 +3524,7 @@
                   <span class="status-dot enabled"></span>
                   <span class="subsection-label">Enabled</span>
                   <span class="subsection-count"
-                    >{filteredEnabledMods.length} active</span
+                    >{filteredEnabledMods.length} enabled</span
                   >
                 </div>
                 <div
@@ -3550,7 +3553,7 @@
                   <span class="status-dot disabled"></span>
                   <span class="subsection-label">Disabled</span>
                   <span class="subsection-count"
-                    >{filteredDisabledMods.length} inactive</span
+                    >{filteredDisabledMods.length} disabled</span
                   >
                 </div>
                 <div

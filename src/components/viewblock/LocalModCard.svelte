@@ -57,7 +57,10 @@
   // Local state for loading and enabled status
   let isInstalling = $state(false);
   let isToggling = $state(false);
-  let isEnabled = $state(true); // Default to enabled if not yet checked
+  let folderName = $derived(mod.path.split(/[\\/]/).pop() || "");
+  let isEnabled = $derived(
+    $modEnabledStore[mod.path] ?? $modEnabledStore[folderName] ?? true,
+  );
   let isSelected = $derived($selectedModsStore.has(mod.path));
 
   function handleCheckboxClick(e: Event) {
@@ -65,19 +68,12 @@
     toggleModSelection(mod.path);
   }
 
-  // Sync local isEnabled state with the store
-  $effect(() => {
-    const storeValue = $modEnabledStore[mod.name];
-    if (storeValue !== undefined) {
-      isEnabled = storeValue;
-    }
-  });
-
   async function toggleModEnabled(e: Event) {
     e.stopPropagation();
+    if (isToggling) return;
+    isToggling = true;
     try {
-      const currentState = $modEnabledStore[mod.name] ?? isEnabled;
-      const newState = !currentState;
+      const newState = !isEnabled;
 
       // Use the full path for local mods instead of just the name
       await invoke("toggle_mod_enabled_by_path", {
@@ -85,12 +81,11 @@
         enabled: newState,
       });
 
-      // Update both the store and local variable
+      // Keep this copy independent from other mods with the same display name.
       modEnabledStore.update((enabledMods) => ({
         ...enabledMods,
-        [mod.name]: newState,
+        [mod.path]: newState,
       }));
-      isEnabled = newState;
 
       // Call the parent callback to update the filtered lists
       if (onToggleEnabled) {
@@ -98,6 +93,9 @@
       }
     } catch (error) {
       console.error(`Failed to toggle mod ${mod.name} enabled state:`, error);
+      addMessage(`Failed to toggle ${mod.name}: ${String(error)}`, "error");
+    } finally {
+      isToggling = false;
     }
   }
   // Function to open the mod's directory
@@ -363,14 +361,14 @@
       <!-- Enable/Disable toggle button -->
       <button
         class="toggle-button"
-        class:enabled={$modEnabledStore[mod.name] ?? isEnabled}
-        class:disabled={!($modEnabledStore[mod.name] ?? isEnabled)}
-        title={($modEnabledStore[mod.name] ?? isEnabled)
-          ? "Disable Mod"
-          : "Enable Mod"}
+        class:enabled={isEnabled}
+        class:disabled={!isEnabled}
+        title={isEnabled ? "Disable Mod" : "Enable Mod"}
+        aria-label={isEnabled ? "Disable Mod" : "Enable Mod"}
         onclick={toggleModEnabled}
+        disabled={isToggling}
       >
-        {#if $modEnabledStore[mod.name] ?? isEnabled}
+        {#if isEnabled}
           ON
         {:else}
           OFF
@@ -403,14 +401,14 @@
       <!-- Added toggle button here -->
       <button
         class="toggle-button"
-        class:enabled={$modEnabledStore[mod.name] ?? isEnabled}
-        class:disabled={!($modEnabledStore[mod.name] ?? isEnabled)}
-        title={($modEnabledStore[mod.name] ?? isEnabled)
-          ? "Disable Mod"
-          : "Enable Mod"}
+        class:enabled={isEnabled}
+        class:disabled={!isEnabled}
+        title={isEnabled ? "Disable Mod" : "Enable Mod"}
+        aria-label={isEnabled ? "Disable Mod" : "Enable Mod"}
         onclick={toggleModEnabled}
+        disabled={isToggling}
       >
-        {#if $modEnabledStore[mod.name] ?? isEnabled}
+        {#if isEnabled}
           ON
         {:else}
           OFF

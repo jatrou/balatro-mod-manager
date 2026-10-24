@@ -49,6 +49,8 @@ pub mod logging;
 pub mod lovely;
 /// Curated mod collection support.
 pub mod mod_collections;
+/// Effective Steamodded/Lovely enable state and explicit toggles.
+pub mod mod_enabled;
 /// Rate limiter for GitHub API requests.
 pub mod rate_limiter;
 /// Steamodded/Talisman installer.

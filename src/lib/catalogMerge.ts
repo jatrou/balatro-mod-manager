@@ -1,4 +1,4 @@
-import type { Mod } from "../stores/modStore";
+import type { InstalledMod, Mod } from "../stores/modStore";
 
 type PersistedMod = Omit<Mod, "description" | "image" | "imageFallback">;
 
@@ -76,6 +76,39 @@ export function catalogIdFromBmiUrl(downloadUrl?: string) {
   return id;
 }
 
+/** Installed records are authoritative for both setting and clearing membership flags. */
+export function syncInstalledCatalogStatus(
+  mods: Mod[],
+  installed: readonly InstalledMod[],
+): Mod[] {
+  const byTitle = new Map(
+    installed.map((item) => [item.name.toLowerCase(), item]),
+  );
+  return mods.map((mod) => {
+    const record = byTitle.get(mod.title.toLowerCase());
+    return record && typeof record.orphaned === "boolean"
+      ? { ...mod, orphaned: record.orphaned }
+      : mod;
+  });
+}
+
+/** Keep every DB installation visible even when a populated primary catalog omits it. */
+export function ensureInstalledModCards(
+  mods: Mod[],
+  installed: readonly InstalledMod[],
+  createPlaceholder: (installed: InstalledMod) => Mod,
+): Mod[] {
+  const titles = new Set(mods.map((mod) => mod.title.toLowerCase()));
+  const additions: Mod[] = [];
+  for (const record of installed) {
+    const title = record.name.toLowerCase();
+    if (titles.has(title)) continue;
+    titles.add(title);
+    additions.push(createPlaceholder(record));
+  }
+  return syncInstalledCatalogStatus([...additions, ...mods], installed);
+}
+
 /** Merge a complete, validated catalog refresh into cached display data. */
 export function mergeAuthoritativeCatalog(
   existingMods: Mod[],
@@ -101,7 +134,7 @@ export function mergeAuthoritativeCatalog(
     if (!incomingMod) continue;
     const existing = existingByTitle.get(title);
     if (!existing) {
-      mods.push(incomingMod);
+      mods.push({ ...incomingMod, orphaned: false });
       continue;
     }
 
@@ -114,6 +147,7 @@ export function mergeAuthoritativeCatalog(
     mods.push({
       ...existing,
       ...incomingMod,
+      orphaned: false,
       requires_steamodded: incomingMod.requires_steamodded,
       requires_talisman: incomingMod.requires_talisman,
       description: preferExistingDescription

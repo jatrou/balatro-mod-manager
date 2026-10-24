@@ -239,6 +239,7 @@ pub async fn mods_updates_map(
 pub struct InstalledSummary {
     pub name: String,
     pub path: String,
+    pub orphaned: bool,
 }
 
 #[derive(Serialize)]
@@ -257,6 +258,16 @@ pub async fn mods_state_summary(
     local_paths: Option<Vec<String>>,
     catalog_titles: Option<Vec<String>>,
 ) -> Result<ModsStateSummary, String> {
+    let mods_root = bmm_lib::local_mod_detection::resolve_mods_dir_path()?;
+    mods_state_summary_for_root(&state, &mods_root, local_paths, catalog_titles).await
+}
+
+async fn mods_state_summary_for_root(
+    state: &AppState,
+    mods_root: &std::path::Path,
+    local_paths: Option<Vec<String>>,
+    catalog_titles: Option<Vec<String>>,
+) -> Result<ModsStateSummary, String> {
     use std::collections::HashMap;
     use std::path::PathBuf;
 
@@ -270,11 +281,12 @@ pub async fn mods_state_summary(
     let mut enabled_map: HashMap<String, bool> = HashMap::new();
     for m in installed_mods {
         let p = PathBuf::from(&m.path);
-        let enabled = !p.join(".lovelyignore").exists();
+        let enabled = super::mods::effective_enabled_at_path(mods_root, &p);
         enabled_map.insert(m.name.clone(), enabled);
         installed_list.push(InstalledSummary {
             name: m.name,
             path: m.path,
+            orphaned: m.orphaned,
         });
     }
 
@@ -290,8 +302,9 @@ pub async fn mods_state_summary(
             if name.is_empty() {
                 continue;
             }
-            let enabled = !path.join(".lovelyignore").exists();
-            enabled_map.insert(name, enabled);
+            let enabled = super::mods::effective_enabled_at_path(mods_root, &path);
+            enabled_map.insert(p, enabled);
+            enabled_map.entry(name).or_insert(enabled);
         }
     }
 
@@ -419,10 +432,12 @@ mod tests {
         let summary = InstalledSummary {
             name: "TestMod".to_string(),
             path: "/path/to/mod".to_string(),
+            orphaned: true,
         };
         let json = serde_json::to_string(&summary).unwrap();
         assert!(json.contains("TestMod"));
         assert!(json.contains("/path/to/mod"));
+        assert_eq!(serde_json::to_value(&summary).unwrap()["orphaned"], true);
     }
 
     #[test]
@@ -431,6 +446,7 @@ mod tests {
             installed: vec![InstalledSummary {
                 name: "Mod1".to_string(),
                 path: "/path".to_string(),
+                orphaned: false,
             }],
             enabled: std::collections::HashMap::from([("Mod1".to_string(), true)]),
             updates: std::collections::HashMap::from([("Mod1".to_string(), false)]),
@@ -449,9 +465,11 @@ mod tests {
         let summary = InstalledSummary {
             name: "MyMod".to_string(),
             path: "/mods/MyMod".to_string(),
+            orphaned: false,
         };
         assert_eq!(summary.name, "MyMod");
         assert_eq!(summary.path, "/mods/MyMod");
+        assert!(!summary.orphaned);
     }
 
     #[test]
@@ -466,5 +484,98 @@ mod tests {
         assert!(summary.installed.is_empty());
         assert!(summary.enabled.is_empty());
         assert!(summary.updates.is_empty());
+    }
+}
+
+#[cfg(test)]
+mod effective_state_tests {
+    use super::*;
+    use crate::test_support::TestEnvironment;
+    use bmm_lib::{database::Database, discord_rpc::DiscordRpcManager};
+    use std::{fs, sync::Mutex};
+
+    #[tokio::test]
+    async fn summary_reports_blacklisted_nested_ignored_and_missing_paths_off() {
+        let environment = TestEnvironment::new();
+        let mods = environment.path().join("Mods");
+        for folder in [
+            "Blacklisted",
+            "Nested/inside",
+            "Local",
+            "Enabled",
+            "Collision",
+            "lovely",
+        ] {
+            fs::create_dir_all(mods.join(folder)).unwrap();
+        }
+        fs::write(
+            mods.join("lovely/blacklist.txt"),
+            "Blacklisted\r\nLocal\r\n",
+        )
+        .unwrap();
+        fs::write(mods.join("Nested/inside/.lovelyignore"), "").unwrap();
+        let mut db = Database::new().unwrap();
+        for name in ["Blacklisted", "Nested", "Missing", "Enabled"] {
+            db.add_installed_mod(name, &mods.join(name).to_string_lossy(), &[], None)
+                .unwrap();
+        }
+        db.add_installed_mod(
+            "Collision",
+            &mods.join("Blacklisted").to_string_lossy(),
+            &[],
+            None,
+        )
+        .unwrap();
+        let outside = environment.path().join("Outside");
+        fs::create_dir(&outside).unwrap();
+        db.reconcile_orphaned_mods(
+            &["Nested", "Missing", "Enabled", "Collision"]
+                .into_iter()
+                .map(str::to_owned)
+                .collect(),
+        )
+        .unwrap();
+        let state = AppState {
+            db: Mutex::new(db),
+            discord_rpc: tokio::sync::Mutex::new(DiscordRpcManager::new()),
+            thumbs: crate::thumb_queue::ThumbnailManager::new(),
+        };
+        *MOD_CACHE.write().await = None;
+        let local = mods.join("Local").to_string_lossy().into_owned();
+        let collision = mods.join("Collision").to_string_lossy().into_owned();
+        let outside = outside.to_string_lossy().into_owned();
+        let summary = mods_state_summary_for_root(
+            &state,
+            &mods,
+            Some(vec![local.clone(), collision.clone(), outside.clone()]),
+            None,
+        )
+        .await
+        .unwrap();
+        for key in ["Blacklisted", "Nested", "Missing", "Local", local.as_str()] {
+            assert_eq!(summary.enabled.get(key), Some(&false), "{key}");
+        }
+        assert_eq!(summary.enabled.get("Enabled"), Some(&true));
+        assert_eq!(summary.enabled.get("Collision"), Some(&false));
+        assert_eq!(summary.enabled.get(&collision), Some(&true));
+        assert_eq!(summary.enabled.get(&outside), Some(&false));
+        assert_eq!(summary.installed.len(), 5);
+        assert!(
+            summary
+                .installed
+                .iter()
+                .find(|row| row.name == "Blacklisted")
+                .unwrap()
+                .orphaned
+        );
+        assert!(
+            !summary
+                .installed
+                .iter()
+                .find(|row| row.name == "Enabled")
+                .unwrap()
+                .orphaned
+        );
+        *MOD_CACHE.write().await = None;
     }
 }

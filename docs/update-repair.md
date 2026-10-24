@@ -20,6 +20,9 @@ The **Awesome Balatro** section supplements the main catalog with the mod listin
 
 ## Installing this repair
 
+For differences between installed files, enabled state, IMM's inventory, and
+catalog membership, see [Installed mods and game state](mod-state.md).
+
 Build this source, then run the new BMM executable or install its generated package. Updating Lovely or a mod inside an older BMM executable does not update the manager's code. The repaired app identifies itself as version **0.4.2**. Application update checks use published stable releases with downloadable assets from `jatrou/balatro-mod-manager`; inherited Git tags alone do not trigger an update notice.
 
 Keep a backup of your Mods directory and manager database before adopting a new build. The repair's checks use isolated temporary fixtures; they do not update a live game installation as part of the build.

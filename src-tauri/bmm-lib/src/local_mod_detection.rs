@@ -1021,9 +1021,6 @@ pub fn detect_manual_mods(
     // Create a set of managed mod names (lowercase) for duplicate detection
     let managed_names: HashSet<String> =
         managed_mods.iter().map(|m| m.name.to_lowercase()).collect();
-    let managed_catalog_names = managed_names.clone();
-
-    let mut manual_mods = Vec::new();
     let mut bundled_dependencies = HashSet::new();
 
     // Find bundled dependencies in mod packages
@@ -1048,7 +1045,7 @@ pub fn detect_manual_mods(
     for install_path in finder::get_balatro_paths_cached() {
         let talisman_path = install_path.join("Talisman");
         if talisman_path.exists() && talisman_path.is_dir() {
-            let mut talisman = DetectedMod {
+            let talisman = DetectedMod {
                 name: "Talisman".to_string(),
                 id: "Talisman".to_string(),
                 author: vec!["Talisman".to_string()],
@@ -1061,47 +1058,18 @@ pub fn detect_manual_mods(
                 catalog_match: None,
                 is_duplicate: false,
             };
-            let mod_name_lower = talisman.name.to_lowercase();
-            if managed_names.contains(&mod_name_lower) {
-                talisman.is_duplicate = true;
-                talisman.name = format!("{} (Manual)", talisman.name);
-            }
             // Catalog match will be done below with the index
             all_detected_mods.push(talisman);
         }
     }
 
-    // Build catalog index once for O(1) lookups instead of O(n) per mod
-    let catalog_index = CatalogIndex::new(cached_catalog_mods);
-
-    // Process detected mods to find catalog matches and handle duplicates
     let total_detected = all_detected_mods.len();
-    for mut mod_info in all_detected_mods {
-        let mod_path = normalize_path(&canonicalize_best_effort(&PathBuf::from(&mod_info.path)));
-
-        // If this mod is not managed by path, consider it a manual mod
-        if !is_path_managed(&mod_path, &managed_paths) {
-            // Check for name duplication with managed mods
-            let mod_name_lower = mod_info.name.to_lowercase();
-            if managed_names.contains(&mod_name_lower) {
-                mod_info.is_duplicate = true;
-                // Append a suffix to the name
-                mod_info.name = format!("{} (Manual)", mod_info.name);
-            }
-
-            // Try to find a match in the catalog using indexed lookup
-            mod_info.catalog_match = find_catalog_match_indexed(&mod_info, &catalog_index);
-
-            // If this mod matches a catalog entry that is already installed, skip it to avoid duplicates
-            if let Some(cat) = &mod_info.catalog_match
-                && managed_catalog_names.contains(&cat.title.to_lowercase())
-            {
-                continue;
-            }
-
-            manual_mods.push(mod_info);
-        }
-    }
+    let manual_mods = filter_managed_mods(
+        all_detected_mods,
+        &managed_paths,
+        &managed_names,
+        cached_catalog_mods,
+    );
 
     log::info!(
         "Found {} manual mods after filtering (excluded {} managed mods)",
@@ -1110,6 +1078,36 @@ pub fn detect_manual_mods(
     );
 
     Ok(manual_mods)
+}
+
+fn filter_managed_mods(
+    all_detected_mods: Vec<DetectedMod>,
+    managed_paths: &HashSet<String>,
+    managed_names: &HashSet<String>,
+    cached_catalog_mods: &[cache::Mod],
+) -> Vec<DetectedMod> {
+    let catalog_index = CatalogIndex::new(cached_catalog_mods);
+    let mut manual_mods = Vec::new();
+    for mut mod_info in all_detected_mods {
+        let mod_path = normalize_path(&canonicalize_best_effort(&PathBuf::from(&mod_info.path)));
+
+        // If this mod is not managed by path, consider it a manual mod
+        if !is_path_managed(&mod_path, managed_paths) {
+            mod_info.catalog_match = find_catalog_match_indexed(&mod_info, &catalog_index);
+            // A catalog/name match identifies another copy, not ownership of
+            // this physical path. Keep it visible so it can be inspected or removed.
+            let matches_managed_catalog = mod_info
+                .catalog_match
+                .as_ref()
+                .is_some_and(|catalog| managed_names.contains(&catalog.title.to_lowercase()));
+            if managed_names.contains(&mod_info.name.to_lowercase()) || matches_managed_catalog {
+                mod_info.is_duplicate = true;
+                mod_info.name = format!("{} (Manual)", mod_info.name);
+            }
+            manual_mods.push(mod_info);
+        }
+    }
+    manual_mods
 }
 
 fn scan_for_json_files(dir_path: &Path) -> Result<Vec<PathBuf>, String> {
@@ -1371,26 +1369,13 @@ fn calculate_edit_distance(s1: &str, s2: &str) -> usize {
 }
 
 fn is_path_managed(path: &str, managed_paths: &HashSet<String>) -> bool {
-    // Direct path match
-    if managed_paths.contains(path) {
-        return true;
-    }
-
-    // Check if this path is a subdirectory of a managed path
-    for managed_path in managed_paths {
-        if path.starts_with(managed_path) {
-            return true;
-        }
-    }
-
-    // Check if a managed path is a subdirectory of this path
-    for managed_path in managed_paths {
-        if managed_path.starts_with(path) {
-            return true;
-        }
-    }
-
-    false
+    let path = Path::new(path);
+    managed_paths.iter().any(|managed_path| {
+        let managed_path = Path::new(managed_path);
+        // Compare complete components: Foo-old is a sibling of Foo, while
+        // Foo/child belongs to the same installed package.
+        path.starts_with(managed_path) || managed_path.starts_with(path)
+    })
 }
 fn find_bundled_dependencies(
     dir: &Path,
@@ -2347,6 +2332,134 @@ mod tests {
 
         // If the managed path is nested under the given path, also true
         assert!(super::is_path_managed("/tmp", &managed));
+    }
+
+    #[test]
+    fn test_is_path_managed_distinguishes_sibling_name_prefixes() {
+        let root = tempdir().unwrap();
+        let managed_path = root.path().join("Agarmons");
+        let managed = HashSet::from([normalize_path(&managed_path)]);
+        for name in ["Agarmons APokermonAddon", "Agarmons-old", "AgarmonsBackup"] {
+            assert!(
+                !is_path_managed(&normalize_path(&root.path().join(name)), &managed),
+                "{name}"
+            );
+        }
+        assert!(!is_path_managed(
+            &normalize_path(&root.path().join("Agar")),
+            &managed
+        ));
+        assert!(is_path_managed(
+            &normalize_path(&managed_path.join("nested")),
+            &managed
+        ));
+        assert!(is_path_managed(&normalize_path(root.path()), &managed));
+    }
+
+    fn write_fixture_mod(path: &Path, id: &str, name: &str) {
+        write_file(
+            &path.join("mod.json"),
+            &serde_json::json!({
+                "id": id, "name": name, "description": "Isolated detection fixture",
+                "prefix": "fixture", "main_file": "main.lua"
+            })
+            .to_string(),
+        );
+        write_file(
+            &path.join("main.lua"),
+            "-- Isolated fixture; never loaded by the game\n",
+        );
+    }
+
+    fn scan_fixture_mods(root: &Path) -> Vec<DetectedMod> {
+        let mut bundled = HashSet::new();
+        find_bundled_dependencies(root, root, 0, &mut bundled).unwrap();
+        let mut detected = Vec::new();
+        detect_mods_recursive(root, root, 0, &mut detected, &bundled).unwrap();
+        detected
+    }
+
+    #[test]
+    fn test_manual_detection_keeps_distinct_copies_of_managed_catalog_mods() {
+        let root = tempdir().unwrap();
+        let current_agar = root.path().join("Agarmons");
+        let duplicate_agar = root.path().join("Agarmons APokermonAddon");
+        let current_nacho = root.path().join("NachosPokermonDip");
+        let duplicate_nacho = root.path().join("Nacho'sPokermonDip");
+        write_fixture_mod(&current_agar, "Agarmons", "Agarmons");
+        write_fixture_mod(&duplicate_agar, "Agarmons", "Agarmons");
+        write_fixture_mod(&current_nacho, "NachosPokermonDip", "NachosPokermonDip");
+        // An older display name still matches the managed catalog identity.
+        write_fixture_mod(
+            &duplicate_nacho,
+            "NachosPokermonDip",
+            "Nacho's Pokermon Dip",
+        );
+        let managed_paths = HashSet::from([
+            normalize_path(&canonicalize_best_effort(&current_agar)),
+            normalize_path(&canonicalize_best_effort(&current_nacho)),
+        ]);
+        let managed_names = HashSet::from(["agarmons".into(), "nachospokermondip".into()]);
+        let catalog = [
+            make_catalog_mod("Agarmons"),
+            make_catalog_mod("NachosPokermonDip"),
+        ];
+        let manual = filter_managed_mods(
+            scan_fixture_mods(root.path()),
+            &managed_paths,
+            &managed_names,
+            &catalog,
+        );
+        assert_eq!(manual.len(), 2);
+        for (expected_path, expected_name, expected_catalog) in [
+            (&duplicate_agar, "Agarmons (Manual)", "Agarmons"),
+            (
+                &duplicate_nacho,
+                "Nacho's Pokermon Dip (Manual)",
+                "NachosPokermonDip",
+            ),
+        ] {
+            let detected = manual
+                .iter()
+                .find(|item| Path::new(&item.path) == expected_path)
+                .unwrap();
+            assert_eq!(detected.name, expected_name);
+            assert!(detected.is_duplicate);
+            assert_eq!(
+                detected.catalog_match.as_ref().unwrap().title,
+                expected_catalog
+            );
+        }
+    }
+
+    #[test]
+    fn test_manual_detection_preserves_owned_nested_and_bundled_suppression() {
+        let root = tempdir().unwrap();
+        let managed_parent = root.path().join("ManagedPackage");
+        write_fixture_mod(&managed_parent, "ManagedPackage", "Managed Package");
+        write_fixture_mod(&managed_parent.join("Nested"), "Nested", "Nested Mod");
+        write_fixture_mod(
+            &root.path().join("Pack/Mods/Bundled"),
+            "Bundled",
+            "Bundled Dependency",
+        );
+        write_fixture_mod(
+            &root.path().join("Independent"),
+            "Independent",
+            "Independent Mod",
+        );
+        let managed_paths =
+            HashSet::from([normalize_path(&canonicalize_best_effort(&managed_parent))]);
+        let managed_names = HashSet::from(["managed package".into()]);
+        let manual = filter_managed_mods(
+            scan_fixture_mods(root.path()),
+            &managed_paths,
+            &managed_names,
+            &[],
+        );
+        assert_eq!(manual.len(), 1);
+        assert_eq!(manual[0].name, "Independent Mod");
+        assert!(!manual[0].is_duplicate);
     }
 
     #[test]

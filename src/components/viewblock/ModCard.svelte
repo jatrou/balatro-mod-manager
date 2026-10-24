@@ -407,9 +407,9 @@
         {#if mod.orphaned}
           <span
             class="tag orphaned"
-            title="This mod was removed from the remote index. It is still installed locally and can be uninstalled at any time."
+            title="Installed locally; not listed in the current primary catalog."
           >
-            Removed from index
+            Not in primary catalog
           </span>
         {/if}
         <!-- <span class="tag updated"> -->
@@ -443,12 +443,18 @@
         >
       {/if}
     </div>
-    {#if mod.orphaned && !$showModPreviews}<span class="tag orphaned"
-        >Removed from index</span
+    {#if mod.orphaned && !$showModPreviews}<span
+        class="tag orphaned"
+        title="Installed locally; not listed in the current primary catalog."
+        >Not in primary catalog</span
       >{/if}
     {#if !hideDescription && descriptionText && descriptionText.trim().length > 0}
       <p class="fade-in">
         {truncateDynamic(stripMarkdown(descriptionText), $cardScale)}
+      </p>
+    {:else if !hideDescription && (mod.installed || $installationStatus[mod.title]) && !mod._dirName}
+      <p class="description-unavailable">
+        Description unavailable for this installed mod.
       </p>
     {:else if !hideDescription}
       <div class="desc-skeleton" aria-hidden="true">
@@ -629,10 +635,10 @@
   }
 
   .tag.orphaned {
-    background: rgba(192, 64, 56, 0.92);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    background: var(--ui-panel-muted);
+    color: var(--ui-text-muted);
+    border: 1px solid var(--ui-input-border);
+    text-transform: none;
   }
 
   .mod-info {

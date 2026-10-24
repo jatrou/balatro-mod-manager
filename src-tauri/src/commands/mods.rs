@@ -1,91 +1,74 @@
-use std::path::{Path, PathBuf};
+use std::path::Path;
+use std::path::PathBuf;
 
 use crate::state::AppState;
 use rayon::prelude::*;
 use std::collections::HashMap;
+#[cfg(test)]
 use std::fs;
 
-/// Maximum directory depth scanned when toggling / checking `.lovelyignore`.
-/// Mods rarely nest beyond 2-3 levels; this bound keeps us safe from
-/// pathological symlink loops and accidental drag-and-drop of huge trees.
-const SUBTREE_MAX_DEPTH: usize = 6;
+use bmm_lib::local_mod_detection::resolve_mods_dir_path;
+use bmm_lib::mod_enabled::{is_mod_enabled_at_path, set_mod_enabled_at_path};
 
-/// Files/dirs that should never be searched for `.lovelyignore`.
-fn is_skipped_name(name: &str) -> bool {
-    let lower = name.to_ascii_lowercase();
-    lower.starts_with('.')
-        || lower == "node_modules"
-        || lower == "__macosx"
-        || lower == ".git"
-        || lower == "lovely"
-}
-
-/// Recursively collect every directory inside `root` (inclusive) up to
-/// `SUBTREE_MAX_DEPTH`. Symlinks are not followed.
-fn collect_subdirs(root: &Path) -> Vec<PathBuf> {
-    let mut out = vec![root.to_path_buf()];
-    let mut stack: Vec<(PathBuf, usize)> = vec![(root.to_path_buf(), 0)];
-    while let Some((dir, depth)) = stack.pop() {
-        if depth >= SUBTREE_MAX_DEPTH {
-            continue;
-        }
-        let Ok(entries) = fs::read_dir(&dir) else {
-            continue;
-        };
-        for entry in entries.flatten() {
-            let path = entry.path();
-            let Ok(meta) = entry.metadata() else { continue };
-            if !meta.is_dir() || meta.file_type().is_symlink() {
-                continue;
-            }
-            let Some(name) = path.file_name().and_then(|n| n.to_str()) else {
-                continue;
-            };
-            if is_skipped_name(name) {
-                continue;
-            }
-            out.push(path.clone());
-            stack.push((path, depth + 1));
+// Legacy Talisman can be installed beside the game instead of under Mods.
+// Only an exact canonical finder-discovered Talisman path gets that exception.
+fn scope_mod_root(
+    mods_root: &Path,
+    path: &Path,
+    game_paths: &[PathBuf],
+) -> Result<PathBuf, String> {
+    if !path.exists() {
+        return Ok(mods_root.to_path_buf());
+    }
+    let actual = path.canonicalize().map_err(|e| e.to_string())?;
+    if actual.starts_with(mods_root.canonicalize().map_err(|e| e.to_string())?) {
+        return Ok(mods_root.to_path_buf());
+    }
+    for game in game_paths {
+        let talisman = game.join("Talisman");
+        if talisman.is_dir() && talisman.canonicalize().ok().as_ref() == Some(&actual) {
+            return Ok(game.clone());
         }
     }
-    out
+    Err(format!(
+        "Mod path is outside the managed Mods directory: {}",
+        path.display()
+    ))
 }
 
-/// Returns `true` if any directory in the subtree (including `mod_dir`)
-/// contains a `.lovelyignore` marker. Steamodded's in-game disable can
-/// write the marker into a nested mod folder, so a shallow check misses it.
-fn is_enabled_recursive(mod_dir: &Path) -> bool {
-    !collect_subdirs(mod_dir)
-        .into_iter()
-        .any(|dir| dir.join(".lovelyignore").exists())
+fn effective_mod_root(mods_root: &Path, path: &Path) -> Result<PathBuf, String> {
+    if let Ok(root) = scope_mod_root(mods_root, path, &[]) {
+        return Ok(root);
+    }
+    scope_mod_root(
+        mods_root,
+        path,
+        &bmm_lib::finder::get_balatro_paths_cached(),
+    )
 }
 
-fn set_mod_enabled_at_path(mod_dir: &Path, enabled: bool) -> Result<(), String> {
-    if !mod_dir.exists() {
-        return Err(format!("Mod path does not exist: {}", mod_dir.display()));
+pub(crate) fn effective_enabled_at_path(mods_root: &Path, path: &Path) -> bool {
+    let result =
+        effective_mod_root(mods_root, path).and_then(|root| is_mod_enabled_at_path(&root, path));
+    match result {
+        Ok(enabled) => enabled,
+        Err(error) => {
+            log::warn!(
+                "Could not determine enable state for {}: {error}",
+                path.display()
+            );
+            false
+        }
     }
+}
 
-    let dirs = collect_subdirs(mod_dir);
-
-    if enabled {
-        dirs.par_iter().try_for_each(|dir| {
-            let ignore = dir.join(".lovelyignore");
-            if ignore.exists() {
-                fs::remove_file(&ignore).map_err(|e| {
-                    format!("Failed to remove .lovelyignore in {}: {e}", dir.display())
-                })
-            } else {
-                Ok(())
-            }
-        })?;
-    } else {
-        dirs.par_iter().try_for_each(|dir| {
-            fs::write(dir.join(".lovelyignore"), "")
-                .map_err(|e| format!("Failed to create .lovelyignore in {}: {e}", dir.display()))
-        })?;
-    }
-
-    Ok(())
+fn set_effective_enabled_at_path(
+    mods_root: &Path,
+    path: &Path,
+    enabled: bool,
+) -> Result<(), String> {
+    let root = effective_mod_root(mods_root, path)?;
+    set_mod_enabled_at_path(&root, path, enabled)
 }
 
 /// Resolve an installed mod's path by name, holding the global DB lock only
@@ -114,11 +97,8 @@ pub async fn is_mod_enabled(
 ) -> Result<bool, String> {
     let mod_dir = installed_mod_path(&state, &mod_name)?;
 
-    if !mod_dir.exists() {
-        return Err(format!("Mod directory not found: {mod_name}"));
-    }
-
-    Ok(is_enabled_recursive(&mod_dir))
+    let mods_root = resolve_mods_dir_path()?;
+    Ok(effective_enabled_at_path(&mods_root, &mod_dir))
 }
 
 #[tauri::command]
@@ -128,26 +108,28 @@ pub async fn toggle_mod_enabled(
     enabled: bool,
 ) -> Result<(), String> {
     let mod_dir = installed_mod_path(&state, &mod_name)?;
+    let mods_root = resolve_mods_dir_path()?;
     // Run the (blocking, parallel) filesystem work off the async runtime's
     // worker threads so a slow toggle never starves other commands.
-    tauri::async_runtime::spawn_blocking(move || set_mod_enabled_at_path(&mod_dir, enabled))
-        .await
-        .map_err(|e| format!("Toggle task failed: {e}"))?
+    tauri::async_runtime::spawn_blocking(move || {
+        set_effective_enabled_at_path(&mods_root, &mod_dir, enabled)
+    })
+    .await
+    .map_err(|e| format!("Toggle task failed: {e}"))?
 }
 
 #[tauri::command]
 pub async fn is_mod_enabled_by_path(mod_path: String) -> Result<bool, String> {
     let path = PathBuf::from(&mod_path);
-    if !path.exists() {
-        return Err(format!("Mod path does not exist: {mod_path}"));
-    }
-    Ok(is_enabled_recursive(&path))
+    let mods_root = resolve_mods_dir_path()?;
+    Ok(effective_enabled_at_path(&mods_root, &path))
 }
 
 #[tauri::command]
 pub async fn toggle_mod_enabled_by_path(mod_path: String, enabled: bool) -> Result<(), String> {
     let path = PathBuf::from(&mod_path);
-    set_mod_enabled_at_path(&path, enabled)
+    let mods_root = resolve_mods_dir_path()?;
+    set_effective_enabled_at_path(&mods_root, &path, enabled)
 }
 
 #[tauri::command]
@@ -194,11 +176,12 @@ pub async fn toggle_mods_enabled_batch(
         }
     }
 
+    let mods_root = resolve_mods_dir_path()?;
     // Off-load the blocking parallel filesystem work from the async runtime.
     tauri::async_runtime::spawn_blocking(move || {
-        tasks
-            .par_iter()
-            .try_for_each(|(path, enabled)| set_mod_enabled_at_path(path, *enabled))
+        tasks.par_iter().try_for_each(|(path, enabled)| {
+            set_effective_enabled_at_path(&mods_root, path, *enabled)
+        })
     })
     .await
     .map_err(|e| format!("Batch toggle task failed: {e}"))??;
@@ -213,6 +196,7 @@ pub async fn enabled_state_map(
     local_paths: Option<Vec<String>>,
 ) -> Result<HashMap<String, bool>, String> {
     let mut out: HashMap<String, bool> = HashMap::new();
+    let mods_root = resolve_mods_dir_path()?;
 
     // Resolve DB-tracked mods under the lock, then release it before the
     // (potentially slow) recursive filesystem scans below.
@@ -225,7 +209,7 @@ pub async fn enabled_state_map(
             .collect()
     };
     for (name, p) in installed_mods {
-        out.insert(name, is_enabled_recursive(&p));
+        out.insert(name, effective_enabled_at_path(&mods_root, &p));
     }
 
     // Local mods passed from frontend
@@ -240,7 +224,9 @@ pub async fn enabled_state_map(
             if name.is_empty() {
                 continue;
             }
-            out.insert(name, is_enabled_recursive(&path));
+            let effective = effective_enabled_at_path(&mods_root, &path);
+            out.insert(p, effective);
+            out.entry(name).or_insert(effective);
         }
     }
 
@@ -253,6 +239,24 @@ mod tests {
     use tempfile::tempdir;
 
     #[test]
+    fn external_scope_only_trusts_exact_game_root_talisman() {
+        let dir = tempdir().unwrap();
+        let mods = dir.path().join("Mods");
+        let game = dir.path().join("Game");
+        let talisman = game.join("Talisman");
+        fs::create_dir(&mods).unwrap();
+        fs::create_dir_all(&talisman).unwrap();
+        fs::create_dir(game.join("Other")).unwrap();
+        fs::create_dir(dir.path().join("Talisman")).unwrap();
+        assert_eq!(
+            scope_mod_root(&mods, &talisman, std::slice::from_ref(&game)).unwrap(),
+            game
+        );
+        assert!(scope_mod_root(&mods, &game.join("Other"), std::slice::from_ref(&game)).is_err());
+        assert!(scope_mod_root(&mods, &dir.path().join("Talisman"), &[game]).is_err());
+    }
+
+    #[test]
     fn test_set_mod_enabled_creates_lovelyignore() {
         let dir = tempdir().unwrap();
         let mod_dir = dir.path().join("TestMod");
@@ -262,11 +266,11 @@ mod tests {
         assert!(!mod_dir.join(".lovelyignore").exists());
 
         // Disable the mod
-        set_mod_enabled_at_path(&mod_dir, false).unwrap();
+        set_mod_enabled_at_path(dir.path(), &mod_dir, false).unwrap();
         assert!(mod_dir.join(".lovelyignore").exists());
 
         // Enable the mod
-        set_mod_enabled_at_path(&mod_dir, true).unwrap();
+        set_mod_enabled_at_path(dir.path(), &mod_dir, true).unwrap();
         assert!(!mod_dir.join(".lovelyignore").exists());
     }
 
@@ -278,19 +282,23 @@ mod tests {
         fs::create_dir_all(&sub_dir).unwrap();
 
         // Disable - should create .lovelyignore in both places
-        set_mod_enabled_at_path(&mod_dir, false).unwrap();
+        set_mod_enabled_at_path(dir.path(), &mod_dir, false).unwrap();
         assert!(mod_dir.join(".lovelyignore").exists());
         assert!(sub_dir.join(".lovelyignore").exists());
 
         // Enable - should remove both
-        set_mod_enabled_at_path(&mod_dir, true).unwrap();
+        set_mod_enabled_at_path(dir.path(), &mod_dir, true).unwrap();
         assert!(!mod_dir.join(".lovelyignore").exists());
         assert!(!sub_dir.join(".lovelyignore").exists());
     }
 
     #[test]
     fn test_set_mod_enabled_nonexistent_path() {
-        let result = set_mod_enabled_at_path(Path::new("/nonexistent/path"), true);
+        let result = set_mod_enabled_at_path(
+            Path::new("/nonexistent"),
+            Path::new("/nonexistent/path"),
+            true,
+        );
         assert!(result.is_err());
         assert!(result.unwrap_err().contains("does not exist"));
     }
@@ -302,13 +310,13 @@ mod tests {
         fs::create_dir(&mod_dir).unwrap();
 
         // Disable twice should work
-        set_mod_enabled_at_path(&mod_dir, false).unwrap();
-        set_mod_enabled_at_path(&mod_dir, false).unwrap();
+        set_mod_enabled_at_path(dir.path(), &mod_dir, false).unwrap();
+        set_mod_enabled_at_path(dir.path(), &mod_dir, false).unwrap();
         assert!(mod_dir.join(".lovelyignore").exists());
 
         // Enable twice should work
-        set_mod_enabled_at_path(&mod_dir, true).unwrap();
-        set_mod_enabled_at_path(&mod_dir, true).unwrap();
+        set_mod_enabled_at_path(dir.path(), &mod_dir, true).unwrap();
+        set_mod_enabled_at_path(dir.path(), &mod_dir, true).unwrap();
         assert!(!mod_dir.join(".lovelyignore").exists());
     }
 
@@ -319,13 +327,13 @@ mod tests {
         let deep = mod_dir.join("sub1").join("sub2").join("sub3");
         fs::create_dir_all(&deep).unwrap();
 
-        set_mod_enabled_at_path(&mod_dir, false).unwrap();
+        set_mod_enabled_at_path(dir.path(), &mod_dir, false).unwrap();
         assert!(mod_dir.join(".lovelyignore").exists());
         assert!(mod_dir.join("sub1").join(".lovelyignore").exists());
         assert!(mod_dir.join("sub1/sub2").join(".lovelyignore").exists());
         assert!(deep.join(".lovelyignore").exists());
 
-        set_mod_enabled_at_path(&mod_dir, true).unwrap();
+        set_mod_enabled_at_path(dir.path(), &mod_dir, true).unwrap();
         assert!(!mod_dir.join(".lovelyignore").exists());
         assert!(!deep.join(".lovelyignore").exists());
     }
@@ -338,11 +346,11 @@ mod tests {
         let inner = mod_dir.join("Cryptid-main");
         fs::create_dir_all(&inner).unwrap();
 
-        assert!(is_enabled_recursive(&mod_dir));
+        assert!(is_mod_enabled_at_path(dir.path(), &mod_dir).unwrap());
 
         // Only the inner folder has the marker; top-level is clean.
         fs::write(inner.join(".lovelyignore"), "").unwrap();
-        assert!(!is_enabled_recursive(&mod_dir));
+        assert!(!is_mod_enabled_at_path(dir.path(), &mod_dir).unwrap());
     }
 
     #[test]
@@ -354,6 +362,6 @@ mod tests {
         let dotdir = mod_dir.join(".git");
         fs::create_dir_all(&dotdir).unwrap();
         fs::write(dotdir.join(".lovelyignore"), "").unwrap();
-        assert!(is_enabled_recursive(&mod_dir));
+        assert!(is_mod_enabled_at_path(dir.path(), &mod_dir).unwrap());
     }
 }

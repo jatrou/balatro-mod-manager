@@ -4,7 +4,7 @@ use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
-use bmm_lib::awesome_installer::{self, InstallSource, Loader, PreparedInstall};
+use bmm_lib::awesome_installer::{self, Loader, PreparedInstall};
 use bmm_lib::local_mod_detection;
 use once_cell::sync::Lazy;
 use tauri::Emitter;
@@ -62,35 +62,6 @@ fn safe_folder_name(requested: &str, title: &str) -> String {
     }
 }
 
-fn normalize_title(title: &str) -> String {
-    title
-        .chars()
-        .filter(|c| c.is_alphanumeric())
-        .flat_map(char::to_lowercase)
-        .collect()
-}
-
-fn reject_withdrawn(title: &str, url: Option<&str>) -> Result<(), String> {
-    let key = normalize_title(title);
-    if let Some(reason) = url.and_then(awesome_source::withdrawn_source_reason) {
-        return Err(reason.to_string());
-    }
-    if key == "jokerdisplay" {
-        return Err(
-            "This author withdrew the mod from BMM; it cannot be installed through BMM".to_string(),
-        );
-    }
-    if key.contains("joyousspring") {
-        return Err(
-            "Joyous Spring was withdrawn from BMM; it cannot be installed through BMM".to_string(),
-        );
-    }
-    if key == "multiplayer" || key == "balatromultiplayer" {
-        return Err("Balatro Multiplayer requires an unsupported installation layout; follow its source instructions manually".to_string());
-    }
-    Ok(())
-}
-
 fn parse_loader(value: &str) -> Result<Loader, String> {
     match value.to_ascii_lowercase().as_str() {
         "steamodded" => Ok(Loader::Steamodded),
@@ -143,16 +114,8 @@ pub async fn prepare_awesome_install(
     if title.is_empty() {
         return Err("Mod title is required".to_string());
     }
-    reject_withdrawn(&title, url.as_deref())?;
     let loader = parse_loader(&loader)?;
     let source = awesome_source::resolve_source(url, local_path).await?;
-    let source_url = match &source {
-        InstallSource::Url(value) | InstallSource::UrlSubtree { url: value, .. } => {
-            Some(value.as_str())
-        }
-        InstallSource::Local(_) => None,
-    };
-    reject_withdrawn(&title, source_url)?;
     let mods_dir = mods_dir()?;
     let folder_name = safe_folder_name(&folder_name, &title);
     let prepared = awesome_installer::prepare_install(&mods_dir, source, &folder_name, loader)
@@ -333,7 +296,24 @@ mod tests {
             safe_folder_name("", "1 Hand? You're Joking?"),
             "1 Hand- You're Joking"
         );
-        assert!(reject_withdrawn("JokerDisplay", None).is_err());
-        assert!(reject_withdrawn("Other", Some("https://github.com/nh6574/Other")).is_err());
+        for title in ["JokerDisplay", "Joyous Spring", "Balatro Multiplayer"] {
+            assert_eq!(safe_folder_name("", title), title);
+        }
+    }
+
+    #[tokio::test]
+    async fn author_and_mod_names_do_not_bypass_or_preempt_source_validation() {
+        for title in ["JokerDisplay", "Joyous Spring", "Balatro Multiplayer"] {
+            let error = prepare_awesome_install(
+                title.into(),
+                title.into(),
+                "Steamodded".into(),
+                Some("http://github.com/nh6574/JokerDisplay/archive/main.zip".into()),
+                None,
+            )
+            .await
+            .unwrap_err();
+            assert_eq!(error, "Download URL must use HTTPS", "{title}");
+        }
     }
 }

@@ -145,18 +145,12 @@ function parseLeadingLinks(
   return links;
 }
 
-function safetyWarning(title: string, sourceUrl: string) {
-  const normalizedTitle = normalizeKey(title);
-  const normalizedUrl = sourceUrl.toLowerCase();
-  if (
-    normalizedTitle === "jokerdisplay" ||
-    normalizedUrl.includes("github.com/nh6574/")
-  ) {
-    return "This author withdrew the mod from BMM. The source is shown for reference only and cannot be installed through BMM.";
-  }
-  if (normalizedTitle.includes("joyousspring")) {
-    return "Joyous Spring was withdrawn from BMM. The source is shown for reference only and cannot be installed through BMM.";
-  }
+/** Current technical installation restrictions, independent of persisted warnings. */
+export function getAwesomeInstallationWarning(
+  entry: Pick<AwesomeEntry, "title" | "sourceUrl">,
+) {
+  const normalizedTitle = normalizeKey(entry.title);
+  const normalizedUrl = entry.sourceUrl.toLowerCase();
   if (
     normalizedTitle === "multiplayer" ||
     normalizedTitle === "balatromultiplayer" ||
@@ -255,7 +249,10 @@ export function parseAwesomeBalatroMarkdown(
         badges: parent.badges,
         sourceLines: [index + 1],
         parentTitle: parent.title,
-        safetyWarning: safetyWarning(title, parent.sourceUrl),
+        safetyWarning: getAwesomeInstallationWarning({
+          title,
+          sourceUrl: parent.sourceUrl,
+        }),
       });
       continue;
     }
@@ -298,7 +295,7 @@ export function parseAwesomeBalatroMarkdown(
       kind,
       badges: parseBadges(body),
       sourceLines: [index + 1],
-      safetyWarning: safetyWarning(title, sourceUrl),
+      safetyWarning: getAwesomeInstallationWarning({ title, sourceUrl }),
     });
     parent = kind === "mod" ? entry : null;
   }
@@ -337,7 +334,7 @@ function readCachedCatalog(): AwesomeCatalog | null {
     );
     if (!isCatalog(parsed)) return null;
     const catalog = filterUnavailableAwesomeEntries(parsed);
-    // Rewrite old caches so a prior app version's dead entries do not persist.
+    // Rewrite old caches so removed sources and retired policy warnings do not persist.
     writeCachedCatalog(catalog);
     return catalog;
   } catch {
@@ -362,6 +359,8 @@ export function filterUnavailableAwesomeEntries(
     .filter((entry) => !isKnownMissingSource(entry.sourceUrl))
     .map((entry) => ({
       ...entry,
+      // Recompute current technical restrictions so old serialized policy bans expire.
+      safetyWarning: getAwesomeInstallationWarning(entry),
       links: entry.links.filter((link) => !isKnownMissingSource(link.url)),
     }));
   return {
@@ -446,7 +445,7 @@ export function findCatalogMatch(
 ): Mod | null {
   if (
     entry.kind !== "mod" ||
-    entry.safetyWarning ||
+    getAwesomeInstallationWarning(entry) ||
     entry.loader === "Balamod" ||
     entry.loader === "None" ||
     !isRootGitHubRepositoryUrl(entry.sourceUrl)

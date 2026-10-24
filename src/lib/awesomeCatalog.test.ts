@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { getAwesomeInstallSource } from "./awesomeInstall";
+import snapshot from "./data/awesome-balatro.json";
 import { isKnownMissingSource } from "./repositoryMetadata";
 import type { Mod } from "../stores/modStore";
 import {
@@ -137,23 +139,123 @@ describe("Awesome Balatro catalog", () => {
     expect(findCatalogMatch(balamodEntry, [mod()])).toBeNull();
   });
 
-  it("never maps withdrawn or unsupported entries to the install catalog", () => {
-    const entries = parseAwesomeBalatroMarkdown(`
+  it.each([
+    ["JokerDisplay", "nh6574/JokerDisplay"],
+    ["Other Mod", "nh6574/other-mod"],
+    ["Joyous Spring", "example/JoyousSpring"],
+  ])("allows %s regardless of author or past disputes", (title, repo) => {
+    const entry = parseAwesomeBalatroMarkdown(`
 ## Mods (Require [**Lovely**](https://example.test))
 ### GUI
-- [JokerDisplay](https://github.com/nh6574/JokerDisplay) - Display.
-- [Multiplayer](https://github.com/Balatro-Multiplayer/BalatroMultiplayer) - Multiplayer.
-`).entries;
-    expect(entries.every((entry) => entry.safetyWarning)).toBe(true);
+- [${title}](https://github.com/${repo}) - Display.
+`).entries[0];
+    const matched = mod({ title, repo: `https://github.com/${repo}` });
+    expect(entry.safetyWarning).toBeUndefined();
+    expect(findCatalogMatch(entry, [matched])).toBe(matched);
     expect(
-      findCatalogMatch(entries[0], [
-        mod({
-          title: "JokerDisplay",
-          repo: "https://github.com/nh6574/JokerDisplay",
-        }),
+      findCatalogMatch(
+        { ...entry, safetyWarning: "This author withdrew the mod from BMM." },
+        [matched],
+      ),
+    ).toBe(matched);
+    expect(getAwesomeInstallSource(entry, matched)).toMatchObject({
+      kind: "download",
+      source: "indexed",
+    });
+  });
+
+  it("retains the unsupported Multiplayer installation layout restriction", () => {
+    const entry = parseAwesomeBalatroMarkdown(`
+## Mods (Require [**Lovely**](https://example.test))
+- [Multiplayer](https://github.com/Balatro-Multiplayer/BalatroMultiplayer) - Multiplayer.
+`).entries[0];
+    expect(entry.safetyWarning).toContain(
+      "installation layout BMM does not support",
+    );
+    expect(
+      findCatalogMatch(entry, [
+        mod({ title: entry.title, repo: entry.sourceUrl }),
       ]),
     ).toBeNull();
+    expect(
+      getAwesomeInstallSource({ ...entry, safetyWarning: undefined }),
+    ).toMatchObject({ kind: "unsupported" });
   });
+
+  it("ships JokerDisplay without a serialized author restriction", () => {
+    for (const catalog of [snapshot, bundledAwesomeCatalog]) {
+      const entry = catalog.entries.find(
+        (candidate) => candidate.title === "JokerDisplay",
+      );
+      expect(entry).toBeDefined();
+      expect(entry).not.toHaveProperty("safetyWarning", expect.any(String));
+    }
+  });
+
+  it.each([false, true])(
+    "migrates cached author bans without resetting the cache (refresh: %s)",
+    async (refresh) => {
+      const additions = parseAwesomeBalatroMarkdown(`
+## Mods (Require [**Lovely**](https://example.test))
+- [Other Mod](https://github.com/nh6574/other-mod) - Display.
+- [Joyous Spring](https://github.com/example/JoyousSpring) - Cards.
+- [Multiplayer](https://github.com/Balatro-Multiplayer/BalatroMultiplayer) - Multiplayer.
+`).entries;
+      const restrictedTitles = [
+        "JokerDisplay",
+        "Other Mod",
+        "Joyous Spring",
+        "Multiplayer",
+      ];
+      const entries = [...bundledAwesomeCatalog.entries, ...additions].map(
+        (entry) => ({
+          ...entry,
+          ...(restrictedTitles.includes(entry.title)
+            ? {
+                safetyWarning:
+                  "This author withdrew the mod from BMM. The source is shown for reference only.",
+              }
+            : {}),
+        }),
+      );
+      localStorage.setItem(
+        "awesome-balatro-catalog-v1",
+        JSON.stringify({ ...bundledAwesomeCatalog, entries }),
+      );
+      const result = await loadAwesomeCatalog({
+        refresh,
+        fetchImpl: vi.fn().mockRejectedValue(new Error("offline")),
+      });
+      expect(result.origin).toBe("cache");
+      for (const title of restrictedTitles.slice(0, -1)) {
+        const entry = result.catalog.entries.find(
+          (candidate) => candidate.title === title,
+        )!;
+        const matched = mod({ title, repo: entry.sourceUrl });
+        expect(entry.safetyWarning).toBeUndefined();
+        expect(findCatalogMatch(entry, [matched])).toBe(matched);
+        expect(getAwesomeInstallSource(entry, matched)).toMatchObject({
+          kind: "download",
+          source: "indexed",
+        });
+      }
+      const multiplayer = result.catalog.entries.find(
+        (entry) => entry.title === "Multiplayer",
+      )!;
+      expect(multiplayer.safetyWarning).toContain(
+        "installation layout BMM does not support",
+      );
+      const rewritten = JSON.parse(
+        localStorage.getItem("awesome-balatro-catalog-v1")!,
+      );
+      expect(
+        rewritten.entries.some((entry: { safetyWarning?: string }) =>
+          /withdrew|withdrawn/i.test(entry.safetyWarning || ""),
+        ),
+      ).toBe(false);
+      expect(rewritten.entries).toHaveLength(entries.length);
+    },
+  );
 
   it("falls back to the bundled snapshot after a failed live refresh", async () => {
     const fetchImpl = vi.fn().mockRejectedValue(new Error("offline"));

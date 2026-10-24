@@ -170,11 +170,41 @@ describe("Awesome install source", () => {
     });
   });
 
-  it("keeps withdrawn, special-layout, and unsupported-loader entries out of one-click install", () => {
-    const warning = "This author withdrew the mod from BMM.";
-    expect(
-      getAwesomeInstallSource(entry({ safetyWarning: warning }), mod()),
-    ).toMatchObject({ kind: "unsupported", reason: warning });
+  it.each([
+    ["JokerDisplay", "nh6574/JokerDisplay"],
+    ["Other Mod", "nh6574/other-mod"],
+    ["JoyousSpring", "example/JoyousSpring"],
+  ])(
+    "ignores old author bans for %s even on direct entry objects",
+    (title, repo) => {
+      const sourceUrl = `https://github.com/${repo}`;
+      const candidate = entry({
+        title,
+        sourceUrl,
+        safetyWarning: "This author withdrew the mod from BMM.",
+      });
+      expect(getAwesomeInstallSource(candidate)).toMatchObject({
+        kind: "download",
+        source: "github",
+        url: sourceUrl,
+      });
+      expect(
+        getAwesomeInstallSource(candidate, mod({ title, repo: sourceUrl })),
+      ).toMatchObject({ kind: "download", source: "indexed" });
+    },
+  );
+
+  it("keeps special layouts and unsupported loaders out of one-click install", () => {
+    const candidate = entry({
+      title: "Multiplayer",
+      sourceUrl: "https://github.com/Balatro-Multiplayer/BalatroMultiplayer",
+    });
+    expect(getAwesomeInstallSource(candidate)).toMatchObject({
+      kind: "unsupported",
+      reason: expect.stringContaining(
+        "installation layout BMM does not support",
+      ),
+    });
     for (const loader of ["Balamod", "None"] as const) {
       expect(getAwesomeInstallSource(entry({ loader }), mod())).toMatchObject({
         kind: "unsupported",

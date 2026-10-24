@@ -255,7 +255,7 @@ describe("AwesomeMods", () => {
     expect(onViewCatalog).toHaveBeenCalledWith(catalogMod);
   });
 
-  it("keeps withdrawn entries source-only even if the old catalog contains them", async () => {
+  it("offers JokerDisplay installation with an old catalog match and cached author ban", async () => {
     modsStore.set([
       {
         ...catalogMod,
@@ -263,6 +263,20 @@ describe("AwesomeMods", () => {
         repo: "https://github.com/nh6574/JokerDisplay",
       },
     ]);
+    localStorage.setItem(
+      "awesome-balatro-catalog-v1",
+      JSON.stringify({
+        ...bundledAwesomeCatalog,
+        entries: bundledAwesomeCatalog.entries.map((entry) =>
+          entry.title === "JokerDisplay"
+            ? {
+                ...entry,
+                safetyWarning: "This author withdrew the mod from BMM.",
+              }
+            : entry,
+        ),
+      }),
+    );
     render(AwesomeMods);
     await fireEvent.input(
       screen.getByRole("searchbox", { name: /search awesome balatro/i }),
@@ -274,13 +288,24 @@ describe("AwesomeMods", () => {
       .closest("article");
     expect(card).not.toBeNull();
     expect(
-      within(card as HTMLElement).queryByRole("button", {
+      within(card as HTMLElement).getByRole("button", {
         name: "View in catalog",
       }),
-    ).toBeNull();
-    expect(
-      within(card as HTMLElement).getByText(/withdrew the mod from BMM/i),
     ).toBeTruthy();
+    expect(
+      within(card as HTMLElement).getByRole("button", { name: /^Install$/ }),
+    ).toBeTruthy();
+    expect(
+      within(card as HTMLElement).queryByText(/withdrew|withdrawn/i),
+    ).toBeNull();
+    const cached = JSON.parse(
+      localStorage.getItem("awesome-balatro-catalog-v1")!,
+    );
+    expect(
+      cached.entries.find(
+        (entry: { title: string }) => entry.title === "JokerDisplay",
+      ).safetyWarning,
+    ).toBeUndefined();
   });
 
   it("offers Discord download and local import for a Discord-only entry", async () => {

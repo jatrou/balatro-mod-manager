@@ -1,6 +1,9 @@
 import type { Mod } from "../stores/modStore";
 import type { AwesomeEntry } from "./awesomeCatalog";
-import { canonicalGitHubRepository } from "./awesomeCatalog";
+import {
+  canonicalGitHubRepository,
+  getAwesomeInstallationWarning,
+} from "./awesomeCatalog";
 
 export type AwesomeInstallSource =
   | {
@@ -179,11 +182,12 @@ export function getAwesomeInstallSource(
     return url !== null && isDiscord(url);
   });
 
-  if (entry.safetyWarning) {
+  const installationWarning = getAwesomeInstallationWarning(entry);
+  if (installationWarning) {
     return {
       kind: "unsupported",
       sourceUrl,
-      reason: entry.safetyWarning,
+      reason: installationWarning,
       discordUrl,
     };
   }

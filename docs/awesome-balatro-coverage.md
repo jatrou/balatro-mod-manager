@@ -81,8 +81,8 @@ repository still exists, while those four files do not. A missing file does
 not hide other working mods in that repository. The app filters known missing
 sources from bundled data, old local caches, and successful README refreshes,
 so an upstream stale link cannot reappear through Refresh. Dead secondary
-links are also removed. Safety restrictions on withdrawn mods remain separate
-from source availability.
+links are also removed. Source availability is independent of installation
+layout support; authors and mod names are not blocked from downloads.
 
 To refresh the evidence and bundled index, run:
 
@@ -139,7 +139,12 @@ download stays in place. RAR/7z downloads must be extracted first and imported
 as a folder.
 
 Preparation downloads/copies into staging outside Mods. Review shows the final
-destination, detected metadata, upstream badges, and compatibility warnings.
+destination, detected metadata, upstream source status, and compatibility warnings.
+Positive badges such as “fully functional” and desktop-irrelevant notes such as
+“not mobile compatible” appear as informational source status. They do not
+require acknowledgement or disable installation. Upstream reports of crashes,
+conflicts, experimental behavior, or needed repairs remain warnings, separate
+from the checks against installed mods.
 Declared conflicts are checked both from the new package and from installed
 mods. Missing dependencies and unverified version constraints are called out.
 Duplicate identities and occupied destinations block installation. Warnings
@@ -159,12 +164,11 @@ retain their setup instructions because their destination or game-patching
 requirements differ. Ambiguous/unsupported GitHub layouts can be downloaded
 manually and imported after selecting the actual mod folder.
 
-JokerDisplay and any source owned by `nh6574`, Joyous Spring, and Balatro
-Multiplayer are hard-blocked from the BMM install action even if stale local
-data contains a matching record. Their source can remain visible with a warning;
-installation must follow the owner's current instructions. Multiplayer is
-called out separately because its supported layout is not compatible with
-BMM's installation flow.
+JokerDisplay, other `nh6574` mods, and Joyous Spring use the same download and
+package checks as other mods. Previous author/name-based exclusions are removed
+from the UI, backend, bundled snapshot, and cached catalog handling.
+Balatro Multiplayer retains manual setup instructions because its installation
+layout is not supported by BMM's installation flow.
 
 Runtime “in BMM catalog” and “installed” totals intentionally are not fixed in
 this report. They are computed against the currently verified primary catalog
@@ -200,3 +204,22 @@ All installation checks used a separate `BMM_DATA_DIR`, app identifier, and
 WebView profile. The user's installed manager, real mods, and game saves were
 not changed. These checks verify manager behavior; in-game compatibility and
 native macOS/Linux execution are not established by this Windows run.
+
+### Source-status and download follow-up
+
+The October 23 follow-up passed 215 frontend tests, 179 application tests, and
+126 library tests, plus type checking, lint, Rust formatting, and Clippy. The
+Windows x64 production build produced both NSIS and MSI installers.
+The three opt-in network tests remain skipped in the standard suite; the new
+JokerDisplay network test was also run explicitly. It downloaded the current
+stable branch, detected JokerDisplay 2.0.6, preserved its declared conflict
+metadata, and reported a missing loader in an empty isolated Mods directory.
+Cancellation removed staging without installing or changing the user's mods.
+
+A browser smoke check with a simulated desktop bridge verified that Deselect
+All's “fully functional” badge is informational and leaves Install enabled,
+JokerDisplay requests its GitHub download, reported crashes require
+acknowledgement, and blocking conflicts cannot be overridden. The screenshot
+below uses the simulated install destination; it is not an installed-mod check.
+
+![Positive source status without a false compatibility warning](images/install-source-status.png)

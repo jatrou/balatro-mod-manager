@@ -207,31 +207,6 @@ fn validate_https(value: &str) -> Result<Url, String> {
     Ok(url)
 }
 
-pub fn withdrawn_source_reason(value: &str) -> Option<&'static str> {
-    let url = Url::parse(value).ok()?;
-    let mut parts = url.path_segments()?;
-    let (owner, repo) = match url.host_str()? {
-        "github.com" | "www.github.com" | "raw.githubusercontent.com" | "codeload.github.com" => {
-            (parts.next()?, parts.next().unwrap_or(""))
-        }
-        "api.github.com" if parts.next()? == "repos" => (parts.next()?, parts.next().unwrap_or("")),
-        _ => return None,
-    };
-    let owner = urlencoding::decode(owner).ok()?;
-    let repo = urlencoding::decode(repo).ok()?;
-    if owner.eq_ignore_ascii_case("nh6574") {
-        return Some("This author withdrew the mod from BMM; it cannot be installed through BMM");
-    }
-    if owner.eq_ignore_ascii_case("Balatro-Multiplayer")
-        && repo.eq_ignore_ascii_case("BalatroMultiplayer")
-    {
-        return Some(
-            "Balatro Multiplayer requires an unsupported installation layout; follow its source instructions manually",
-        );
-    }
-    None
-}
-
 pub async fn resolve_source(
     url: Option<String>,
     local_path: Option<String>,
@@ -253,9 +228,6 @@ pub async fn resolve_source(
             } else {
                 raw
             };
-            if let Some(reason) = withdrawn_source_reason(&value) {
-                return Err(reason.to_string());
-            }
             let parsed = validate_https(&value)?;
             let client = Client::builder()
                 .user_agent(
@@ -317,19 +289,95 @@ mod tests {
     }
 
     #[test]
-    fn withdrawn_owners_are_blocked_across_github_download_hosts() {
+    fn github_repository_parsing_does_not_restrict_authors_or_mod_names() {
         for url in [
-            "https://github.com/nh6574/Example",
-            "https://raw.githubusercontent.com/NH6574/Example/main/mod.lua",
-            "https://codeload.github.com/nh6574/Example/zip/refs/heads/main",
-            "https://api.github.com/repos/nh6574/Example/zipball/main",
+            "https://github.com/nh6574/JokerDisplay",
+            "https://www.github.com/NH6574/OtherMod",
+            "https://github.com/example/JoyousSpring",
             "https://github.com/Balatro-Multiplayer/BalatroMultiplayer",
+        ] {
+            assert!(
+                matches!(
+                    github_link(&validate_https(url).unwrap()).unwrap(),
+                    Some(GithubLink::Repository { .. })
+                ),
+                "{url}"
+            );
+        }
+    }
+
+    #[tokio::test]
+    async fn direct_github_download_hosts_do_not_restrict_authors_or_mod_names() {
+        for url in [
+            "https://github.com/nh6574/JokerDisplay/archive/refs/heads/main.zip",
+            "https://github.com/nh6574/JokerDisplay/releases/latest/download/mod.zip",
+            "https://www.github.com/nh6574/JokerDisplay/releases/download/v1/mod.zip",
+            "https://raw.githubusercontent.com/NH6574/JokerDisplay/main/mod.lua",
+            "https://codeload.github.com/nh6574/JokerDisplay/zip/refs/heads/main",
+            "https://api.github.com/repos/nh6574/JokerDisplay/zipball/main",
+            "https://github.com/example/JoyousSpring/archive/refs/heads/main.zip",
             "https://codeload.github.com/Balatro-Multiplayer/BalatroMultiplayer/zip/main",
         ] {
-            assert!(withdrawn_source_reason(url).is_some(), "{url}");
+            let source = resolve_source(Some(url.into()), None).await.unwrap();
+            assert!(
+                matches!(source, InstallSource::Url(value) if value == url),
+                "{url}"
+            );
         }
-        assert!(
-            withdrawn_source_reason("https://example.com/?url=github.com/nh6574/Example").is_none()
+    }
+
+    #[tokio::test]
+    async fn named_sources_still_require_valid_https_and_one_source() {
+        let url = "http://raw.githubusercontent.com/nh6574/JokerDisplay/main/mod.lua";
+        assert_eq!(
+            resolve_source(Some(url.into()), None).await.unwrap_err(),
+            "Download URL must use HTTPS"
         );
+        assert!(
+            resolve_source(Some(url.into()), Some("local.lua".into()))
+                .await
+                .is_err()
+        );
+    }
+
+    #[tokio::test]
+    #[ignore = "opt-in public GitHub download; uses only an isolated temporary Mods directory"]
+    async fn live_jokerdisplay_download_prepares_without_installing() {
+        use bmm_lib::awesome_installer::{self, Loader};
+
+        let isolated = tempfile::tempdir().unwrap();
+        let mods_dir = isolated.path().join("Mods");
+        std::fs::create_dir(&mods_dir).unwrap();
+        let source = resolve_source(Some("https://github.com/nh6574/JokerDisplay".into()), None)
+            .await
+            .unwrap();
+        let prepared = awesome_installer::prepare_install(
+            &mods_dir,
+            source,
+            "JokerDisplay",
+            Loader::Steamodded,
+        )
+        .await
+        .unwrap();
+        assert!(
+            prepared
+                .mods
+                .iter()
+                .any(|metadata| metadata.id == "JokerDisplay")
+        );
+        assert!(!prepared.destination.exists());
+        assert_eq!(std::fs::read_dir(&mods_dir).unwrap().count(), 0);
+        let staging = isolated
+            .path()
+            .join(".bmm-awesome-staging")
+            .join(&prepared.token);
+        assert!(staging.join("payload").is_dir());
+        println!(
+            "Prepared live JokerDisplay metadata: {:?}; warnings: {:?}",
+            prepared.mods, prepared.warnings
+        );
+        awesome_installer::cancel_install(&mods_dir, &prepared.token).unwrap();
+        assert!(!staging.exists());
+        assert_eq!(std::fs::read_dir(&mods_dir).unwrap().count(), 0);
     }
 }

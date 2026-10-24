@@ -387,6 +387,7 @@ pub async fn mods_state_summary(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_support::TestEnvironment;
 
     #[test]
     fn test_mod_cache_ttl_is_30_seconds() {
@@ -395,21 +396,20 @@ mod tests {
 
     #[tokio::test]
     async fn save_mods_cache_invalidates_shared_cache() {
-        let temp_dir = tempfile::tempdir().unwrap();
-        let original = std::env::var_os("BMM_DATA_DIR");
-        let _restore = scopeguard::guard(original, |value| unsafe {
-            match value {
-                Some(value) => std::env::set_var("BMM_DATA_DIR", value),
-                None => std::env::remove_var("BMM_DATA_DIR"),
-            }
-        });
-        unsafe { std::env::set_var("BMM_DATA_DIR", temp_dir.path()) };
+        let environment = TestEnvironment::new();
         *MOD_CACHE.write().await = Some(CachedMods {
             mods: Arc::new(Vec::new()),
             loaded_at: Instant::now(),
         });
 
         save_mods_cache(Vec::new()).await.unwrap();
+        assert!(
+            environment
+                .path()
+                .join("cache")
+                .join("balatro-mod-manager")
+                .is_dir()
+        );
 
         assert!(MOD_CACHE.read().await.is_none());
     }

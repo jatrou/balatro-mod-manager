@@ -371,6 +371,7 @@ pub fn configure_display_backend() -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_support::TestEnvironment;
     use std::fs;
     use tempfile::TempDir;
 
@@ -562,52 +563,53 @@ mod tests {
 
     #[test]
     fn test_env_is_truthy_one() {
-        unsafe { std::env::set_var("BMM_TEST_VAR_1", "1") };
+        let mut environment = TestEnvironment::new();
+        environment.set("BMM_TEST_VAR_1", "1");
         assert!(env_is_truthy("BMM_TEST_VAR_1"));
-        unsafe { std::env::remove_var("BMM_TEST_VAR_1") };
     }
 
     #[test]
     fn test_env_is_truthy_true() {
-        unsafe { std::env::set_var("BMM_TEST_VAR_TRUE", "true") };
+        let mut environment = TestEnvironment::new();
+        environment.set("BMM_TEST_VAR_TRUE", "true");
         assert!(env_is_truthy("BMM_TEST_VAR_TRUE"));
-        unsafe { std::env::remove_var("BMM_TEST_VAR_TRUE") };
     }
 
     #[test]
     fn test_env_is_truthy_yes() {
-        unsafe { std::env::set_var("BMM_TEST_VAR_YES", "yes") };
+        let mut environment = TestEnvironment::new();
+        environment.set("BMM_TEST_VAR_YES", "yes");
         assert!(env_is_truthy("BMM_TEST_VAR_YES"));
-        unsafe { std::env::remove_var("BMM_TEST_VAR_YES") };
     }
 
     #[test]
     fn test_env_is_truthy_case_insensitive() {
-        unsafe { std::env::set_var("BMM_TEST_VAR_CASE", "TRUE") };
+        let mut environment = TestEnvironment::new();
+        environment.set("BMM_TEST_VAR_CASE", "TRUE");
         assert!(env_is_truthy("BMM_TEST_VAR_CASE"));
-        unsafe { std::env::set_var("BMM_TEST_VAR_CASE", "True") };
+        environment.set("BMM_TEST_VAR_CASE", "True");
         assert!(env_is_truthy("BMM_TEST_VAR_CASE"));
-        unsafe { std::env::set_var("BMM_TEST_VAR_CASE", "YES") };
+        environment.set("BMM_TEST_VAR_CASE", "YES");
         assert!(env_is_truthy("BMM_TEST_VAR_CASE"));
-        unsafe { std::env::remove_var("BMM_TEST_VAR_CASE") };
     }
 
     #[test]
     fn test_env_is_truthy_falsy_values() {
-        unsafe { std::env::set_var("BMM_TEST_VAR_FALSY", "0") };
+        let mut environment = TestEnvironment::new();
+        environment.set("BMM_TEST_VAR_FALSY", "0");
         assert!(!env_is_truthy("BMM_TEST_VAR_FALSY"));
-        unsafe { std::env::set_var("BMM_TEST_VAR_FALSY", "false") };
+        environment.set("BMM_TEST_VAR_FALSY", "false");
         assert!(!env_is_truthy("BMM_TEST_VAR_FALSY"));
-        unsafe { std::env::set_var("BMM_TEST_VAR_FALSY", "no") };
+        environment.set("BMM_TEST_VAR_FALSY", "no");
         assert!(!env_is_truthy("BMM_TEST_VAR_FALSY"));
-        unsafe { std::env::set_var("BMM_TEST_VAR_FALSY", "") };
+        environment.set("BMM_TEST_VAR_FALSY", "");
         assert!(!env_is_truthy("BMM_TEST_VAR_FALSY"));
-        unsafe { std::env::remove_var("BMM_TEST_VAR_FALSY") };
     }
 
     #[test]
     fn test_env_is_truthy_unset() {
-        unsafe { std::env::remove_var("BMM_TEST_VAR_UNSET") };
+        let mut environment = TestEnvironment::new();
+        environment.remove("BMM_TEST_VAR_UNSET");
         assert!(!env_is_truthy("BMM_TEST_VAR_UNSET"));
     }
 

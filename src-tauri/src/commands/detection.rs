@@ -178,32 +178,15 @@ pub fn reindex_db(db: &Database) -> Result<(usize, usize), AppError> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::ffi::OsStr;
-    use tempfile::tempdir;
-
-    fn set_var(key: &str, val: impl AsRef<OsStr>) {
-        unsafe { std::env::set_var(key, val) };
-    }
-
-    fn remove_var(key: &str) {
-        unsafe { std::env::remove_var(key) };
-    }
+    use crate::test_support::TestEnvironment;
 
     #[test]
     fn reindex_db_removes_missing_paths() {
-        // Redirect BMM-owned data so this test cannot touch the user's config.
-        let td = tempdir().unwrap();
-        let original_data_dir = std::env::var_os("BMM_DATA_DIR");
-        let _restore = scopeguard::guard(original_data_dir, |value| match value {
-            Some(value) => set_var("BMM_DATA_DIR", value),
-            None => remove_var("BMM_DATA_DIR"),
-        });
-        set_var("BMM_DATA_DIR", td.path());
-
+        let environment = TestEnvironment::new();
         let db = Database::new().expect("db");
 
         // Create one existing and one missing mod path
-        let mods_dir = bmm_lib::config_dir().unwrap().join("Balatro").join("Mods");
+        let mods_dir = environment.path().join("Balatro").join("Mods");
         std::fs::create_dir_all(&mods_dir).unwrap();
         let existing = mods_dir.join("Exists");
         std::fs::create_dir_all(&existing).unwrap();

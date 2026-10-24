@@ -12,6 +12,105 @@ mod util;
 #[cfg(target_os = "linux")]
 pub mod wayland_session;
 
+// App tests share one environment lock. The library's own test binary has its
+// separate ENV_LOCK; app tests call that library without its cfg(test) enabled.
+#[cfg(test)]
+pub(crate) mod test_support {
+    use std::ffi::{OsStr, OsString};
+    use std::path::Path;
+    use std::sync::{Mutex, MutexGuard};
+    use tempfile::TempDir;
+
+    static ENV_LOCK: Mutex<()> = Mutex::new(());
+
+    /// Serializes process-environment changes and restores them even on panic.
+    /// BMM's database, configuration, and cache roots always point at this test's
+    /// absolute temporary directory, including on Windows.
+    pub(crate) struct TestEnvironment {
+        originals: Vec<(&'static str, Option<OsString>)>,
+        directory: TempDir,
+        // Release the lock only after restoration and temporary-file cleanup.
+        _lock: MutexGuard<'static, ()>,
+    }
+
+    impl TestEnvironment {
+        pub(crate) fn new() -> Self {
+            let lock = ENV_LOCK.lock().unwrap_or_else(|error| error.into_inner());
+            let directory = tempfile::tempdir().expect("isolated app test directory");
+            assert!(directory.path().is_absolute());
+            let path = directory.path().to_owned();
+            let mut environment = Self {
+                originals: Vec::new(),
+                directory,
+                _lock: lock,
+            };
+            environment.set("BMM_DATA_DIR", &path);
+            assert_eq!(bmm_lib::config_dir().as_deref(), Some(path.as_path()));
+            assert_eq!(bmm_lib::data_dir().as_deref(), Some(path.as_path()));
+            assert_eq!(bmm_lib::cache_dir(), Some(path.join("cache")));
+            environment
+        }
+
+        pub(crate) fn path(&self) -> &Path {
+            self.directory.path()
+        }
+
+        fn remember(&mut self, key: &'static str) {
+            if !self.originals.iter().any(|(saved, _)| *saved == key) {
+                self.originals.push((key, std::env::var_os(key)));
+            }
+        }
+
+        pub(crate) fn set(&mut self, key: &'static str, value: impl AsRef<OsStr>) {
+            self.remember(key);
+            // All app test environment mutations hold ENV_LOCK for their lifetime.
+            unsafe { std::env::set_var(key, value) };
+        }
+
+        #[cfg(target_os = "linux")]
+        pub(crate) fn remove(&mut self, key: &'static str) {
+            self.remember(key);
+            unsafe { std::env::remove_var(key) };
+        }
+    }
+
+    impl Drop for TestEnvironment {
+        fn drop(&mut self) {
+            for (key, original) in self.originals.iter().rev() {
+                unsafe {
+                    match original {
+                        Some(value) => std::env::set_var(key, value),
+                        None => std::env::remove_var(key),
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn restores_environment_and_cleans_directory_after_panic() {
+        let mut environment = TestEnvironment::new();
+        let original_data_dir = environment.originals[0].1.clone();
+        let original_marker = std::env::var_os("BMM_TEST_RESTORE_MARKER");
+        environment.set("BMM_TEST_RESTORE_MARKER", "isolated-test");
+        let temporary_path = environment.path().to_owned();
+        std::fs::write(temporary_path.join("test-only.txt"), "test").unwrap();
+
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            let _environment = environment;
+            panic!("exercise test-environment cleanup");
+        }));
+        assert!(result.is_err());
+
+        // Another guarded test may run between the unwind and this acquisition;
+        // it must also restore the same outer test-runner environment.
+        let _lock = ENV_LOCK.lock().unwrap_or_else(|error| error.into_inner());
+        assert_eq!(std::env::var_os("BMM_DATA_DIR"), original_data_dir);
+        assert_eq!(std::env::var_os("BMM_TEST_RESTORE_MARKER"), original_marker);
+        assert!(!temporary_path.exists());
+    }
+}
+
 use std::path::PathBuf;
 
 use tauri::{Emitter, Manager};

@@ -273,17 +273,8 @@ async fn check_lovely_update_inner(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_support::TestEnvironment;
     use bmm_lib::database::Database;
-    use std::ffi::OsStr;
-    use tempfile::tempdir;
-
-    fn set_var(key: &str, val: impl AsRef<OsStr>) {
-        unsafe { std::env::set_var(key, val) };
-    }
-
-    fn remove_var(key: &str) {
-        unsafe { std::env::remove_var(key) };
-    }
 
     #[test]
     fn test_app_init_data_serialization() {
@@ -327,47 +318,28 @@ mod tests {
     }
 
     #[test]
-    fn test_check_lovely_installed_inner_no_installation() {
-        // Set up temp environment
-        let td = tempdir().unwrap();
-        let original_cfg = std::env::var_os("XDG_CONFIG_HOME");
-        let original_home = std::env::var_os("HOME");
-        set_var("XDG_CONFIG_HOME", td.path());
-        if cfg!(target_os = "macos") {
-            set_var("HOME", td.path());
-        }
-
+    fn test_check_lovely_installed_inner_without_injector() {
+        let environment = TestEnvironment::new();
         let db = Database::new().expect("db");
+        assert!(environment.path().join("Balatro").is_dir());
 
-        // With no installation path, should return false (no lovely found)
-        let result = check_lovely_installed_inner(&db, &None);
-        assert!(result.is_ok());
-        // On non-configured systems, lovely is not installed
-        // (the specific result depends on platform)
-
-        // Cleanup
-        match original_cfg {
-            Some(val) => set_var("XDG_CONFIG_HOME", val),
-            None => remove_var("XDG_CONFIG_HOME"),
-        }
-        match original_home {
-            Some(val) => set_var("HOME", val),
-            None => remove_var("HOME"),
-        }
+        // Pass an isolated game location so detection cannot consult a real
+        // installed game's injector when the test runs on a configured machine.
+        let installation = Some(
+            environment
+                .path()
+                .join("game")
+                .to_string_lossy()
+                .into_owned(),
+        );
+        assert!(!check_lovely_installed_inner(&db, &installation).unwrap());
     }
 
     #[test]
     fn test_all_settings_defaults() {
-        // Set up temp environment
-        let td = tempdir().unwrap();
-        let original_cfg = std::env::var_os("XDG_CONFIG_HOME");
-        let original_home = std::env::var_os("HOME");
-        set_var("XDG_CONFIG_HOME", td.path());
-        if cfg!(target_os = "macos") {
-            set_var("HOME", td.path());
-        }
-
+        let environment = TestEnvironment::new();
         let db = Database::new().expect("db");
+        assert!(environment.path().join("Balatro").is_dir());
 
         // Test default values from a fresh database
         let discord_rpc = db.is_discord_rpc_enabled().unwrap();
@@ -387,15 +359,5 @@ mod tests {
             linux_prefix,
         );
         assert!(!launch_mode.is_empty()); // launch mode should have a default
-
-        // Cleanup
-        match original_cfg {
-            Some(val) => set_var("XDG_CONFIG_HOME", val),
-            None => remove_var("XDG_CONFIG_HOME"),
-        }
-        match original_home {
-            Some(val) => set_var("HOME", val),
-            None => remove_var("HOME"),
-        }
     }
 }

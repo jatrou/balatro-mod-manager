@@ -7,6 +7,7 @@ import {
   prepareModsForCache,
   syncInstalledCatalogStatus,
   ensureInstalledModCards,
+  deduplicateMods,
 } from "./catalogMerge";
 
 const mod = (title: string, overrides: Partial<Mod> = {}): Mod => ({
@@ -26,6 +27,149 @@ const mod = (title: string, overrides: Partial<Mod> = {}): Mod => ({
 });
 
 describe("authoritative catalog reconciliation", () => {
+  it("keeps earliest-match ordering when the ID and title indexes find different rows", () => {
+    const rows = deduplicateMods([
+      mod("Shared", {
+        id: "first",
+        repo: "https://github.com/one/mod",
+        categories: [0],
+      }),
+      mod("Other", {
+        id: "second",
+        repo: "https://github.com/two/mod",
+        categories: [1],
+      }),
+      mod("Shared", {
+        id: "second",
+        repo: "https://github.com/one/mod",
+        categories: [2],
+      }),
+    ]);
+    expect(rows.map((entry) => entry.categories)).toEqual([[0, 2], [1]]);
+  });
+
+  it("refreshes candidate indexes after a live alias changes the retained title", () => {
+    const rows = deduplicateMods([
+      mod("Old title", { id: "author@mod", categories: [0] }),
+      mod("New title", {
+        id: "author@mod",
+        _catalogEntry: true,
+        downloadURL: "bmi://author@mod",
+        categories: [1],
+      }),
+      mod("New title", { id: "different-id", categories: [2] }),
+      mod("Old title", { id: "new-old-title", categories: [3] }),
+    ]);
+    expect(rows.map((entry) => entry.title)).toEqual([
+      "New title",
+      "Old title",
+    ]);
+    expect(rows.map((entry) => entry.categories)).toEqual([[0, 1, 2], [3]]);
+  });
+
+  it("combines aliases and categories without dropping the live installer or installed path", () => {
+    const rows = deduplicateMods([
+      mod(" Example_Mod ", {
+        repo: "https://github.com/Author/Example.git/",
+        _catalogEntry: true,
+        categories: [0],
+        description: "Cached details",
+      }),
+      mod("Example Mod", {
+        repo: "https://github.com/author/example",
+        _catalogEntry: true,
+        categories: [1],
+        _dirName: "author@example",
+        downloadURL: "bmi://author@example",
+      }),
+      mod("example-mod", {
+        repo: "",
+        publisher: "Installed",
+        installed: true,
+        _installedPath: "C:/Mods/Example",
+      }),
+    ]);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      title: "Example Mod",
+      categories: [0, 1],
+      description: "Cached details",
+      downloadURL: "bmi://author@example",
+      _dirName: "author@example",
+      installed: true,
+      _installedPath: "C:/Mods/Example",
+    });
+  });
+
+  it("keeps distinct same-name sources, collection children, and physical installations", () => {
+    const rows = [
+      mod("Same title", { repo: "https://github.com/one/mod" }),
+      mod("Same title", { repo: "https://github.com/two/mod" }),
+      mod("Child A", { repo: "https://github.com/one/collection" }),
+      mod("Child B", { repo: "https://github.com/one/collection" }),
+      mod("Scoped", { repo: "https://github.com/one/collection#first" }),
+      mod("Scoped", { repo: "https://github.com/one/collection#second" }),
+      mod("Copy", { _installedPath: "C:/Mods/one" }),
+      mod("Copy", { _installedPath: "C:/Mods/two" }),
+      mod("Offline", { repo: "", publisher: "one" }),
+      mod("Offline", { repo: "", publisher: "two" }),
+    ];
+    expect(deduplicateMods(rows)).toEqual(rows);
+  });
+
+  it("migrates duplicate old cache rows and tolerates partial cache metadata", () => {
+    const hydrated = hydrateModsFromCache([
+      { title: "Example", publisher: "Tester" },
+      { title: "EXAMPLE", publisher: "Tester" },
+    ]);
+    expect(hydrated).toHaveLength(1);
+    expect(hydrated[0].downloadURL).toBe("");
+    expect(prepareModsForCache([mod("Example"), mod("EXAMPLE")])).toHaveLength(
+      1,
+    );
+  });
+
+  it("reconciles authoritative aliases by source and preserves the installation identity", () => {
+    const result = mergeAuthoritativeCatalog(
+      [
+        mod("Example-Mod", {
+          _catalogEntry: true,
+          installed: true,
+          _installedPath: "C:/Mods/Example",
+          _dirName: "author@example",
+        }),
+      ],
+      [
+        mod("Example Mod", {
+          _catalogEntry: true,
+          _dirName: "author@example",
+          downloadURL: "bmi://author@example",
+          categories: [0],
+        }),
+        mod("example_mod", {
+          _catalogEntry: true,
+          _dirName: "author@example",
+          downloadURL: "bmi://author@example",
+          categories: [1],
+        }),
+      ],
+    );
+    expect(result.prunedCount).toBe(0);
+    expect(result.mods).toHaveLength(1);
+    expect(result.mods[0]).toMatchObject({
+      installed: true,
+      _installedPath: "C:/Mods/Example",
+      categories: [0, 1],
+    });
+    expect(
+      ensureInstalledModCards(
+        result.mods,
+        [{ name: "Example-Mod", path: "C:/Mods/Example" }],
+        (record) => mod(record.name),
+      ),
+    ).toHaveLength(1);
+  });
+
   it("hydrates BMI provenance and removes cached B when live catalog only has A", () => {
     const cachedAId = catalogIdFromBmiUrl("bmi://Author@A");
     const cachedBId = catalogIdFromBmiUrl("bmi://Author@B");

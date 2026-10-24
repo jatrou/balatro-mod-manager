@@ -10,6 +10,9 @@ import {
   filterUnavailableAwesomeEntries,
   loadAwesomeCatalog,
   parseAwesomeBalatroMarkdown,
+  awesomeEntryForLoader,
+  awesomeEntryLoaders,
+  deduplicateAwesomeEntries,
 } from "./awesomeCatalog";
 
 const mod = (overrides: Partial<Mod> = {}): Mod => ({
@@ -41,9 +44,9 @@ describe("Awesome Balatro catalog", () => {
     expect(bundledAwesomeCatalog.source).toMatchObject({
       revision: "1a0335a5834f3148cd24076983d65e6e2bd195c0",
       license: "CC0-1.0",
-      entryCount: 314,
+      entryCount: 306,
     });
-    expect(mods).toHaveLength(310);
+    expect(mods).toHaveLength(302);
     expect(loaders).toHaveLength(4);
     expect(
       new Set(bundledAwesomeCatalog.entries.map((entry) => entry.id)).size,
@@ -97,6 +100,92 @@ describe("Awesome Balatro catalog", () => {
     expect(entries).toHaveLength(1);
     expect(entries[0].categories).toEqual(["GUI", "Utils"]);
     expect(entries[0].sourceLines).toEqual([4, 6]);
+  });
+
+  it("shows one row per loader variant while preserving each source and installation route", () => {
+    const catalog = parseAwesomeBalatroMarkdown(`
+## Mods (Require [**Balamod**](https://example.test))
+### GUI
+- [Deselect All](https://github.com/Zei33/deselect-all-balamod) - Legacy. by @Zei33
+## Mods (Require [**Steamodded**](https://example.test))
+### Utils
+- [Deselect_All](https://github.com/Zei33/deselect-all-steamodded.git/) - Modern. by @Zei33
+`);
+    expect(catalog.entries).toHaveLength(1);
+    const entry = catalog.entries[0];
+    expect(entry.loader).toBe("Steamodded");
+    expect(entry.categories).toEqual(["Utils", "GUI"]);
+    expect(awesomeEntryLoaders(entry)).toEqual(["Steamodded", "Balamod"]);
+    expect(getAwesomeInstallSource(entry)).toMatchObject({
+      kind: "download",
+      url: "https://github.com/Zei33/deselect-all-steamodded.git/",
+    });
+    const legacy = awesomeEntryForLoader(entry, "Balamod");
+    expect(legacy.sourceUrl).toBe(
+      "https://github.com/Zei33/deselect-all-balamod",
+    );
+    expect(legacy.id).toBe(entry.id);
+    expect(getAwesomeInstallSource(legacy)).toMatchObject({
+      kind: "unsupported",
+    });
+    expect(deduplicateAwesomeEntries(catalog.entries)).toEqual(catalog.entries);
+  });
+
+  it("keeps same-name different authors, source subpaths, and collection children distinct", () => {
+    const catalog = parseAwesomeBalatroMarkdown(`
+## Mods (Require [**Steamodded**](https://example.test))
+- [Texture Pack](https://discord.test/first) - Textures. by @One
+- [Texture Pack](https://discord.test/second) - Textures. by @Two
+- [Collection](https://github.com/one/mods) - Collection. by @One
+  - First Child - First.
+  - Second Child - Second.
+- [Scoped](https://github.com/one/mods#first) - First. by @One
+- [Scoped](https://github.com/one/mods#second) - Second. by @One
+`);
+    expect(catalog.entries).toHaveLength(7);
+  });
+
+  it("combines the verified Parrot Joker alias and keeps unrelated same-title mods", () => {
+    const parrots = bundledAwesomeCatalog.entries.filter(
+      (entry) => entry.title === "Parrot Joker",
+    );
+    expect(parrots).toHaveLength(1);
+    expect(awesomeEntryLoaders(parrots[0])).toEqual(["Lovely", "Balamod"]);
+    expect(awesomeEntryForLoader(parrots[0], "Balamod").sourceUrl).toBe(
+      "https://github.com/JopStro/BalatroMods",
+    );
+    expect(
+      bundledAwesomeCatalog.entries.filter(
+        (entry) => entry.title === "Gay Mod",
+      ),
+    ).toHaveLength(2);
+    expect(
+      bundledAwesomeCatalog.entries.filter(
+        (entry) => entry.title === "Texture Pack",
+      ),
+    ).toHaveLength(2);
+  });
+
+  it("deduplicates legacy cached variants before an offline fallback and rewrites the cache", async () => {
+    localStorage.setItem(
+      "awesome-balatro-catalog-v1",
+      JSON.stringify(snapshot),
+    );
+    const result = await loadAwesomeCatalog({
+      refresh: true,
+      fetchImpl: vi.fn().mockRejectedValue(new Error("offline")),
+    });
+    expect(result.origin).toBe("cache");
+    expect(
+      result.catalog.entries.filter((entry) => entry.title === "Deselect All"),
+    ).toHaveLength(1);
+    const rewritten = JSON.parse(
+      localStorage.getItem("awesome-balatro-catalog-v1")!,
+    );
+    expect(rewritten.entries).toHaveLength(
+      bundledAwesomeCatalog.entries.length,
+    );
+    expect(rewritten.source.entryCount).toBe(rewritten.entries.length);
   });
 
   it("matches only one exact title and canonical GitHub repository", () => {
@@ -300,7 +389,7 @@ describe("Awesome Balatro catalog", () => {
     ).toBe(false);
     expect(
       JSON.parse(localStorage.getItem("awesome-balatro-catalog-v1")!).entries,
-    ).toHaveLength(314);
+    ).toHaveLength(bundledAwesomeCatalog.entries.length);
   });
 
   it("filters confirmed missing entries from a successful upstream refresh", async () => {

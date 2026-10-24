@@ -1,9 +1,10 @@
 import type { InstalledMod, Mod } from "../stores/modStore";
+import { modSourceIdentity, normalizedModTitle } from "./modIdentity";
 
 type PersistedMod = Omit<Mod, "description" | "image" | "imageFallback">;
 
 export function prepareModsForCache(mods: Mod[]): PersistedMod[] {
-  return mods.map((mod) => ({
+  return deduplicateMods(mods).map((mod) => ({
     title: mod.title,
     categories: mod.categories,
     colors: mod.colors,
@@ -28,33 +29,150 @@ export function prepareModsForCache(mods: Mod[]): PersistedMod[] {
 
 export function hydrateModsFromCache(value: unknown): Mod[] {
   if (!Array.isArray(value)) return [];
-  return value
-    .filter(
-      (entry): entry is Record<string, unknown> =>
-        typeof entry === "object" &&
-        entry !== null &&
-        typeof entry.title === "string",
-    )
-    .map((entry) => {
-      const explicitCatalogEntry = entry._catalogEntry;
-      const clearlyLocalPlaceholder =
-        typeof entry._installedPath === "string" ||
-        (entry.publisher === "Installed" &&
-          !entry.repo &&
-          typeof entry._dirName !== "string");
-      return {
-        ...entry,
-        description:
-          typeof entry.description === "string" ? entry.description : "",
-        image:
-          typeof entry.image === "string" ? entry.image : "/images/cover.jpg",
-        downloadURL: "",
-        _catalogEntry:
-          typeof explicitCatalogEntry === "boolean"
-            ? explicitCatalogEntry
-            : !clearlyLocalPlaceholder,
-      } as Mod;
-    });
+  return deduplicateMods(
+    value
+      .filter(
+        (entry): entry is Record<string, unknown> =>
+          typeof entry === "object" &&
+          entry !== null &&
+          typeof entry.title === "string",
+      )
+      .map((entry) => {
+        const explicitCatalogEntry = entry._catalogEntry;
+        const clearlyLocalPlaceholder =
+          typeof entry._installedPath === "string" ||
+          (entry.publisher === "Installed" &&
+            !entry.repo &&
+            typeof entry._dirName !== "string");
+        return {
+          ...entry,
+          description:
+            typeof entry.description === "string" ? entry.description : "",
+          image:
+            typeof entry.image === "string" ? entry.image : "/images/cover.jpg",
+          downloadURL: "",
+          _catalogEntry:
+            typeof explicitCatalogEntry === "boolean"
+              ? explicitCatalogEntry
+              : !clearlyLocalPlaceholder,
+        } as Mod;
+      }),
+  );
+}
+
+function catalogIdentity(mod: Mod) {
+  return mod._dirName || catalogIdFromBmiUrl(mod.downloadURL) || mod.id;
+}
+
+function sameMod(left: Mod, right: Mod): boolean {
+  if (
+    left._installedPath &&
+    right._installedPath &&
+    left._installedPath !== right._installedPath
+  )
+    return false;
+  const leftId = catalogIdentity(left);
+  const rightId = catalogIdentity(right);
+  if (leftId && rightId && leftId === rightId) return true;
+  if (normalizedModTitle(left.title) !== normalizedModTitle(right.title))
+    return false;
+  const leftSource = modSourceIdentity(left.repo || "");
+  const rightSource = modSourceIdentity(right.repo || "");
+  if (leftSource && rightSource) return leftSource === rightSource;
+  // Local placeholders carry no source. Conflicting explicit IDs still identify
+  // different catalog entries, even if they happen to share a display name.
+  const isPlaceholder = (mod: Mod) =>
+    Boolean(mod._installedPath) || mod.publisher === "Installed";
+  return (
+    !(leftId && rightId && leftId !== rightId) &&
+    (isPlaceholder(left) ||
+      isPlaceholder(right) ||
+      (Boolean(left.publisher?.trim()) &&
+        normalizedModTitle(left.publisher) ===
+          normalizedModTitle(right.publisher || "")))
+  );
+}
+
+function combineDuplicateMods(left: Mod, right: Mod): Mod {
+  // Prefer a live catalog identity over a display-only cache or local placeholder.
+  const preferred =
+    (!left.downloadURL && right.downloadURL) ||
+    (!left._catalogEntry && right._catalogEntry)
+      ? right
+      : left;
+  const other = preferred === left ? right : left;
+  const hasImage = (mod: Mod) =>
+    Boolean(mod.image?.trim()) &&
+    !/\bimages\/cover\.jpg$/i.test(mod.image.trim());
+  const imageMod = hasImage(preferred) ? preferred : other;
+  return {
+    ...other,
+    ...preferred,
+    categories: [
+      ...new Set([...(left.categories || []), ...(right.categories || [])]),
+    ],
+    description: preferred.description?.trim()
+      ? preferred.description
+      : other.description,
+    image: imageMod.image,
+    imageFallback: imageMod.imageFallback,
+    _hasThumbnail: imageMod._hasThumbnail,
+    id: catalogIdentity(preferred) || catalogIdentity(other),
+    _dirName: preferred._dirName || other._dirName,
+    _catalogEntry: left._catalogEntry || right._catalogEntry,
+    _installedPath: left._installedPath || right._installedPath,
+    installed: left.installed || right.installed,
+    requires_steamodded: left.requires_steamodded || right.requires_steamodded,
+    requires_talisman: left.requires_talisman || right.requires_talisman,
+  };
+}
+
+/** One display row per proven identity, without merging different install paths. */
+export function deduplicateMods(mods: readonly Mod[]): Mod[] {
+  const result: Mod[] = [];
+  const byId = new Map<string, Set<number>>();
+  const byTitle = new Map<string, Set<number>>();
+  const updateIndex = (
+    lookup: Map<string, Set<number>>,
+    key: string,
+    index: number,
+    add: boolean,
+  ) => {
+    if (add) {
+      const indexes = lookup.get(key) || new Set<number>();
+      indexes.add(index);
+      lookup.set(key, indexes);
+    } else {
+      lookup.get(key)?.delete(index);
+    }
+  };
+  const updateIndexes = (mod: Mod, index: number, add: boolean) => {
+    const id = catalogIdentity(mod);
+    if (id) updateIndex(byId, id, index, add);
+    updateIndex(byTitle, normalizedModTitle(mod.title), index, add);
+  };
+  for (const mod of mods) {
+    const id = catalogIdentity(mod);
+    const candidates = new Set([
+      ...(id ? byId.get(id) || [] : []),
+      ...(byTitle.get(normalizedModTitle(mod.title)) || []),
+    ]);
+    // Keep the original first-match behavior when ID and title identify
+    // different candidates; the full guard still checks source and install path.
+    const index = [...candidates]
+      .sort((left, right) => left - right)
+      .find((candidate) => sameMod(result[candidate], mod));
+    if (index === undefined) {
+      const addedIndex = result.length;
+      result.push(mod);
+      updateIndexes(mod, addedIndex, true);
+    } else {
+      updateIndexes(result[index], index, false);
+      result[index] = combineDuplicateMods(result[index], mod);
+      updateIndexes(result[index], index, true);
+    }
+  }
+  return result;
 }
 
 export function catalogIdFromBmiUrl(downloadUrl?: string) {
@@ -82,10 +200,10 @@ export function syncInstalledCatalogStatus(
   installed: readonly InstalledMod[],
 ): Mod[] {
   const byTitle = new Map(
-    installed.map((item) => [item.name.toLowerCase(), item]),
+    installed.map((item) => [normalizedModTitle(item.name), item]),
   );
   return mods.map((mod) => {
-    const record = byTitle.get(mod.title.toLowerCase());
+    const record = byTitle.get(normalizedModTitle(mod.title));
     return record && typeof record.orphaned === "boolean"
       ? { ...mod, orphaned: record.orphaned }
       : mod;
@@ -98,10 +216,11 @@ export function ensureInstalledModCards(
   installed: readonly InstalledMod[],
   createPlaceholder: (installed: InstalledMod) => Mod,
 ): Mod[] {
-  const titles = new Set(mods.map((mod) => mod.title.toLowerCase()));
+  mods = deduplicateMods(mods);
+  const titles = new Set(mods.map((mod) => normalizedModTitle(mod.title)));
   const additions: Mod[] = [];
   for (const record of installed) {
-    const title = record.name.toLowerCase();
+    const title = normalizedModTitle(record.name);
     if (titles.has(title)) continue;
     titles.add(title);
     additions.push(createPlaceholder(record));
@@ -114,25 +233,13 @@ export function mergeAuthoritativeCatalog(
   existingMods: Mod[],
   incomingMods: Mod[],
 ): { mods: Mod[]; prunedCount: number } {
-  const incoming = new Map<string, Mod>();
-  for (const mod of incomingMods) incoming.set(mod.title, mod);
-
-  const incomingOrder: string[] = [];
-  const seen = new Set<string>();
-  for (const mod of incomingMods) {
-    if (seen.has(mod.title)) continue;
-    seen.add(mod.title);
-    incomingOrder.push(mod.title);
-  }
-
-  const existingByTitle = new Map(existingMods.map((mod) => [mod.title, mod]));
+  incomingMods = deduplicateMods(incomingMods);
+  existingMods = deduplicateMods(existingMods);
   const mods: Mod[] = [];
   let prunedCount = 0;
 
-  for (const title of incomingOrder) {
-    const incomingMod = incoming.get(title);
-    if (!incomingMod) continue;
-    const existing = existingByTitle.get(title);
+  for (const incomingMod of incomingMods) {
+    const existing = existingMods.find((mod) => sameMod(mod, incomingMod));
     if (!existing) {
       mods.push({ ...incomingMod, orphaned: false });
       continue;
@@ -147,6 +254,8 @@ export function mergeAuthoritativeCatalog(
     mods.push({
       ...existing,
       ...incomingMod,
+      installed: existing.installed || incomingMod.installed,
+      _installedPath: existing._installedPath || incomingMod._installedPath,
       orphaned: false,
       requires_steamodded: incomingMod.requires_steamodded,
       requires_talisman: incomingMod.requires_talisman,
@@ -162,7 +271,7 @@ export function mergeAuthoritativeCatalog(
   }
 
   for (const existing of existingMods) {
-    if (incoming.has(existing.title)) continue;
+    if (incomingMods.some((incoming) => sameMod(existing, incoming))) continue;
     if (existing._catalogEntry || existing._dirName) {
       prunedCount++;
     } else {

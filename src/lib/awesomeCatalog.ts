@@ -1,5 +1,6 @@
 import snapshot from "./data/awesome-balatro.json";
 import type { Mod } from "../stores/modStore";
+import { modSourceIdentity, normalizedModTitle } from "./modIdentity";
 import {
   canonicalGitHubRepository,
   isKnownMissingSource,
@@ -44,6 +45,132 @@ export interface AwesomeEntry {
   sourceLines: number[];
   parentTitle?: string;
   safetyWarning?: string;
+  /** Original loader-specific sources, retained when one mod appears in several sections. */
+  variants?: AwesomeEntry[];
+}
+
+export function awesomeEntryLoaders(entry: AwesomeEntry): AwesomeLoader[] {
+  return [
+    ...new Set((entry.variants || [entry]).map((variant) => variant.loader)),
+  ];
+}
+
+/** Select only this loader's source and links, retaining the single row's identity. */
+export function awesomeEntryForLoader(
+  entry: AwesomeEntry,
+  loader: AwesomeLoader | "All",
+): AwesomeEntry {
+  if (loader === "All" || !entry.variants) return entry;
+  const variant = entry.variants.find((item) => item.loader === loader);
+  return variant
+    ? {
+        ...variant,
+        id: entry.id,
+        categories: entry.categories,
+        variants: entry.variants,
+      }
+    : entry;
+}
+
+function isVerifiedParrotAlias(
+  left: AwesomeEntry,
+  right: AwesomeEntry,
+): boolean {
+  // Thunderstore's Source link points at JopStro/BalatroMods, whose
+  // JoStro-Parrot folder contains the legacy Balamod and modern Lovely mod.
+  const sources = new Set([
+    "github:jopstro/balatromods",
+    "https://thunderstore.io/c/balatro/p/JoStro/Parrot_Joker",
+  ]);
+  return (
+    normalizedModTitle(left.title) === "parrotjoker" &&
+    sources.has(modSourceIdentity(left.sourceUrl)) &&
+    sources.has(modSourceIdentity(right.sourceUrl))
+  );
+}
+
+/** A repository/collection is not a mod identity: title and child scope must agree. */
+export function deduplicateAwesomeEntries(
+  entries: readonly AwesomeEntry[],
+): AwesomeEntry[] {
+  const groups: AwesomeEntry[][] = [];
+  for (const entry of entries.flatMap((item) => item.variants || [item])) {
+    const group = groups.find((items) =>
+      items.some(
+        (existing) =>
+          existing.kind === entry.kind &&
+          normalizedModTitle(existing.title) ===
+            normalizedModTitle(entry.title) &&
+          normalizedModTitle(existing.parentTitle || "") ===
+            normalizedModTitle(entry.parentTitle || "") &&
+          (modSourceIdentity(existing.sourceUrl) ===
+            modSourceIdentity(entry.sourceUrl) ||
+            isVerifiedParrotAlias(existing, entry) ||
+            (existing.loader !== entry.loader &&
+              Boolean(existing.author.trim()) &&
+              normalizedModTitle(existing.author) ===
+                normalizedModTitle(entry.author))),
+      ),
+    );
+    if (group) group.push(entry);
+    else groups.push([entry]);
+  }
+  const priority: Record<AwesomeLoader, number> = {
+    Steamodded: 0,
+    Lovely: 1,
+    Balamod: 2,
+    None: 3,
+  };
+  return groups.map((group) => {
+    const variants: AwesomeEntry[] = [];
+    for (const entry of group) {
+      const duplicate = variants.find(
+        (item) =>
+          item.loader === entry.loader &&
+          modSourceIdentity(item.sourceUrl) ===
+            modSourceIdentity(entry.sourceUrl),
+      );
+      if (duplicate) {
+        duplicate.categories = [
+          ...new Set([...duplicate.categories, ...entry.categories]),
+        ];
+        duplicate.sourceLines = [
+          ...new Set([...duplicate.sourceLines, ...entry.sourceLines]),
+        ];
+        duplicate.links = [
+          ...new Map(
+            [...duplicate.links, ...entry.links].map((link) => [
+              link.url,
+              link,
+            ]),
+          ).values(),
+        ];
+        duplicate.badges = [
+          ...new Map(
+            [...duplicate.badges, ...entry.badges].map((badge) => [
+              badge.url,
+              badge,
+            ]),
+          ).values(),
+        ];
+        duplicate.description ||= entry.description;
+        duplicate.author ||= entry.author;
+      } else {
+        const { variants: _variants, ...original } = entry;
+        variants.push({ ...original });
+      }
+    }
+    variants.sort((a, b) => priority[a.loader] - priority[b.loader]);
+    const primary = variants[0];
+    return {
+      ...primary,
+      categories: [...new Set(variants.flatMap((entry) => entry.categories))],
+      sourceLines: [
+        ...new Set(variants.flatMap((entry) => entry.sourceLines)),
+      ].sort((a, b) => a - b),
+      ...(variants.length > 1 ? { variants } : {}),
+    };
+  });
 }
 
 export interface AwesomeCatalogSource {
@@ -179,22 +306,7 @@ export function parseAwesomeBalatroMarkdown(
   let loader: AwesomeLoader | null = null;
   let parent: AwesomeEntry | null = null;
   const entries: AwesomeEntry[] = [];
-  const dedupe = new Map<string, AwesomeEntry>();
-
   const addEntry = (entry: AwesomeEntry): AwesomeEntry => {
-    const key = `${entry.title.toLowerCase()}|${entry.sourceUrl.toLowerCase()}|${entry.loader}`;
-    const existing = dedupe.get(key);
-    if (existing) {
-      for (const item of entry.categories) {
-        if (!existing.categories.includes(item)) existing.categories.push(item);
-      }
-      for (const line of entry.sourceLines) {
-        if (!existing.sourceLines.includes(line))
-          existing.sourceLines.push(line);
-      }
-      return existing;
-    }
-    dedupe.set(key, entry);
     entries.push(entry);
     return entry;
   };
@@ -300,6 +412,7 @@ export function parseAwesomeBalatroMarkdown(
     parent = kind === "mod" ? entry : null;
   }
 
+  const uniqueEntries = deduplicateAwesomeEntries(entries);
   return {
     source: {
       repository: AWESOME_BALATRO_REPOSITORY,
@@ -309,9 +422,9 @@ export function parseAwesomeBalatroMarkdown(
       licenseUrl: AWESOME_BALATRO_LICENSE_URL,
       revision: metadata.revision || "main (runtime)",
       fetchedAt: metadata.fetchedAt || new Date().toISOString(),
-      entryCount: entries.length,
+      entryCount: uniqueEntries.length,
     },
-    entries,
+    entries: uniqueEntries,
   };
 }
 
@@ -355,14 +468,17 @@ function writeCachedCatalog(catalog: AwesomeCatalog): void {
 export function filterUnavailableAwesomeEntries(
   catalog: AwesomeCatalog,
 ): AwesomeCatalog {
-  const entries = catalog.entries
-    .filter((entry) => !isKnownMissingSource(entry.sourceUrl))
-    .map((entry) => ({
-      ...entry,
-      // Recompute current technical restrictions so old serialized policy bans expire.
-      safetyWarning: getAwesomeInstallationWarning(entry),
-      links: entry.links.filter((link) => !isKnownMissingSource(link.url)),
-    }));
+  const entries = deduplicateAwesomeEntries(
+    catalog.entries
+      .flatMap((entry) => entry.variants || [entry])
+      .filter((entry) => !isKnownMissingSource(entry.sourceUrl))
+      .map((entry) => ({
+        ...entry,
+        // Recompute current technical restrictions so old serialized policy bans expire.
+        safetyWarning: getAwesomeInstallationWarning(entry),
+        links: entry.links.filter((link) => !isKnownMissingSource(link.url)),
+      })),
+  );
   return {
     ...catalog,
     source: { ...catalog.source, entryCount: entries.length },

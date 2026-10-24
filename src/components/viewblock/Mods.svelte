@@ -1284,13 +1284,7 @@
   }
 
   function mapCachedMods(items: CachedModItem[]): Mod[] {
-    const seen = new Set<string>();
     return items
-      .filter((item) => {
-        if (seen.has(item.title)) return false;
-        seen.add(item.title);
-        return true;
-      })
       .map((item) => {
         const image = item.image?.trim() || "/images/cover.jpg";
         const hasThumb = !/\/images\/cover\.jpg$/i.test(image);

@@ -13,6 +13,20 @@ line for every entry.
 
 ## Snapshot coverage
 
+The table below counts source records before combining loader variants. The app
+shows **302 unique mods and four loader references (306 cards)**. Eight duplicate
+pairs become single cards: arachnei's balatro mods, Balatro Safety, Better French,
+Deselect All, Flush Hotkeys, GoldenChallenge, Quick Restart, and Parrot Joker.
+The [Parrot Joker Thunderstore page](https://thunderstore.io/c/balatro/p/JoStro/Parrot_Joker/)
+links to JopStro/BalatroMods, establishing the JoStro/JopStro author alias.
+
+Categories and alternate loader sources remain attached to the combined card.
+Selecting a loader chooses that variant's source and installation method;
+All loaders prefers Steamodded, then Lovely. Details retains alternate source
+links. Distinct projects with the same name, including Gay Mod and Texture Pack,
+remain separate, as do named children within a shared mod repository. The same
+normalization runs on the bundled snapshot, existing caches, and live refreshes.
+
 | Group                                               | Entries |
 | --------------------------------------------------- | ------: |
 | Mods listed under the four upstream Mods sections   |     309 |

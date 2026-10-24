@@ -4,7 +4,11 @@ import {
   safeLocalStorageSet,
   monitorStorageQuota,
 } from "../utils/storage-quota";
-import { hydrateModsFromCache, prepareModsForCache } from "../lib/catalogMerge";
+import {
+  deduplicateMods,
+  hydrateModsFromCache,
+  prepareModsForCache,
+} from "../lib/catalogMerge";
 
 export interface Mod {
   id?: string;
@@ -195,7 +199,13 @@ export enum Category {
 export const currentModView = writable<Mod | null>(null);
 export const currentJokerView = writable<Mod | null>(null);
 export const searchResults = writable<Mod[]>([]);
-export const modsStore = writable<Mod[]>([]);
+const catalogStore = writable<Mod[]>([]);
+export const modsStore: Writable<Mod[]> = {
+  subscribe: catalogStore.subscribe,
+  set: (mods) => catalogStore.set(deduplicateMods(mods)),
+  update: (updater) =>
+    catalogStore.update((mods) => deduplicateMods(updater(mods))),
+};
 
 let persistSuspended = false;
 let persistPending = false;

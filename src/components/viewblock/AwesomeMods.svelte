@@ -12,6 +12,8 @@
   import { installationStatus, modsStore } from "../../stores/modStore";
   import {
     AWESOME_BALATRO_README_URL,
+    awesomeEntryForLoader,
+    awesomeEntryLoaders,
     bundledAwesomeCatalog,
     findCatalogMatch,
     loadAwesomeCatalog,
@@ -74,7 +76,10 @@
     new Map(
       modEntries.map((entry) => [
         entry.id,
-        findCatalogMatch(entry, $modsStore),
+        findCatalogMatch(
+          awesomeEntryForLoader(entry, loaderFilter),
+          $modsStore,
+        ),
       ]),
     ),
   );
@@ -86,20 +91,23 @@
       (entry) =>
         (view !== "mods" ||
           loaderFilter === "All" ||
-          entry.loader === loaderFilter) &&
+          awesomeEntryLoaders(entry).includes(loaderFilter)) &&
         (view !== "mods" ||
           category === "All" ||
           entry.categories.includes(category)),
     );
-    const found = fuzzyFilter(source, query, (entry) =>
-      [
-        entry.title,
-        entry.description,
-        entry.author,
-        entry.loader,
-        entry.categories.join(" "),
-        entry.parentTitle || "",
-      ].join(" "),
+    const found = fuzzyFilter(
+      source.map((entry) => awesomeEntryForLoader(entry, loaderFilter)),
+      query,
+      (entry) =>
+        [
+          entry.title,
+          entry.description,
+          entry.author,
+          awesomeEntryLoaders(entry).join(" "),
+          entry.categories.join(" "),
+          entry.parentTitle || "",
+        ].join(" "),
     );
     if (sort === "name")
       return [...found].sort((a, b) => a.title.localeCompare(b.title));
@@ -205,8 +213,12 @@
 {#if installing}
   <AwesomeInstallDialog
     entry={installing}
-    source={getAwesomeInstallSource(installing, matches.get(installing.id))}
-    folderName={matches.get(installing.id)?.folderName || installing.title}
+    source={getAwesomeInstallSource(
+      installing,
+      findCatalogMatch(installing, $modsStore),
+    )}
+    folderName={findCatalogMatch(installing, $modsStore)?.folderName ||
+      installing.title}
     onClose={() => {
       installing = null;
     }}
@@ -378,7 +390,9 @@
               <div class="metadata">
                 {entry.kind === "loader"
                   ? "Mod loader"
-                  : entry.loader}{#if entry.categories.length}
+                  : awesomeEntryLoaders(entry).join(
+                      " / ",
+                    )}{#if entry.categories.length}
                   {" | "}{entry.categories.join(" / ")}{/if}
               </div>
               {#if entry.safetyWarning}<div class="safety-warning">
@@ -412,7 +426,7 @@
                     ? "Source instructions"
                     : "Open source"}<ExternalLink size={13} /></button
                 >
-                {#if entry.parentTitle || entry.badges.length || entry.links.length > 1 || source.kind === "unsupported"}
+                {#if entry.parentTitle || entry.badges.length || entry.links.length > 1 || entry.variants?.length || source.kind === "unsupported"}
                   <details>
                     <summary>Details</summary>
                     {#if entry.parentTitle}<p>
@@ -431,6 +445,14 @@
                         class="source-link"
                         onclick={() => open(link.url)}
                         >{link.label}<ExternalLink size={12} /></button
+                      >{/each}
+                    {#each entry.variants?.filter((variant) => variant.sourceUrl !== entry.sourceUrl) || [] as variant}<button
+                        type="button"
+                        class="source-link"
+                        onclick={() => open(variant.sourceUrl)}
+                        >{variant.loader} source<ExternalLink
+                          size={12}
+                        /></button
                       >{/each}
                   </details>
                 {/if}

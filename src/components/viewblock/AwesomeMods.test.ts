@@ -113,6 +113,56 @@ describe("AwesomeMods", () => {
     expect(openExternal).toHaveBeenCalledWith(link.getAttribute("href"));
   });
 
+  it("shows one Deselect All row with loader-specific sources and safe catalog matching", async () => {
+    modsStore.set([
+      {
+        ...catalogMod,
+        title: "Deselect All",
+        repo: "https://github.com/Zei33/deselect-all-steamodded",
+        downloadURL: "bmi://Zei33@DeselectAll",
+      },
+    ]);
+    render(AwesomeMods);
+    await fireEvent.input(
+      screen.getByRole("searchbox", { name: /search awesome balatro/i }),
+      { target: { value: "Deselect All" } },
+    );
+    expect(
+      screen.getAllByRole("heading", { name: "Deselect All" }),
+    ).toHaveLength(1);
+    let card = screen
+      .getByRole("heading", { name: "Deselect All" })
+      .closest("article")!;
+    expect(within(card).getByRole("button", { name: "Install" })).toBeTruthy();
+    expect(
+      within(card).getByRole("button", { name: "View in catalog" }),
+    ).toBeTruthy();
+    await fireEvent.click(
+      within(card).getByRole("button", { name: "Balamod source" }),
+    );
+    expect(openExternal).toHaveBeenLastCalledWith(
+      "https://github.com/Zei33/deselect-all-balamod",
+    );
+
+    await selectOption("Filter by loader", "Balamod");
+    expect(
+      screen.getAllByRole("heading", { name: "Deselect All" }),
+    ).toHaveLength(1);
+    card = screen
+      .getByRole("heading", { name: "Deselect All" })
+      .closest("article")!;
+    expect(within(card).queryByRole("button", { name: "Install" })).toBeNull();
+    expect(
+      within(card).queryByRole("button", { name: "View in catalog" }),
+    ).toBeNull();
+    await fireEvent.click(
+      within(card).getByRole("button", { name: "Source instructions" }),
+    );
+    expect(openExternal).toHaveBeenLastCalledWith(
+      "https://github.com/Zei33/deselect-all-balamod",
+    );
+  });
+
   it("paginates the directory and keeps the selected page size", async () => {
     modsPerPage.set(10);
     const firstRender = render(AwesomeMods);

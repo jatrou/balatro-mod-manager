@@ -12,6 +12,7 @@
   import "../app.css";
   import UpdateAvailablePopup from "../components/UpdateAvailablePopup.svelte";
   import RecoveryScreen from "../components/RecoveryScreen.svelte";
+  import SourceBrowser from "../components/SourceBrowser.svelte";
   import { updatePromptDisabled } from "../stores/update";
   import { invoke } from "@tauri-apps/api/core";
   import { fetchLatestAppVersion } from "$lib/releases";
@@ -175,6 +176,7 @@
 </div>
 
 <UpdateAvailablePopup />
+<SourceBrowser />
 
 <style>
   .layout-container {

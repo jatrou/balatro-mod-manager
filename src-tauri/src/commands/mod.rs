@@ -3,7 +3,6 @@ pub mod awesome;
 pub mod backup;
 pub mod cache;
 pub mod detection;
-pub mod external;
 pub mod health;
 pub mod import;
 pub mod init;
@@ -14,6 +13,7 @@ pub mod paths;
 pub mod repo;
 pub mod report;
 pub mod settings;
+pub mod source_browser;
 pub mod system;
 pub mod thumbnails;
 

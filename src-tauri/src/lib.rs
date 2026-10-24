@@ -6,6 +6,7 @@ pub mod commands;
 mod compat_helper;
 mod lfs;
 mod models;
+mod source_assets;
 mod state;
 mod thumb_queue;
 mod util;
@@ -132,6 +133,10 @@ fn exit_application(app_handle: tauri::AppHandle) {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let result = tauri::Builder::default()
+        .manage(commands::source_browser::SourceBrowserState::default())
+        .register_uri_scheme_protocol("asset", |context, request| {
+            source_assets::response(context.app_handle(), context.webview_label(), request)
+        })
         .plugin(tauri_plugin_os::init())
         .plugin(
             tauri_plugin_window_state::Builder::default()
@@ -641,7 +646,11 @@ pub fn run() {
             commands::detection::backup_local_mod,
             commands::detection::restore_from_backup,
             commands::detection::remove_backup,
-            commands::external::open_external_url,
+            commands::source_browser::open_source_browser,
+            commands::source_browser::resize_source_browser,
+            commands::source_browser::source_browser_action,
+            commands::source_browser::source_browser_status,
+            commands::source_browser::close_source_browser,
             commands::init::get_app_init_data,
             commands::init::get_all_settings,
             commands::backup::create_backup,

@@ -1,37 +1,36 @@
-import { browser } from "$app/environment";
-import { invoke } from "@tauri-apps/api/core";
+import { isTauri } from "@tauri-apps/api/core";
+import { writable } from "svelte/store";
 import { addMessage } from "$lib/stores";
 
-/**
- * Open an external URL using the Tauri opener plugin with a browser fallback.
- */
-export async function openExternal(url: string): Promise<void> {
-  if (!url) return;
+export const sourcePage = writable<{ url: string } | null>(null);
 
+/** Source pages belong to the app's isolated native browser, never the OS browser. */
+export async function openExternal(value: string): Promise<void> {
+  if (!value?.trim()) return;
+
+  let url: URL;
   try {
-    // Prefer our internal command (works in Flatpak and respects capability perms).
-    await invoke("open_external_url", { url });
+    url = new URL(value.trim());
+    if (
+      !["http:", "https:"].includes(url.protocol) ||
+      !url.hostname ||
+      url.username ||
+      url.password
+    ) {
+      throw new Error("Unsupported URL");
+    }
+  } catch {
+    addMessage("Only valid HTTP or HTTPS source links can be opened.", "error");
     return;
-  } catch (error) {
-    // fall through to plugin/window fallback
-    console.warn(
-      "open_external_url failed, falling back to opener plugin",
-      error,
-    );
   }
 
-  try {
-    await invoke("plugin:opener|open_url", { url });
-  } catch (error) {
-    // Fallback for web/dev builds where the plugin isn't available.
-    if (browser) {
-      window.open(url, "_blank", "noopener,noreferrer");
-      return;
-    }
-    console.error("Failed to open external URL", error);
+  if (!isTauri()) {
     addMessage(
-      "Failed to open link. Please check your browser configuration.",
+      "Open the desktop app to browse source pages inside the app.",
       "error",
     );
+    return;
   }
+
+  sourcePage.set({ url: url.href });
 }
